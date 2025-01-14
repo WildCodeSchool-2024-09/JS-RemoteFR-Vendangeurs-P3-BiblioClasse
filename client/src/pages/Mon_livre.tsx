@@ -6,7 +6,11 @@ function Mon_livre() {
   return (
     <div>
       <Header />
-      <p>"Je suis le composant Mon_livre"</p>
+      <div>
+        <figure className="bookCover_container">
+          <img src="/src/assets/images/QRCode.png" alt="QRCode" />
+        </figure>
+      </div>
     </div>
   );
 }

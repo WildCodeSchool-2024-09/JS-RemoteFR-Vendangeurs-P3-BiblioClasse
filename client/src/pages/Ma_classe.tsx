@@ -1,6 +1,10 @@
 import "../styles/ListeAffichage.css";
+import { useState } from "react";
+import { slide as Menu } from "react-burger-menu";
 import Header from "../components/Header";
 import Student from "../components/Student";
+import "../styles/BurgerMenu.css";
+import { Link } from "react-router-dom";
 
 const fakeStudents = [
   {
@@ -76,11 +80,82 @@ const fakeStudents = [
 ];
 
 function Ma_classe() {
+  const [menuOpen, setMenuOpen] = useState<boolean>(false);
+
+  const [sortStudents, setSortStudents] = useState<string>("");
+
+  const handleMenuStateChange = (state: { isOpen: boolean }) => {
+    setMenuOpen(state.isOpen);
+  };
+
+  const closeMenu = () => {
+    setMenuOpen(false);
+  };
+
+  const sortedStudents = [...fakeStudents].sort((a, b) => {
+    if (sortStudents === "firstName") {
+      return a.firstName.localeCompare(b.firstName);
+    }
+    if (sortStudents === "lastName") {
+      return a.lastName.localeCompare(b.lastName);
+    }
+    return 0;
+  });
+
   return (
     <div>
       <Header />
+      <Menu right isOpen={menuOpen} onStateChange={handleMenuStateChange}>
+        <div className="menu-item">
+          <strong>Editer la liste</strong>
+        </div>
+        <div className="menu-item">
+          <strong>Trier par :</strong>
+        </div>
+        <div className="menu-item">
+          <label>
+            <input
+              type="radio"
+              name="sort"
+              value="prénom"
+              checked={sortStudents === "firstName"}
+              onChange={() => {
+                setSortStudents("firstName");
+                closeMenu();
+              }}
+            />
+            Trier par prénom
+          </label>
+        </div>
+        <div className="menu-item">
+          <label>
+            <input
+              type="radio"
+              name="sort"
+              value="nom"
+              checked={sortStudents === "lastName"}
+              onChange={() => {
+                setSortStudents("lastName");
+                closeMenu();
+              }}
+            />
+            Trier par nom
+          </label>
+        </div>
+        <div className="menu-item">
+          <Link to="/" onClick={closeMenu}>
+            <strong>Accueil</strong>
+          </Link>
+        </div>
+        <div className="menu-item">
+          <strong>Paramètres</strong>
+        </div>
+        <div className="menu-item">
+          <strong>Se déconnecter</strong>
+        </div>
+      </Menu>
       <section className="Ma_classe">
-        {fakeStudents.map((student) => (
+        {sortedStudents.map((student) => (
           <Student
             key={student.id}
             id={student.id}

@@ -12,7 +12,7 @@ function Mon_eleve() {
   };
 
   const handleAddBorrowClick = () => {
-    // Logic to add a book borrow (this can be a form or a modal)
+    // logique pour ajouter un emprunt
     console.info("Add book borrow");
   };
   return (
