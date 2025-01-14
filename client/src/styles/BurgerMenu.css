@@ -1,0 +1,63 @@
+/* BurgerMenu.css */
+.bm-burger-button {
+  position: fixed;
+  width: 36px;
+  height: 30px;
+  right: 5px;
+  top: 15px;
+}
+
+.bm-burger-bars {
+  background: transparent;
+}
+
+.bm-burger-bars {
+  content: "";
+  display: block;
+  width: 8px;
+  height: 8px;
+  margin: 4px auto;
+  border-radius: 50%;
+  background-color: var(--background-color);
+}
+
+.bm-cross-button {
+  height: 24px;
+  width: 24px;
+}
+
+.bm-cross {
+  background: var(--primary-color);
+}
+
+.bm-menu {
+  background: var(--background-color);
+  padding: 2.5em 1.5em 0;
+  font-size: 1.15em;
+}
+
+.bm-morph-shape {
+  fill: #373a47;
+}
+
+.bm-item-list {
+  color: var(--primary-color);
+  padding: 0.8em;
+}
+
+.bm-item {
+  display: inline-block;
+}
+
+.bm-overlay {
+  background: rgba(0, 0, 0, 0.3);
+}
+.menu-item strong {
+  display: block; /* Assurez-vous que strong est un bloc pour que la marge fonctionne correctement */
+  margin-top: 20px; /* Ajoute une marge inférieure de 20px aux éléments strong */
+}
+
+.menu-item a {
+  color: var(--primary-color);
+  text-decoration: none;
+}

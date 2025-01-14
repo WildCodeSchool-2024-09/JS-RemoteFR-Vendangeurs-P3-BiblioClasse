@@ -5,15 +5,20 @@ function Header() {
   const location = useLocation();
 
   const getTitle = () => {
-    switch (location.pathname) {
+    const path = location.pathname;
+
+    if (path.includes("/eleve/")) {
+      return "Mon élève";
+    }
+    if (path.includes("livre/")) {
+      return "Mon livre";
+    }
+
+    switch (path) {
       case "/bibliotheque":
         return "Ma bibliothèque";
       case "/classe":
         return "Ma classe";
-      case "/eleve":
-        return "Mon élève";
-      case "/livre":
-        return "Mon livre";
       default:
         return "BiblioClasse";
     }

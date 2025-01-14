@@ -1,0 +1,120 @@
+.section-eleves,
+.section-livres {
+  margin: 20px;
+}
+p {
+  margin-bottom: 7px;
+}
+.intro {
+  color: #000;
+  font-family: "Poppins", sans-serif;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+  margin-bottom: 7px;
+}
+.statistiques-liste {
+  list-style-type: none;
+  padding: 0;
+}
+
+.statistiques-item {
+  margin: 10px 0;
+  display: flex;
+  align-items: center;
+}
+
+.badge {
+  display: inline-block;
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+  text-align: center;
+  line-height: 30px;
+  color: #333333;
+  margin-right: 15px;
+  font-weight: bold;
+}
+
+.badge-green {
+  background-color: var(--quaternary-color);
+}
+
+.badge-orange {
+  background-color: var(--tertiary-color);
+}
+
+.badge-red {
+  background-color: var(--secondary-color);
+}
+
+.button-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 7px;
+}
+
+.button {
+  font-family: "Pacifico", sans-serif;
+  font-size: 16px;
+  display: flex;
+  width: 50%;
+  height: 35px;
+  text-align: center;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--primary-color);
+  color: #fff;
+  border: none;
+  border-radius: 13px;
+  cursor: pointer;
+  margin-bottom: 10px;
+}
+
+.top-books {
+  display: flex;
+  gap: 10px;
+}
+
+.book-card {
+  text-align: center;
+}
+
+.book-image {
+  width: 80px;
+  height: 80px;
+  border-radius: 5px;
+  object-fit: cover;
+}
+
+.loan-actions {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.action-button-emprunt {
+  border-radius: 13px 0px 0px 13px;
+  margin-right: 1px;
+}
+.action-button-retour {
+  border-radius: 0px 13px 13px 0px;
+}
+.action-button-emprunt,
+.action-button-retour {
+  padding: 10px;
+  width: 40%;
+  height: 45px;
+  color: #fcfcfc;
+  background-color: var(--primary-color);
+  border: none;
+
+  cursor: pointer;
+  text-align: center;
+  font-family: "Poppins", sans-serif;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+}

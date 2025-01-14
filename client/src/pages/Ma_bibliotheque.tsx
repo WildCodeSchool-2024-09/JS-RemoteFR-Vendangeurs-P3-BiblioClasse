@@ -1,6 +1,10 @@
+import { useState } from "react";
 import Book from "../components/Book";
 import Header from "../components/Header";
 import "../styles/Book.css";
+import { slide as Menu } from "react-burger-menu";
+import "../styles/BurgerMenu.css";
+import { Link } from "react-router-dom";
 
 const fakeBooks = [
   {
@@ -137,11 +141,82 @@ const fakeBooks = [
 ];
 
 function Ma_bibliotheque() {
+  const [menuOpen, setMenuOpen] = useState<boolean>(false);
+
+  const [sortBooks, setSortBooks] = useState<string>("");
+
+  const handleMenuStateChange = (state: { isOpen: boolean }) => {
+    setMenuOpen(state.isOpen);
+  };
+
+  const closeMenu = () => {
+    setMenuOpen(false);
+  };
+
+  const sortedBooks = [...fakeBooks].sort((a, b) => {
+    if (sortBooks === "titre") {
+      return a.titre.localeCompare(b.titre);
+    }
+    if (sortBooks === "auteur") {
+      return a.auteur.localeCompare(b.auteur);
+    }
+    return 0;
+  });
+
   return (
     <div>
       <Header />
+      <Menu right isOpen={menuOpen} onStateChange={handleMenuStateChange}>
+        <div className="menu-item">
+          <strong>Editer la liste</strong>
+        </div>
+        <div className="menu-item">
+          <strong>Trier par :</strong>
+        </div>
+        <div className="menu-item">
+          <label>
+            <input
+              type="radio"
+              name="sort"
+              value="titre"
+              checked={sortBooks === "titre"}
+              onChange={() => {
+                setSortBooks("titre");
+                closeMenu();
+              }}
+            />
+            Trier par titre
+          </label>
+        </div>
+        <div className="menu-item">
+          <label>
+            <input
+              type="radio"
+              name="sort"
+              value="auteur"
+              checked={sortBooks === "auteur"}
+              onChange={() => {
+                setSortBooks("auteur");
+                closeMenu();
+              }}
+            />
+            Trier par auteur
+          </label>
+        </div>
+        <div className="menu-item">
+          <Link to="/" onClick={closeMenu}>
+            <strong>Accueil</strong>
+          </Link>
+        </div>
+        <div className="menu-item">
+          <strong>Paramètres</strong>
+        </div>
+        <div className="menu-item">
+          <strong>Se déconnecter</strong>
+        </div>
+      </Menu>
       <section className="Ma_bibliotheque">
-        {fakeBooks.map((book) => (
+        {sortedBooks.map((book) => (
           <Book
             id={book.id}
             key={book.id}
