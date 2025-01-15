@@ -1,0 +1,52 @@
+.back_button,
+.add_borrow_button,
+.add_student_button,
+.add_book_button,
+.search_button,
+.searchbar_button {
+  background-color: var(--primary-color);
+  border: none;
+  height: 50px;
+  width: 50px;
+  border-radius: 13px;
+  color: white;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  font-size: 2.5rem;
+}
+.back_button,
+.search_button {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+}
+.add_borrow_button,
+.add_student_button,
+.add_book_button {
+  position: fixed;
+  bottom: 80px;
+  right: 20px;
+}
+button img {
+  width: 30px;
+  height: 30px;
+}
+.search_input {
+  position: fixed;
+  bottom: 20px;
+  right: 70px;
+  height: 50px;
+  width: 75%;
+  border-radius: 13px 0 0 13px;
+  border: 1px solid #ccc;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  padding: 5px 10px;
+  font-size: 1rem;
+}
+.search_button.active {
+  border-radius: 0 13px 13px 0;
+}
+.searchbar {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+}

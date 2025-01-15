@@ -1,6 +1,7 @@
 import "../styles/Mon_eleve.css";
 import { useLocation, useNavigate } from "react-router-dom";
 import Header from "../components/Header";
+import "../styles/Buttons.css";
 
 function Mon_eleve() {
   const location = useLocation();

@@ -4,7 +4,9 @@ import { slide as Menu } from "react-burger-menu";
 import Header from "../components/Header";
 import Student from "../components/Student";
 import "../styles/BurgerMenu.css";
+import "../styles/Buttons.css";
 import { Link } from "react-router-dom";
+import SearchBar from "../components/Searchbar";
 
 const fakeStudents = [
   {
@@ -81,7 +83,7 @@ const fakeStudents = [
 
 function Ma_classe() {
   const [menuOpen, setMenuOpen] = useState<boolean>(false);
-
+  const [filteredStudents, setFilteredStudents] = useState(fakeStudents);
   const [sortStudents, setSortStudents] = useState<string>("");
 
   const handleMenuStateChange = (state: { isOpen: boolean }) => {
@@ -92,7 +94,7 @@ function Ma_classe() {
     setMenuOpen(false);
   };
 
-  const sortedStudents = [...fakeStudents].sort((a, b) => {
+  const sortedStudents = [...filteredStudents].sort((a, b) => {
     if (sortStudents === "firstName") {
       return a.firstName.localeCompare(b.firstName);
     }
@@ -101,6 +103,18 @@ function Ma_classe() {
     }
     return 0;
   });
+
+  const handleAddStudentClick = () => {
+    // logique pour ajouter un élève
+    console.info("Add student");
+  };
+
+  const handleSearchClick = (searchTerm: string) => {
+    const filtered = fakeStudents.filter((student) =>
+      student.firstName.toLowerCase().includes(searchTerm.toLowerCase()),
+    );
+    setFilteredStudents(filtered);
+  };
 
   return (
     <div>
@@ -166,6 +180,16 @@ function Ma_classe() {
           />
         ))}
       </section>
+      <div className="buttons">
+        <button
+          type="button"
+          className="add_student_button"
+          onClick={handleAddStudentClick}
+        >
+          +
+        </button>
+        <SearchBar onSearch={handleSearchClick} />
+      </div>
     </div>
   );
 }
