@@ -1,0 +1,38 @@
+.Student {
+  width: 95vw;
+  height: 12vh;
+  background-color: var(--quaternary-color);
+  border-radius: 13px;
+  display: flex;
+  flex-direction: row;
+  justify-content: left;
+}
+
+.Infos_retour_livre {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+}
+.Lastname_name {
+  font-weight: bold;
+}
+.Lastname_name,
+.Return_due_date {
+  font-size: 0.85rem;
+  margin-left: 10px;
+  margin-right: 10px;
+}
+
+/* //////Affichage conditionnelle en fonction de la date de retour////// */
+.Student.green {
+  background-color: var(--quaternary-color);
+}
+
+.Student.orange {
+  background-color: var(--tertiary-color);
+}
+
+.Student.red {
+  background-color: var(--secondary-color);
+}

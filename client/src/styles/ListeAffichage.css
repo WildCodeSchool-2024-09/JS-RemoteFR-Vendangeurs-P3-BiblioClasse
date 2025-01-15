@@ -1,0 +1,10 @@
+.Ma_bibliotheque,
+.Ma_classe {
+  margin-top: 5px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  height: 100%;
+  gap: 10px;
+}
