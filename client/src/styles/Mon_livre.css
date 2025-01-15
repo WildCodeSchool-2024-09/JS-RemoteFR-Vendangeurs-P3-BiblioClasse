@@ -4,6 +4,9 @@
   align-items: left;
   margin: 14px;
 }
+.infos_livre {
+  margin: 0;
+}
 .bookCover_container {
   display: flex;
   justify-content: center;
@@ -22,18 +25,21 @@
   font-style: normal;
   font-weight: 700;
   line-height: normal;
+  margin-left: 10px;
 }
 .auteur {
   font-size: 11px;
   font-style: normal;
   font-weight: 100;
   line-height: normal;
+  margin-left: 10px;
 }
 .isbn {
   font-size: 12px;
   font-style: normal;
   font-weight: 400;
   line-height: normal;
+  margin-left: 10px;
 }
 .resume {
   text-align: justify;
@@ -41,4 +47,17 @@
   font-style: normal;
   font-weight: 400;
   line-height: normal;
+  margin-left: 10px;
+}
+.exemplaire {
+  border-radius: 5px;
+  background: rgba(0, 255, 25, 0.5);
+  height: 25px;
+  font-size: 9px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+  padding-left: 10px;
+  display: flex;
+  align-items: center;
 }

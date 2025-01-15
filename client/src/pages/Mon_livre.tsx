@@ -28,6 +28,7 @@ function Mon_livre() {
           </figure>
         </div>
         <div className="infos_livre">
+          <p className="exemplaire">2 exemplaires disponibles sur 3</p>
           <p className="titre">{titre}</p>
           <p className="auteur">De : {auteur}</p>
           <p className="isbn">ISBN: {isbn}</p>
