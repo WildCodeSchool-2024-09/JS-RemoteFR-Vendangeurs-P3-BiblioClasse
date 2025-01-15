@@ -7,11 +7,13 @@ const router = express.Router();
 /* ************************************************************************* */
 
 // Define item-related routes
-import itemActions from "./modules/item/itemActions";
+import livreActions from "./modules/livre/livreActions";
 
-router.get("/api/items", itemActions.browse);
-router.get("/api/items/:id", itemActions.read);
-router.post("/api/items", itemActions.add);
+router.get("/api/livres", livreActions.browse);
+router.get("/api/livres/:ISBN", livreActions.read);
+router.post("/api/livres", livreActions.add);
+router.put("/api/livres/:ISBN", livreActions.edit);
+router.delete("/api/livres/:ISBN", livreActions.destroy);
 
 /* ************************************************************************* */
 

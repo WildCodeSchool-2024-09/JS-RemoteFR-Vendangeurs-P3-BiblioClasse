@@ -1,21 +1,31 @@
-create table user (
-  id int unsigned primary key auto_increment not null,
-  email varchar(255) not null unique,
-  password varchar(255) not null
+CREATE TABLE livre (
+    ISBN INT PRIMARY KEY,
+    titre VARCHAR(255) NOT NULL,
+    auteur VARCHAR(255) NOT NULL,
+    couverture_img VARCHAR(255) NOT NULL,
+    livre_resume TEXT NOT NULL
 );
 
-create table item (
-  id int unsigned primary key auto_increment not null,
-  title varchar(255) not null,
-  user_id int unsigned not null,
-  foreign key(user_id) references user(id)
+CREATE TABLE exemplaire (
+    id_exemplaire INT PRIMARY KEY AUTO_INCREMENT,
+    ISBN INT NOT NULL,
+    état VARCHAR(255) NOT NULL,
+    FOREIGN KEY (ISBN) REFERENCES livre(ISBN) ON DELETE CASCADE
 );
 
-insert into user(id, email, password)
-values
-  (1, "jdoe@mail.com", "123456");
+CREATE TABLE eleve (
+    id_eleve INT PRIMARY KEY AUTO_INCREMENT,
+    nom VARCHAR(255) NOT NULL,
+    prenom VARCHAR(255) NOT NULL
+);
 
-insert into item(id, title, user_id)
-values
-  (1, "Stuff", 1),
-  (2, "Doodads", 1);
+CREATE TABLE emprunt (
+    id_emprunt INT PRIMARY KEY AUTO_INCREMENT,
+    date_emprunt TIMESTAMP NOT NULL,
+    date_retour DATE,
+    date_retour_effectif DATE,
+    id_exemplaire INT NOT NULL,
+    id_eleve INT NOT NULL,    
+    FOREIGN KEY (id_exemplaire) REFERENCES exemplaire(id_exemplaire) ON DELETE CASCADE,
+    FOREIGN KEY (id_eleve) REFERENCES eleve(id_eleve) ON DELETE CASCADE
+);
