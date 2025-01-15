@@ -11,6 +11,7 @@
   width: 20vw;
   height: auto;
   overflow: hidden;
+  margin: 14px;
 }
 .QRCode_container img {
   width: 100%;

@@ -1,15 +1,50 @@
-// import "./BiblioClasse.css";
-
+import "../styles/Mon_livre.css";
+import { useLocation, useNavigate } from "react-router-dom";
 import Header from "../components/Header";
 
 function Mon_livre() {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const { titre, auteur, resume, image, isbn } = location.state;
+
+  console.info(titre, auteur, resume, image, isbn);
+
+  const handleBackClick = () => {
+    navigate(-1);
+  };
+
+  const handleAddBorrowClick = () => {
+    // logique pour ajouter un emprunt
+    console.info("Add book borrow");
+  };
+
   return (
     <div>
       <Header />
-      <div>
-        <figure className="bookCover_container">
-          <img src="/src/assets/images/QRCode.png" alt="QRCode" />
-        </figure>
+      <section className="Mon_livre">
+        <div>
+          <figure className="bookCover_container">
+            <img className="bookCover_image" src={image} alt="couverture" />
+          </figure>
+        </div>
+        <div className="infos_livre">
+          <p className="titre">{titre}</p>
+          <p className="auteur">De : {auteur}</p>
+          <p className="isbn">ISBN: {isbn}</p>
+          <p className="resume">{resume}</p>
+        </div>
+      </section>
+      <div className="buttons">
+        <button type="button" className="back_button" onClick={handleBackClick}>
+          &#8617;
+        </button>
+        <button
+          type="button"
+          className="add_borrow_button"
+          onClick={handleAddBorrowClick}
+        >
+          +
+        </button>
       </div>
     </div>
   );
