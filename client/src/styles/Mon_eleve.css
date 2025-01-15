@@ -11,6 +11,7 @@
   width: 20vw;
   height: auto;
   overflow: hidden;
+  margin: 14px;
 }
 .QRCode_container img {
   width: 100%;
@@ -30,25 +31,4 @@
   flex-direction: column;
   justify-content: top;
   align-items: left;
-}
-.back_button,
-.add_borrow_button {
-  background-color: var(--primary-color);
-  border: none;
-  height: 50px;
-  width: 50px;
-  border-radius: 13px;
-  color: white;
-  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-  font-size: 2.5rem;
-}
-.back_button {
-  position: fixed;
-  bottom: 20px;
-  right: 20px;
-}
-.add_borrow_button {
-  position: fixed;
-  bottom: 80px;
-  right: 20px;
 }

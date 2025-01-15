@@ -1,6 +1,9 @@
 import Header from "../components/Header";
 import "../styles/BiblioClasse.css";
+import { useState } from "react";
+import { slide as Menu } from "react-burger-menu";
 import { useNavigate } from "react-router-dom";
+import "../styles/BurgerMenu.css";
 
 function BiblioClasse() {
   // Données fictives
@@ -40,23 +43,37 @@ function BiblioClasse() {
     navigate("/classe");
   };
 
+  const [menuOpen, setMenuOpen] = useState<boolean>(false);
+
+  const handleMenuStateChange = (state: { isOpen: boolean }) => {
+    setMenuOpen(state.isOpen);
+  };
+
   return (
     <div>
       <Header />
+      <Menu right isOpen={menuOpen} onStateChange={handleMenuStateChange}>
+        <div className="menu-item">
+          <strong>Paramètres</strong>
+        </div>
+        <div className="menu-item">
+          <strong>Se déconnecter</strong>
+        </div>
+      </Menu>
       <section className="section-eleves">
         <p className="intro">J'ai {students} élèves enregistrés :</p>
         <ul className="statistiques-liste">
-          <li className="statistiques-item">
-            <span className="badge badge-green">{loansInProgress}</span>ont un
-            emprunt en cours;
+          <li className="stats-item">
+            <span className="badge badge-green">{loansInProgress}</span>
+            <p>ont un emprunt en cours;</p>
           </li>
           <li className="stats-item">
-            <span className="badge badge-orange">{loansDueSoon}</span>doivent
-            rendre au moins 1 livre dans moins de 7 jours;
+            <span className="badge badge-orange">{loansDueSoon}</span>
+            <p>doivent rendre au moins 1 livre dans moins de 7 jours;</p>
           </li>
           <li className="stats-item">
-            <span className="badge badge-red">{overdueLoans}</span>est en
-            retard.
+            <span className="badge badge-red">{overdueLoans}</span>
+            <p>est en retard.</p>
           </li>
         </ul>
         <div className="button-container">
@@ -72,12 +89,11 @@ function BiblioClasse() {
           références différentes :
         </p>
         <p>{booksLoaned} livres sont actuellement empruntés.</p>
-        <p>Les 3 livres les plus empruntés sont :</p>
+        <p className="p-emprunt">Les 3 livres les plus empruntés sont :</p>
         <div className="top-books">
           {topBooks.map((book) => (
             <div key={book.id} className="book-card">
               <img src={book.img} alt={book.title} className="book-image" />
-              <p>{book.title}</p>
             </div>
           ))}
         </div>

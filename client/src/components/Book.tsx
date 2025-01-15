@@ -1,4 +1,5 @@
 import "../styles/Student.css";
+import { useNavigate } from "react-router-dom";
 
 interface BookProps {
   id: number;
@@ -9,9 +10,17 @@ interface BookProps {
   isbn: string;
 }
 
-function Book({ titre, image }: BookProps) {
+function Book({ id, titre, image, auteur, resume, isbn }: BookProps) {
+  const navigate = useNavigate();
+
+  const handleClick = () => {
+    navigate(`/livre/${id}`, {
+      state: { titre, auteur, resume, image, isbn },
+    });
+  };
+
   return (
-    <div className="Book">
+    <div className="Book" onClick={handleClick} onKeyUp={handleClick}>
       <figure className="Image_livre_container">
         <img src={image} alt={titre} />
       </figure>

@@ -2,9 +2,6 @@
 .section-livres {
   margin: 20px;
 }
-p {
-  margin-bottom: 7px;
-}
 .intro {
   color: #000;
   font-family: "Poppins", sans-serif;
@@ -17,14 +14,20 @@ p {
 .statistiques-liste {
   list-style-type: none;
   padding: 0;
+  display: grid;
+  grid-template-columns: 1fr 6fr;
+  grid-template-rows: repeat(3, auto);
+  gap: 10px;
 }
-
-.statistiques-item {
-  margin: 10px 0;
-  display: flex;
-  align-items: center;
+.stats-item {
+  display: contents;
 }
-
+.stats-item .badge {
+  grid-column: 1;
+}
+.stats-item p {
+  grid-column: 2;
+}
 .badge {
   display: inline-block;
   width: 35px;
@@ -33,16 +36,16 @@ p {
   text-align: center;
   line-height: 30px;
   color: #333333;
-  margin-right: 15px;
   font-weight: bold;
 }
-
 .badge-green {
   background-color: var(--quaternary-color);
 }
 
 .badge-orange {
   background-color: var(--tertiary-color);
+  width: 35px;
+  height: 35px;
 }
 
 .badge-red {
@@ -58,6 +61,7 @@ p {
 .button {
   font-family: "Pacifico", sans-serif;
   font-size: 16px;
+  font-weight: 400;
   display: flex;
   width: 50%;
   height: 35px;
@@ -72,8 +76,14 @@ p {
   margin-bottom: 10px;
 }
 
+.p-emprunt {
+  margin-bottom: 7px;
+}
+
 .top-books {
   display: flex;
+  justify-content: space-between;
+  margin: 0 20px;
   gap: 10px;
 }
 

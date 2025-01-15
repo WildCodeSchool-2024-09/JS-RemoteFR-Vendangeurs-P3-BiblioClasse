@@ -45,7 +45,7 @@ function Student({
   }
 
   return (
-    <div className={className} onClick={handleClick} onKeyPress={handleClick}>
+    <div className={className} onClick={handleClick} onKeyUp={handleClick}>
       <Nb_livres_a_rendre nbOfBooksBorrowed={nbOfBooksBorrowed} />
       <section className="Infos_retour_livre">
         <p className="Lastname_name">

@@ -5,6 +5,8 @@ import "../styles/Book.css";
 import { slide as Menu } from "react-burger-menu";
 import "../styles/BurgerMenu.css";
 import { Link } from "react-router-dom";
+import "../styles/Buttons.css";
+import SearchBar from "../components/Searchbar";
 
 const fakeBooks = [
   {
@@ -142,7 +144,7 @@ const fakeBooks = [
 
 function Ma_bibliotheque() {
   const [menuOpen, setMenuOpen] = useState<boolean>(false);
-
+  const [filteredBooks, setFilteredBooks] = useState(fakeBooks);
   const [sortBooks, setSortBooks] = useState<string>("");
 
   const handleMenuStateChange = (state: { isOpen: boolean }) => {
@@ -153,7 +155,7 @@ function Ma_bibliotheque() {
     setMenuOpen(false);
   };
 
-  const sortedBooks = [...fakeBooks].sort((a, b) => {
+  const sortedBooks = [...filteredBooks].sort((a, b) => {
     if (sortBooks === "titre") {
       return a.titre.localeCompare(b.titre);
     }
@@ -162,6 +164,18 @@ function Ma_bibliotheque() {
     }
     return 0;
   });
+
+  const handleAddBookClick = () => {
+    // logique pour ajouter un livre
+    console.info("Add book");
+  };
+
+  const handleSearchClick = (searchTerm: string) => {
+    const filtered = fakeBooks.filter((book) =>
+      book.titre.toLowerCase().includes(searchTerm.toLowerCase()),
+    );
+    setFilteredBooks(filtered);
+  };
 
   return (
     <div>
@@ -228,6 +242,23 @@ function Ma_bibliotheque() {
           />
         ))}
       </section>
+      <div className="buttons">
+        <button
+          type="button"
+          className="add_book_button"
+          onClick={handleAddBookClick}
+        >
+          +
+        </button>
+        <button
+          type="button"
+          className="search_button"
+          onClick={() => handleSearchClick("")}
+        >
+          <img src="/src/assets/images/loupe.png" alt="loupe" />
+        </button>
+        <SearchBar onSearch={handleSearchClick} />
+      </div>
     </div>
   );
 }
