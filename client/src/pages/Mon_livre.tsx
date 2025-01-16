@@ -5,9 +5,9 @@ import Header from "../components/Header";
 function Mon_livre() {
   const location = useLocation();
   const navigate = useNavigate();
-  const { titre, auteur, resume, image, isbn } = location.state;
+  const { titre, auteur, resume, couverture_img, isbn } = location.state;
 
-  console.info(titre, auteur, resume, image, isbn);
+  console.info(titre, auteur, resume, couverture_img, isbn);
 
   const handleBackClick = () => {
     navigate(-1);
@@ -24,7 +24,11 @@ function Mon_livre() {
       <section className="Mon_livre">
         <div>
           <figure className="bookCover_container">
-            <img className="bookCover_image" src={image} alt="couverture" />
+            <img
+              className="bookCover_image"
+              src={couverture_img}
+              alt="couverture"
+            />
           </figure>
         </div>
         <div className="infos_livre">
