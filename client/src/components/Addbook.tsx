@@ -1,18 +1,15 @@
 import "../styles/Addbook.css";
-import AddBookManually from "./AddBookManually";
 
 interface AddbookProps {
   showModal: boolean;
   handleModalClose: () => void;
-  showModalBook: boolean;
-  setShowModalBook: (show: boolean) => void;
+  handleAddBookManuallyClick: () => void;
 }
 
 function Addbook({
   showModal,
   handleModalClose,
-  setShowModalBook,
-  showModalBook,
+  handleAddBookManuallyClick,
 }: AddbookProps) {
   if (showModal === false) return null;
 
@@ -20,25 +17,6 @@ function Addbook({
   const handleScan = () => {
     console.info("scan");
     handleModalClose();
-  };
-
-  /*Gère l'ouverture de la modal pour ajouter un livre manuellement*/
-  const handleAddBookManually = () => {
-    setShowModalBook(true);
-    console.info("add book manually");
-  };
-
-  /*Gère la fermeture de la modal pour ajouter un livre manuellement*/
-  const handleModalBookClose = () => {
-    setShowModalBook(false);
-  };
-
-  /*Gère l'ajout d'un livre manuellement et ferme la modal*/
-  const handleAddBookAndClose = () => {
-    handleAddBookManually();
-    handleModalClose();
-    console.info(`showModalBook is : ${showModalBook}`);
-    console.info(`showModal is : ${showModal}`);
   };
 
   return (
@@ -72,18 +50,12 @@ function Addbook({
           <button
             type="button"
             className="button-modal-right"
-            onClick={handleAddBookAndClose}
+            onClick={handleAddBookManuallyClick}
           >
             Ajouter manuellement
           </button>
         </div>
       </div>
-      {showModalBook && (
-        <AddBookManually
-          showModalBook={showModalBook}
-          handleModalBookClose={handleModalBookClose}
-        />
-      )}
     </div>
   );
 }

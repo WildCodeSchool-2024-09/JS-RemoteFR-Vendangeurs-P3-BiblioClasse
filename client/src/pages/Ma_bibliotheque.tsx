@@ -6,6 +6,7 @@ import { slide as Menu } from "react-burger-menu";
 import "../styles/BurgerMenu.css";
 import { Link } from "react-router-dom";
 import "../styles/Buttons.css";
+import AddBookManually from "../components/AddBookManually";
 import Addbook from "../components/Addbook";
 import SearchBar from "../components/Searchbar";
 
@@ -146,6 +147,26 @@ function Ma_bibliotheque() {
     setMenuOpen(false);
   };
 
+  /*Fonction pour ajouter un livre*/
+  const handleAddBookClick = () => {
+    setShowModal(true);
+    console.info("Add book");
+  };
+
+  /*Gère l'ouverture de la modale*/
+  const handleModalClose = () => {
+    setShowModal(false);
+  };
+
+  /* Gère l'ouverture de la modale 2 */
+  const handleAddBookManuallyClick = () => {
+    setShowModalBook(true);
+    setShowModal(false);
+  };
+
+  /*Gère la fermeture de la modale 2 */
+  const handleModalBookClose = () => setShowModalBook(false);
+
   /*Fonction pour trier les livres*/
   const sortedBooks = [...filteredBooks].sort((a, b) => {
     if (sortBooks === "titre") {
@@ -157,12 +178,6 @@ function Ma_bibliotheque() {
     return 0;
   });
 
-  /*Fonction pour ajouter un livre*/
-  const handleAddBookClick = () => {
-    setShowModal(true);
-    console.info("Add book");
-  };
-
   /*Fonction pour rechercher un livre*/
   const handleSearchClick = (searchTerm: string) => {
     const filtered = fakeBooks.filter((book) =>
@@ -170,18 +185,6 @@ function Ma_bibliotheque() {
     );
     setFilteredBooks(filtered);
   };
-
-  /*Gère l'ouverture de la modale*/
-  const handleModalClose = () => {
-    setShowModal(false);
-  };
-
-  /* Gère l'ouverture de la modale enfant 
-  const handleAddBookManuallyClick = () => {
-    setShowModalBook(true);
-    setShowModal(false); // Fermer la modale principale
-  };
-  const handleModalBookClose = () => setShowModalBook(false);*/
 
   return (
     <div>
@@ -255,21 +258,26 @@ function Ma_bibliotheque() {
         >
           +
         </button>
-        <button
-          type="button"
-          className="search_button"
-          onClick={() => handleSearchClick("")}
-        >
-          <img src="/src/assets/images/loupe.png" alt="loupe" />
-        </button>
-        <SearchBar onSearch={handleSearchClick} />
       </div>
+      {/* Modale pour ajouter un livre */}
       <Addbook
         showModal={showModal}
         handleModalClose={handleModalClose}
-        showModalBook={showModalBook}
-        setShowModalBook={setShowModalBook}
+        handleAddBookManuallyClick={handleAddBookManuallyClick} // Fonction pour ouvrir la modale enfant
       />
+      {/* Modale pour ajouter un livre manuellement */}
+      <AddBookManually
+        showModalBook={showModalBook}
+        handleModalBookClose={handleModalBookClose}
+      />
+      <button
+        type="button"
+        className="search_button"
+        onClick={() => handleSearchClick("")}
+      >
+        <img src="/src/assets/images/loupe.png" alt="loupe" />
+      </button>
+      <SearchBar onSearch={handleSearchClick} />
     </div>
   );
 }
