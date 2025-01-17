@@ -81,4 +81,15 @@ const destroy: RequestHandler = async (req, res, next) => {
   }
 };
 
-export default { browse, read, add, edit, destroy };
+//The S of breadS - Search operation
+const search: RequestHandler = async (req, res, next) => {
+  try {
+    const searchTerm = req.query.q as string;
+    const livres = await livreRepository.search(searchTerm);
+    res.status(200).json(livres);
+  } catch (err) {
+    next(err);
+  }
+};
+
+export default { browse, read, add, edit, destroy, search };

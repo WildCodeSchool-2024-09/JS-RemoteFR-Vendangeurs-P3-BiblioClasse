@@ -1,5 +1,5 @@
 import "../styles/ListeAffichage.css";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { slide as Menu } from "react-burger-menu";
 import Header from "../components/Header";
 import Student from "../components/Student";
@@ -9,84 +9,34 @@ import { Link } from "react-router-dom";
 import AddStudent from "../components/AddStudent";
 import SearchBar from "../components/Searchbar";
 
-const fakeStudents = [
-  {
-    id: 1,
-    firstName: "Louisette",
-    lastName: "Gehin-Nomtrellont-Vreman-Tretrellont",
-    returnDueDate: "2024/12/15",
-    nbOfBooksBorrowed: 3,
-  },
-  {
-    id: 2,
-    firstName: "Jean",
-    lastName: "Dupont",
-    returnDueDate: "2025/07/15",
-    nbOfBooksBorrowed: 2,
-  },
-  {
-    id: 3,
-    firstName: "Marie",
-    lastName: "Curie",
-    returnDueDate: "2024/12/21",
-    nbOfBooksBorrowed: 1,
-  },
-  {
-    id: 4,
-    firstName: "Albert",
-    lastName: "Einstein",
-    returnDueDate: "2024/12/08",
-    nbOfBooksBorrowed: 4,
-  },
-  {
-    id: 5,
-    firstName: "Isaac",
-    lastName: "Newton",
-    returnDueDate: "2025/02/15",
-    nbOfBooksBorrowed: 2,
-  },
-  {
-    id: 6,
-    firstName: "Galileo",
-    lastName: "Galilei",
-    returnDueDate: "2025/08/10",
-    nbOfBooksBorrowed: 3,
-  },
-  {
-    id: 7,
-    firstName: "Nikola",
-    lastName: "Tesla",
-    returnDueDate: "2024/12/24",
-    nbOfBooksBorrowed: 1,
-  },
-  {
-    id: 8,
-    firstName: "Ada",
-    lastName: "Lovelace",
-    returnDueDate: "2025/06/14",
-    nbOfBooksBorrowed: 2,
-  },
-  {
-    id: 9,
-    firstName: "Charles",
-    lastName: "Darwin",
-    returnDueDate: "2025/03/14",
-    nbOfBooksBorrowed: 3,
-  },
-  {
-    id: 10,
-    firstName: "Rosalind",
-    lastName: "Franklin",
-    returnDueDate: "2024/12/31",
-    nbOfBooksBorrowed: 4,
-  },
-];
+interface StudentProps {
+  id: number;
+  prenom: string;
+  nom: string;
+  returnDueDate: string;
+  nbOfBooksBorrowed: number;
+}
 
 function Ma_classe() {
   const [menuOpen, setMenuOpen] = useState<boolean>(false);
-  const [filteredStudents, setFilteredStudents] = useState(fakeStudents);
+
+  const [filteredStudents, setFilteredStudents] = useState<StudentProps[]>([]);
   const [sortStudents, setSortStudents] = useState<string>("");
   const [showModal, setShowModal] = useState<boolean>(false);
+  const [students, setStudents] = useState<StudentProps[]>([]);
+
+  useEffect(() => {
+    // Fetch initial list of students
+    fetch("http://localhost:3310/api/eleves")
+      .then((response) => response.json())
+      .then((data) => {
+        setStudents(data);
+        setFilteredStudents(data);
+      })
+      .catch((error) =>
+        console.error("Erreur lors de la récupération des élèves:", error),
+      );
+  }, []);
 
   const handleMenuStateChange = (state: { isOpen: boolean }) => {
     setMenuOpen(state.isOpen);
@@ -94,21 +44,21 @@ function Ma_classe() {
 
   const closeMenu = () => {
     setMenuOpen(false);
+    console.info(students);
   };
 
   const sortedStudents = [...filteredStudents].sort((a, b) => {
-    if (sortStudents === "firstName") {
-      return a.firstName.localeCompare(b.firstName);
+    if (sortStudents === "prenom") {
+      return a.prenom.localeCompare(b.prenom);
     }
-    if (sortStudents === "lastName") {
-      return a.lastName.localeCompare(b.lastName);
+    if (sortStudents === "nom") {
+      return a.nom.localeCompare(b.nom);
     }
     return 0;
   });
 
   const handleAddStudentClick = () => {
     setShowModal(true);
-    console.info("Add student");
   };
 
   const handleModalClose = () => {
@@ -116,10 +66,14 @@ function Ma_classe() {
   };
 
   const handleSearchClick = (searchTerm: string) => {
-    const filtered = fakeStudents.filter((student) =>
-      student.firstName.toLowerCase().includes(searchTerm.toLowerCase()),
-    );
-    setFilteredStudents(filtered);
+    fetch(`http://localhost:3310/api/eleves/search?q=${searchTerm}`)
+      .then((response) => response.json())
+      .then((data) => {
+        setFilteredStudents(data);
+      })
+      .catch((error) =>
+        console.error("Erreur lors de la recherche des élèves:", error),
+      );
   };
 
   return (
@@ -137,10 +91,10 @@ function Ma_classe() {
             <input
               type="radio"
               name="sort"
-              value="prénom"
-              checked={sortStudents === "firstName"}
+              value="prenom"
+              checked={sortStudents === "prenom"}
               onChange={() => {
-                setSortStudents("firstName");
+                setSortStudents("prenom");
                 closeMenu();
               }}
             />
@@ -153,9 +107,9 @@ function Ma_classe() {
               type="radio"
               name="sort"
               value="nom"
-              checked={sortStudents === "lastName"}
+              checked={sortStudents === "nom"}
               onChange={() => {
-                setSortStudents("lastName");
+                setSortStudents("nom");
                 closeMenu();
               }}
             />
@@ -179,8 +133,8 @@ function Ma_classe() {
           <Student
             key={student.id}
             id={student.id}
-            firstName={student.firstName}
-            lastName={student.lastName}
+            prenom={student.prenom}
+            nom={student.nom}
             returnDueDate={student.returnDueDate}
             nbOfBooksBorrowed={student.nbOfBooksBorrowed}
           />

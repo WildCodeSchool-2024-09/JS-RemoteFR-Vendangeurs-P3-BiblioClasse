@@ -2,17 +2,17 @@ import databaseClient from "../../../database/client";
 import type { Result, Rows } from "../../../database/client";
 
 type Eleve = {
-  id_eleve: string;
   nom: string;
   prenom: string;
 };
 
 class eleveRepository {
-  async create(eleve: Eleve) {
-    const [result] = await databaseClient.query(
-      "INSERT INTO eleve (id_eleve, nom, prenom) VALUES (?, ?, ?)",
-      [eleve.id_eleve, eleve.nom, eleve.prenom],
+  async create(eleve: Omit<Eleve, "id">) {
+    const [result] = await databaseClient.query<Result>(
+      "INSERT INTO eleve (nom, prenom) VALUES (?, ?)",
+      [eleve.nom, eleve.prenom],
     );
+    return result.insertId;
   }
 
   async read(id_eleve: string) {
@@ -40,6 +40,14 @@ class eleveRepository {
     await databaseClient.query("DELETE FROM eleve WHERE id_eleve = ?", [
       id_eleve,
     ]);
+  }
+
+  async search(searchTerm: string) {
+    const [rows] = await databaseClient.query(
+      "SELECT * FROM eleve WHERE prenom LIKE ?",
+      [`%${searchTerm}%`, `%${searchTerm}%`],
+    );
+    return rows as Eleve[];
   }
 }
 

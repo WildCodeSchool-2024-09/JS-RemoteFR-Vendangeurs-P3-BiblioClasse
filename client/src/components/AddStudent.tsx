@@ -1,4 +1,5 @@
 import "../styles/AddStudent.css";
+import { useState } from "react";
 
 interface AddStudentProps {
   showModal: boolean;
@@ -7,6 +8,28 @@ interface AddStudentProps {
 
 function AddStudent({ showModal, handleModalClose }: AddStudentProps) {
   if (showModal === false) return null;
+
+  const [nom, setNom] = useState("");
+  const [prenom, setPrenom] = useState("");
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const response = await fetch("http://localhost:3310/api/eleves", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ nom, prenom }),
+    });
+    if (response.ok) {
+      console.info("Élève ajouté avec succès");
+      setNom("");
+      setPrenom("");
+    } else {
+      console.error("Erreur lors de l'ajout de l'élève");
+    }
+    handleModalClose();
+  };
 
   return (
     <div
@@ -28,14 +51,28 @@ function AddStudent({ showModal, handleModalClose }: AddStudentProps) {
         </button>
         <h2 className="h2modal">Ajouter un élève</h2>
         {/*formulaire d'ajout d'un élève*/}
-        <form className="form-modal">
+        <form onSubmit={handleSubmit} className="form-modal">
           <label>
             Prénom :
-            <input type="text" name="firstName" placeholder="Prénom..." />
+            <input
+              type="text"
+              name="firstName"
+              placeholder="Prénom..."
+              value={prenom}
+              onChange={(e) => setPrenom(e.target.value)}
+              required
+            />
           </label>
           <label>
             Nom :
-            <input type="text" name="lastName" placeholder="Nom..." />
+            <input
+              type="text"
+              name="lastName"
+              placeholder="Nom..."
+              value={nom}
+              onChange={(e) => setNom(e.target.value)}
+              required
+            />
           </label>
           <button type="submit" className="button-modal-all">
             Enregistrer

@@ -39,8 +39,9 @@ const read: RequestHandler = async (req, res, next) => {
 const add: RequestHandler = async (req, res, next) => {
   try {
     // Extract the item data from the request body
+    console.info("Requête reçue:", req.body);
+
     const newEleve = {
-      id_eleve: req.body.id_eleve,
       nom: req.body.nom,
       prenom: req.body.prenom,
     };
@@ -79,4 +80,15 @@ const destroy: RequestHandler = async (req, res, next) => {
   }
 };
 
-export default { browse, read, add, edit, destroy };
+//The S of breadS - Search operation
+const search: RequestHandler = async (req, res, next) => {
+  try {
+    const searchTerm = req.query.q as string;
+    const eleves = await eleveRepository.search(searchTerm);
+    res.status(200).json(eleves);
+  } catch (err) {
+    next(err);
+  }
+};
+
+export default { browse, read, add, edit, destroy, search };

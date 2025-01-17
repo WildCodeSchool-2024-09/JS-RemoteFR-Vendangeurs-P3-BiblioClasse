@@ -58,5 +58,13 @@ class livreRepository {
   async delete(ISBN: string) {
     await databaseClient.query("DELETE FROM livre WHERE ISBN = ?", [ISBN]);
   }
+
+  async search(searchTerm: string) {
+    const [rows] = await databaseClient.query(
+      "SELECT * FROM livre WHERE titre LIKE ?",
+      [`%${searchTerm}%`, `%${searchTerm}%`],
+    );
+    return rows as Livre[];
+  }
 }
 export default new livreRepository();

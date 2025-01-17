@@ -4,16 +4,16 @@ import Nb_livres_a_rendre from "./Nb_livres_a_rendre";
 
 interface StudentProps {
   id: number;
-  firstName: string;
-  lastName: string;
+  prenom: string;
+  nom: string;
   returnDueDate: string;
   nbOfBooksBorrowed: number;
 }
 
 function Student({
   id,
-  firstName,
-  lastName,
+  nom,
+  prenom,
   returnDueDate,
   nbOfBooksBorrowed,
 }: StudentProps) {
@@ -21,7 +21,7 @@ function Student({
 
   const handleClick = () => {
     navigate(`/eleve/${id}`, {
-      state: { firstName, lastName, returnDueDate, nbOfBooksBorrowed, id },
+      state: { prenom, nom, returnDueDate, nbOfBooksBorrowed, id },
     });
   };
 
@@ -49,7 +49,7 @@ function Student({
       <Nb_livres_a_rendre nbOfBooksBorrowed={nbOfBooksBorrowed} />
       <section className="Infos_retour_livre">
         <p className="Lastname_name">
-          {firstName} {lastName}
+          {prenom} {nom}
         </p>
         <p className="Return_due_date">A rendre avant le {returnDueDate}</p>
       </section>
