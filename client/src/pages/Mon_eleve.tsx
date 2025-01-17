@@ -25,7 +25,7 @@ function Mon_eleve() {
             <img src="/src/assets/images/QRCode.png" alt="QRCode" />
           </figure>
         </div>
-        <div className="Infos_eleve">
+        <div className="infos_eleve">
           <p className="name">{firstName}</p>
           <p className="name">{lastName}</p>
           <p className="infos_livre">
