@@ -6,6 +6,7 @@ import Student from "../components/Student";
 import "../styles/BurgerMenu.css";
 import "../styles/Buttons.css";
 import { Link } from "react-router-dom";
+import AddStudent from "../components/AddStudent";
 import SearchBar from "../components/Searchbar";
 
 const fakeStudents = [
@@ -85,6 +86,7 @@ function Ma_classe() {
   const [menuOpen, setMenuOpen] = useState<boolean>(false);
   const [filteredStudents, setFilteredStudents] = useState(fakeStudents);
   const [sortStudents, setSortStudents] = useState<string>("");
+  const [showModal, setShowModal] = useState<boolean>(false);
 
   const handleMenuStateChange = (state: { isOpen: boolean }) => {
     setMenuOpen(state.isOpen);
@@ -105,8 +107,12 @@ function Ma_classe() {
   });
 
   const handleAddStudentClick = () => {
-    // logique pour ajouter un élève
+    setShowModal(true);
     console.info("Add student");
+  };
+
+  const handleModalClose = () => {
+    setShowModal(false);
   };
 
   const handleSearchClick = (searchTerm: string) => {
@@ -188,6 +194,7 @@ function Ma_classe() {
         >
           +
         </button>
+        <AddStudent showModal={showModal} handleModalClose={handleModalClose} />
         <SearchBar onSearch={handleSearchClick} />
       </div>
     </div>
