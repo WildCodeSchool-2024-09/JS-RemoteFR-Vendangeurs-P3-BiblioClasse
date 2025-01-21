@@ -4,16 +4,21 @@ import { RouterProvider, createBrowserRouter } from "react-router-dom";
 
 import App from "./App";
 import BiblioClasse from "./pages/BiblioClasse";
+// import Register from "./pages/Register";
+import Login from "./pages/Login";
 import Ma_bibliotheque from "./pages/Ma_bibliotheque";
 import Ma_classe from "./pages/Ma_classe";
 import Mon_eleve from "./pages/Mon_eleve";
 import Mon_livre from "./pages/Mon_livre";
+import Register from "./pages/Register";
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: <App />,
     children: [
+      { path: "/login", element: <Login /> },
+      { path: "/register", element: <Register /> },
       { path: "/", element: <BiblioClasse /> },
       { path: "/bibliotheque", element: <Ma_bibliotheque /> },
       { path: "/classe", element: <Ma_classe /> },
