@@ -87,7 +87,7 @@ function Ma_classe() {
           <strong>Trier par :</strong>
         </div>
         <div className="menu-item">
-          <label>
+          <label className="radio">
             <input
               type="radio"
               name="sort"
@@ -102,7 +102,7 @@ function Ma_classe() {
           </label>
         </div>
         <div className="menu-item">
-          <label>
+          <label className="radio">
             <input
               type="radio"
               name="sort"
