@@ -53,8 +53,8 @@
   background: rgba(0, 0, 0, 0.3);
 }
 .menu-item strong {
-  display: block; /* Assurez-vous que strong est un bloc pour que la marge fonctionne correctement */
-  margin-top: 20px; /* Ajoute une marge inférieure de 20px aux éléments strong */
+  display: block;
+  margin-top: 20px;
 }
 
 .menu-item a {
@@ -76,4 +76,12 @@
     padding: 0px;
     width: 20px;
   }
+}
+.edit-button {
+  color: var(--primary-color);
+  border: none;
+  font-size: 18.4px;
+  background-color: transparent;
+  font-weight: bold;
+  font-family: "Poppins", sans-serif;
 }

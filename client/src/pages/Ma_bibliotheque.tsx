@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
-import Book from "../components/Book";
-import Header from "../components/Header";
-import "../styles/Book.css";
 import { slide as Menu } from "react-burger-menu";
-import "../styles/BurgerMenu.css";
 import { Link } from "react-router-dom";
+import "../styles/Book.css";
+import "../styles/BurgerMenu.css";
 import "../styles/Buttons.css";
 import AddBookManually from "../components/AddBookManually";
 import Addbook from "../components/Addbook";
+import Book from "../components/Book";
+import Header from "../components/Header";
 import SearchBar from "../components/Searchbar";
 
 interface BookProps {
@@ -25,6 +25,7 @@ function Ma_bibliotheque() {
   const [sortBooks, setSortBooks] = useState<string>("");
   const [showModal, setShowModal] = useState<boolean>(false);
   const [showModalBook, setShowModalBook] = useState<boolean>(false);
+  const [editMode, setEditMode] = useState(false);
 
   useEffect(() => {
     // Faire une requête à l'API pour récupérer les livres
@@ -96,12 +97,43 @@ function Ma_bibliotheque() {
     setFilteredBooks((prevBooks) => [...prevBooks, newBook]);
   };
 
+  /*Fonction pour éditer la liste*/
+  const handleEditListClick = () => {
+    setEditMode(!editMode);
+    setMenuOpen(false);
+  };
+
+  /*Fonction pour supprimer un livre*/
+  const handleDeleteBook = async (ISBN: string) => {
+    try {
+      const response = await fetch(`http://localhost:3310/api/livres/${ISBN}`, {
+        method: "DELETE",
+      });
+      if (response.ok) {
+        setBooks((prevBooks) => prevBooks.filter((book) => book.ISBN !== ISBN));
+        setFilteredBooks((prevBooks) =>
+          prevBooks.filter((book) => book.ISBN !== ISBN),
+        );
+      } else {
+        console.error("Erreur lors de la suppression du livre");
+      }
+    } catch (error) {
+      console.error("Erreur lors de la suppression du livre:", error);
+    }
+  };
+
   return (
     <div>
       <Header />
       <Menu right isOpen={menuOpen} onStateChange={handleMenuStateChange}>
         <div className="menu-item">
-          <strong>Editer la liste</strong>
+          <button
+            onClick={handleEditListClick}
+            type="button"
+            className="edit-button"
+          >
+            Editer la liste
+          </button>
         </div>
         <div className="menu-item">
           <strong>Trier par :</strong>
@@ -150,14 +182,24 @@ function Ma_bibliotheque() {
       </Menu>
       <section className="Ma_bibliotheque">
         {sortedBooks.map((book) => (
-          <Book
-            key={book.ISBN}
-            titre={book.titre}
-            auteur={book.auteur}
-            resume={book.livre_resume}
-            couverture_img={book.couverture_img}
-            ISBN={book.ISBN}
-          />
+          <div key={book.ISBN} className="book-container">
+            <Book
+              titre={book.titre}
+              auteur={book.auteur}
+              resume={book.livre_resume}
+              couverture_img={book.couverture_img}
+              ISBN={book.ISBN}
+            />
+            {editMode && (
+              <button
+                type="button"
+                className="delete-button"
+                onClick={() => handleDeleteBook(book.ISBN)}
+              >
+                &times;
+              </button>
+            )}
+          </div>
         ))}
       </section>
       <div className="buttons">
