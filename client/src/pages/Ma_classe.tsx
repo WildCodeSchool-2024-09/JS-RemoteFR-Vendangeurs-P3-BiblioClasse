@@ -10,7 +10,7 @@ import AddStudent from "../components/AddStudent";
 import SearchBar from "../components/Searchbar";
 
 interface StudentProps {
-  id: number;
+  id_eleve: number;
   prenom: string;
   nom: string;
   returnDueDate: string;
@@ -18,11 +18,12 @@ interface StudentProps {
 }
 
 function Ma_classe() {
+  const [students, setStudents] = useState<StudentProps[]>([]);
   const [menuOpen, setMenuOpen] = useState<boolean>(false);
   const [filteredStudents, setFilteredStudents] = useState<StudentProps[]>([]);
   const [sortStudents, setSortStudents] = useState<string>("");
   const [showModal, setShowModal] = useState<boolean>(false);
-  const [students, setStudents] = useState<StudentProps[]>([]);
+  const [editMode, setEditMode] = useState(false);
 
   useEffect(() => {
     fetch("http://localhost:3310/api/eleves")
@@ -74,12 +75,60 @@ function Ma_classe() {
       );
   };
 
+  /*Fonction pour éditer la liste*/
+  const handleEditListClick = () => {
+    setEditMode(!editMode);
+    setMenuOpen(false);
+  };
+
+  /*Fonction pour supprimer un livre*/
+  const handleDeleteStudent = async (id_eleve: number) => {
+    try {
+      const response = await fetch(
+        `http://localhost:3310/api/eleves/${id_eleve}`,
+        {
+          method: "DELETE",
+        },
+      );
+      if (response.ok) {
+        setStudents((prevStudents) =>
+          prevStudents.filter((student) => student.id_eleve !== id_eleve),
+        );
+        setFilteredStudents((prevStudents) =>
+          prevStudents.filter((student) => student.id_eleve !== id_eleve),
+        );
+      } else {
+        console.error("Erreur lors de la suppression du livre");
+      }
+    } catch (error) {
+      console.error("Erreur lors de la suppression du livre:", error);
+    }
+  };
+
   return (
     <div>
       <Header />
+      {editMode && (
+        <div className="delete-mode-banner">
+          <p>Cliquez sur un livre pour le supprimer.</p>
+          <button
+            onClick={handleEditListClick}
+            className="exit-delete-mode-button"
+            type="button"
+          >
+            Quitter le mode suppression
+          </button>
+        </div>
+      )}
       <Menu right isOpen={menuOpen} onStateChange={handleMenuStateChange}>
         <div className="menu-item">
-          <strong>Editer la liste</strong>
+          <button
+            onClick={handleEditListClick}
+            type="button"
+            className="edit-button-bm"
+          >
+            Modifier la liste
+          </button>
         </div>
         <div className="menu-item">
           <strong>Trier par :</strong>
@@ -128,27 +177,54 @@ function Ma_classe() {
       </Menu>
       <section className="Ma_classe">
         {sortedStudents.map((student) => (
-          <Student
-            key={student.id}
-            id={student.id}
-            prenom={student.prenom}
-            nom={student.nom}
-            returnDueDate={student.returnDueDate}
-            nbOfBooksBorrowed={student.nbOfBooksBorrowed}
-          />
+          <div key={student.id_eleve}>
+            <div
+              key={student.id_eleve}
+              className={`book-container ${editMode ? "delete-mode" : ""}`}
+              onContextMenu={(e) => {
+                e.preventDefault();
+                if (editMode) {
+                  handleDeleteStudent(student.id_eleve);
+                }
+              }}
+            >
+              <Student
+                key={student.id_eleve}
+                id_eleve={student.id_eleve}
+                prenom={student.prenom}
+                nom={student.nom}
+                returnDueDate={student.returnDueDate}
+                nbOfBooksBorrowed={student.nbOfBooksBorrowed}
+              />
+              {editMode && (
+                <button
+                  type="button"
+                  className="delete-button"
+                  onClick={() => handleDeleteStudent(student.id_eleve)}
+                >
+                  &times;
+                </button>
+              )}
+            </div>
+          </div>
         ))}
       </section>
-      <div className="buttons">
-        <button
-          type="button"
-          className="add_student_button"
-          onClick={handleAddStudentClick}
-        >
-          +
-        </button>
-        <AddStudent showModal={showModal} handleModalClose={handleModalClose} />
-        <SearchBar onSearch={handleSearchClick} />
-      </div>
+      {!editMode && (
+        <div className="buttons">
+          <button
+            type="button"
+            className="add_student_button"
+            onClick={handleAddStudentClick}
+          >
+            +
+          </button>
+          <AddStudent
+            showModal={showModal}
+            handleModalClose={handleModalClose}
+          />
+          <SearchBar onSearch={handleSearchClick} />
+        </div>
+      )}
     </div>
   );
 }
