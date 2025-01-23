@@ -19,14 +19,12 @@ interface StudentProps {
 
 function Ma_classe() {
   const [menuOpen, setMenuOpen] = useState<boolean>(false);
-
   const [filteredStudents, setFilteredStudents] = useState<StudentProps[]>([]);
   const [sortStudents, setSortStudents] = useState<string>("");
   const [showModal, setShowModal] = useState<boolean>(false);
   const [students, setStudents] = useState<StudentProps[]>([]);
 
   useEffect(() => {
-    // Fetch initial list of students
     fetch("http://localhost:3310/api/eleves")
       .then((response) => response.json())
       .then((data) => {

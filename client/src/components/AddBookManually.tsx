@@ -159,7 +159,7 @@ function AddBookManually({
             />
           </label>
           <label className="label-ISBN">
-            <input
+            <textarea
               className="input-ISBN"
               placeholder="Résumé"
               value={livre_resume}

@@ -3,7 +3,8 @@
 .add_student_button,
 .add_book_button,
 .search_button,
-.searchbar_button {
+.searchbar_button,
+.edit_button {
   background-color: var(--primary-color);
   border: none;
   height: 50px;
@@ -24,6 +25,11 @@
 .add_book_button {
   position: fixed;
   bottom: 80px;
+  right: 20px;
+}
+.edit_button {
+  position: fixed;
+  bottom: 140px;
   right: 20px;
 }
 button img {

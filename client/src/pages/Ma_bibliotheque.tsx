@@ -125,14 +125,26 @@ function Ma_bibliotheque() {
   return (
     <div>
       <Header />
+      {editMode && (
+        <div className="delete-mode-banner">
+          <p>Cliquez sur un livre pour le supprimer.</p>
+          <button
+            onClick={handleEditListClick}
+            className="exit-delete-mode-button"
+            type="button"
+          >
+            Quitter le mode suppression
+          </button>
+        </div>
+      )}
       <Menu right isOpen={menuOpen} onStateChange={handleMenuStateChange}>
         <div className="menu-item">
           <button
             onClick={handleEditListClick}
             type="button"
-            className="edit-button"
+            className="edit-button-bm"
           >
-            Editer la liste
+            Modifier la liste
           </button>
         </div>
         <div className="menu-item">
@@ -182,11 +194,20 @@ function Ma_bibliotheque() {
       </Menu>
       <section className="Ma_bibliotheque">
         {sortedBooks.map((book) => (
-          <div key={book.ISBN} className="book-container">
+          <div
+            key={book.ISBN}
+            className={`book-container ${editMode ? "delete-mode" : ""}`}
+            onContextMenu={(e) => {
+              e.preventDefault();
+              if (editMode) {
+                handleDeleteBook(book.ISBN);
+              }
+            }}
+          >
             <Book
               titre={book.titre}
               auteur={book.auteur}
-              resume={book.livre_resume}
+              livre_resume={book.livre_resume}
               couverture_img={book.couverture_img}
               ISBN={book.ISBN}
             />
@@ -202,35 +223,37 @@ function Ma_bibliotheque() {
           </div>
         ))}
       </section>
-      <div className="buttons">
-        <button
-          type="button"
-          className="add_book_button"
-          onClick={handleAddBookClick}
-        >
-          +
-        </button>
-      </div>
-      {/* Modale pour ajouter un livre */}
-      <Addbook
-        showModal={showModal}
-        handleModalClose={handleModalClose}
-        handleAddBookManuallyClick={handleAddBookManuallyClick} // Fonction pour ouvrir la modale enfant
-      />
-      {/* Modale pour ajouter un livre manuellement */}
-      <AddBookManually
-        showModalBook={showModalBook}
-        handleModalBookClose={handleModalBookClose}
-        onBookAdded={handleBookAdded}
-      />
-      <button
-        type="button"
-        className="search_button"
-        onClick={() => handleSearchClick("")}
-      >
-        <img src="/src/assets/images/loupe.png" alt="loupe" />
-      </button>
-      <SearchBar onSearch={handleSearchClick} />
+      {!editMode && (
+        <div className="buttons">
+          <button
+            type="button"
+            className="add_book_button"
+            onClick={handleAddBookClick}
+          >
+            +
+          </button>
+          {/* Modale pour ajouter un livre */}
+          <Addbook
+            showModal={showModal}
+            handleModalClose={handleModalClose}
+            handleAddBookManuallyClick={handleAddBookManuallyClick} // Fonction pour ouvrir la modale enfant
+          />
+          {/* Modale pour ajouter un livre manuellement */}
+          <AddBookManually
+            showModalBook={showModalBook}
+            handleModalBookClose={handleModalBookClose}
+            onBookAdded={handleBookAdded}
+          />
+          <button
+            type="button"
+            className="search_button"
+            onClick={() => handleSearchClick("")}
+          >
+            <img src="/src/assets/images/loupe.png" alt="loupe" />
+          </button>
+          <SearchBar onSearch={handleSearchClick} />
+        </div>
+      )}
     </div>
   );
 }
