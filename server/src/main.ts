@@ -1,6 +1,7 @@
 // Load environment variables from .env file
 import "dotenv/config";
-
+import dotenv from "dotenv";
+dotenv.config();
 // Check database connection
 // Note: This is optional and can be removed if the database connection
 // is not required when starting the application
@@ -13,6 +14,10 @@ import app from "./app";
 const port = process.env.APP_PORT;
 
 // Start the server and listen on the specified port
+app.get("/", (req, res) => {
+  res.send("Bienvenue sur l'API BiblioClasse");
+});
+
 app
   .listen(port, () => {
     console.info(`Server is listening on port ${port}`);
