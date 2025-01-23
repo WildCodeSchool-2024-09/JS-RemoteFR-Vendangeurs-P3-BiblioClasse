@@ -1,4 +1,3 @@
-/* Global container */
 .login-container {
   display: flex;
   flex-direction: column;
@@ -8,7 +7,6 @@
   padding: 20px;
 }
 
-/* Welcome text */
 .welcome-text {
   font-family: "Poppins", sans-serif;
   font-size: 20px;
@@ -18,7 +16,6 @@
   margin: 10px;
 }
 
-/* Subtitle text */
 .subtitle {
   font-family: "Poppins", sans-serif;
   font-size: 14px;
@@ -36,7 +33,6 @@
   width: 100%;
 }
 
-/* Input fields */
 .input-field {
   width: 100%;
   max-width: 300px;
@@ -53,7 +49,6 @@
   border-color: var(--primary-color);
 }
 
-/* Login button */
 .login-button {
   width: 70%;
   height: 45px;
@@ -75,7 +70,6 @@
   background-color: var(--primary-color);
 }
 
-/* Forgot password text */
 .forgot-password {
   font-size: 14px;
   color: #666666;
@@ -87,7 +81,6 @@
   text-decoration: underline;
 }
 
-/* Divider line */
 .divider {
   width: 100%;
   max-width: 300px;
@@ -96,7 +89,6 @@
   margin: 20px 0;
 }
 
-/* Create account button */
 .create-account-button {
   width: 70%;
   height: 45px;

@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import Nb_livres_a_rendre from "./Nb_livres_a_rendre";
 
 interface StudentProps {
-  id: number;
+  id_eleve: number;
   prenom: string;
   nom: string;
   returnDueDate: string;
@@ -11,7 +11,7 @@ interface StudentProps {
 }
 
 function Student({
-  id,
+  id_eleve,
   nom,
   prenom,
   returnDueDate,
@@ -20,8 +20,8 @@ function Student({
   const navigate = useNavigate();
 
   const handleClick = () => {
-    navigate(`/eleve/${id}`, {
-      state: { prenom, nom, returnDueDate, nbOfBooksBorrowed, id },
+    navigate(`/eleve/${id_eleve}`, {
+      state: { prenom, nom, returnDueDate, nbOfBooksBorrowed, id_eleve },
     });
   };
 

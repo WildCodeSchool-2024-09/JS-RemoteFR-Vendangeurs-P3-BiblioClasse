@@ -17,10 +17,10 @@ router.get("/api/livres/search", livreActions.search);
 
 import eleveActions from "./modules/eleve/eleveActions";
 router.get("/api/eleves", eleveActions.browse);
-router.get("/api/eleves/:ISBN", eleveActions.read);
+router.get("/api/eleves/:id_eleve", eleveActions.read);
 router.post("/api/eleves", eleveActions.add);
-router.put("/api/eleves/:ISBN", eleveActions.edit);
-router.delete("/api/eleves/:ISBN", eleveActions.destroy);
+router.put("/api/eleves/:id_eleve", eleveActions.edit);
+router.delete("/api/eleves/:id_eleve", eleveActions.destroy);
 router.get("/api/eleves/search", eleveActions.search);
 
 import exemplaireActions from "./modules/exemplaire/exemplaireActions";

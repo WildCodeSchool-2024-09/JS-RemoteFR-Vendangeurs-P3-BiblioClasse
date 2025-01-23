@@ -4,17 +4,23 @@ import { useNavigate } from "react-router-dom";
 interface BookProps {
   titre: string;
   auteur: string;
-  resume: string;
+  livre_resume: string;
   couverture_img: string;
   ISBN: string;
 }
 
-function Book({ titre, couverture_img, auteur, resume, ISBN }: BookProps) {
+function Book({
+  titre,
+  couverture_img,
+  auteur,
+  livre_resume,
+  ISBN,
+}: BookProps) {
   const navigate = useNavigate();
 
   const handleClick = () => {
     navigate(`/livre/${ISBN}`, {
-      state: { titre, auteur, resume, couverture_img, ISBN },
+      state: { titre, auteur, livre_resume, couverture_img, ISBN },
     });
   };
 

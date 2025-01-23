@@ -5,7 +5,7 @@ type Livre = {
   ISBN: string;
   titre: string;
   auteur: string;
-  couverture_image: string;
+  couverture_img: string;
   livre_resume: string;
 };
 
@@ -13,15 +13,20 @@ class livreRepository {
   // The C of CRUD - Create operation
   async create(livre: Livre) {
     const [result] = await databaseClient.query(
-      "INSERT INTO livre (ISBN, titre, auteur, couverture_image, livre_resume) VALUES (?, ?, ?, ?, ?)",
+      "INSERT INTO livre (ISBN, titre, auteur, couverture_img, livre_resume) VALUES (?, ?, ?, ?, ?)",
       [
         livre.ISBN,
         livre.titre,
         livre.auteur,
-        livre.couverture_image,
+        livre.couverture_img,
         livre.livre_resume,
       ],
     );
+    console.info("Insert result:", result);
+    if (result && "insertId" in result) {
+      return result.insertId;
+    }
+    throw new Error("Failed to insert livre");
   }
 
   // The Rs of CRUD - Read operations
@@ -42,13 +47,13 @@ class livreRepository {
   // The U of CRUD - Update operation
   async update(ISBN: string, livre: Livre) {
     await databaseClient.query(
-      "UPDATE livre SET titre = ?, auteur = ?, couverture_image = ?, livre_resume = ? WHERE ISBN = ?",
+      "UPDATE livre SET titre = ?, auteur = ?, couverture_img = ?, livre_resume = ? WHERE ISBN = ?",
       [
-        ISBN,
         livre.titre,
         livre.auteur,
-        livre.couverture_image,
+        livre.couverture_img,
         livre.livre_resume,
+        ISBN,
       ],
     );
     return this.read(ISBN);
