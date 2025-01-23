@@ -43,7 +43,7 @@ const add: RequestHandler = async (req, res, next) => {
       ISBN: req.body.ISBN,
       titre: req.body.titre,
       auteur: req.body.auteur,
-      couverture_image: req.body.couverture_image,
+      couverture_img: req.body.couverture_img,
       livre_resume: req.body.livre_resume,
     };
 

@@ -1,14 +1,14 @@
 CREATE TABLE livre (
-    ISBN INT PRIMARY KEY,
+    ISBN VARCHAR(255) PRIMARY KEY,
     titre VARCHAR(255) NOT NULL,
     auteur VARCHAR(255) NOT NULL,
-    couverture_img VARCHAR(255) NOT NULL,
+    couverture_img VARCHAR(255),
     livre_resume TEXT NOT NULL
 );
 
 CREATE TABLE exemplaire (
     id_exemplaire INT PRIMARY KEY AUTO_INCREMENT,
-    ISBN INT NOT NULL,
+    ISBN VARCHAR(255) NOT NULL,
     FOREIGN KEY (ISBN) REFERENCES livre(ISBN) ON DELETE CASCADE
 );
 
