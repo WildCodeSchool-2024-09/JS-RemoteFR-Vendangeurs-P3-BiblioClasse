@@ -93,7 +93,7 @@ function AddBookManually({
         livre_resume,
         couverture_img,
       });
-      handleModalBookClose(); // Fermer la modale après une soumission réussie
+      handleModalBookClose();
     } else {
       console.error("Erreur lors de l'ajout du livre");
     }
