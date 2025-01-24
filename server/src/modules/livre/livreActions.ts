@@ -1,5 +1,6 @@
 import type { RequestHandler } from "express";
 
+import exemplaireRepository from "../exemplaire/exemplaireRepository";
 import livreRepository from "./livreRepository";
 
 // The B of BREAD - Browse (Read All) operation
@@ -49,6 +50,9 @@ const add: RequestHandler = async (req, res, next) => {
 
     // Create the item
     const insertId = await livreRepository.create(newLivre);
+
+    const newExemplaire = { ISBN: newLivre.ISBN, isAvailable: true };
+    await exemplaireRepository.create(newExemplaire);
 
     // Respond with HTTP 201 (Created) and the ID of the newly inserted item
     res.status(201).json({ insertId });

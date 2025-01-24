@@ -3,7 +3,13 @@ import exemplaireRepository from "./exemplaireRepository";
 
 const browse: RequestHandler = async (req, res, next) => {
   try {
-    const exemplaires = await exemplaireRepository.readAll();
+    const { ISBN } = req.query;
+    let exemplaires: Array<{ ISBN: string; isAvailable: boolean }>;
+    if (ISBN) {
+      exemplaires = await exemplaireRepository.readAllByISBN(ISBN as string);
+    } else {
+      exemplaires = await exemplaireRepository.readAll();
+    }
     res.json(exemplaires);
   } catch (err) {
     next(err);
@@ -29,7 +35,7 @@ const add: RequestHandler = async (req, res, next) => {
   try {
     const newExemplaire = {
       ISBN: req.body.ISBN,
-      état: req.body.état,
+      isAvailable: req.body.isAvailable ?? true,
     };
     const insertId = await exemplaireRepository.create(newExemplaire);
     res.status(201).json({ insertId });

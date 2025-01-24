@@ -4,14 +4,14 @@ import type { Result, Rows } from "../../../database/client";
 type Exemplaire = {
   id_exemplaire?: number;
   ISBN: string;
-  état: string;
+  isAvailable: boolean;
 };
 
 class ExemplaireRepository {
   async create(exemplaire: Exemplaire) {
     const [result] = await databaseClient.query(
-      "INSERT INTO exemplaire (ISBN, état) VALUES (?, ?)",
-      [exemplaire.ISBN, exemplaire.état],
+      "INSERT INTO exemplaire (ISBN, isAvailable) VALUES (?, ?)",
+      [exemplaire.ISBN, exemplaire.isAvailable],
     );
   }
 
@@ -27,11 +27,18 @@ class ExemplaireRepository {
     const [rows] = await databaseClient.query<Rows>("SELECT * FROM exemplaire");
     return rows as Exemplaire[];
   }
+  async readAllByISBN(ISBN: string): Promise<Array<Exemplaire>> {
+    const [rows] = await databaseClient.query<Rows>(
+      "SELECT * FROM exemplaire WHERE ISBN = ?",
+      [ISBN],
+    );
 
+    return [];
+  }
   async update(id_exemplaire: number, exemplaire: Exemplaire) {
     await databaseClient.query(
-      "UPDATE exemplaire SET ISBN = ?, état = ? WHERE id_exemplaire = ?",
-      [exemplaire.ISBN, exemplaire.état, id_exemplaire],
+      "UPDATE exemplaire SET ISBN = ?, isAvailable = ? WHERE id_exemplaire = ?",
+      [exemplaire.ISBN, exemplaire.isAvailable, id_exemplaire],
     );
     return this.read(id_exemplaire);
   }
