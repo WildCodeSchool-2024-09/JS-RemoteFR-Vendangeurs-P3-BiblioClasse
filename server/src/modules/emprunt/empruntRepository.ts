@@ -1,14 +1,13 @@
 import databaseClient from "../../../database/client";
 import type { Result, Rows } from "../../../database/client";
 
-type Emprunt = {
-  id_emprunt?: number;
+interface Emprunt {
   date_emprunt: string;
-  date_retour: string;
-  date_retour_effectif: string;
+  date_retour: string | null;
+  date_retour_effectif: string | null;
   id_exemplaire: number;
   id_eleve: number;
-};
+}
 
 class EmpruntRepository {
   async create(emprunt: Emprunt) {

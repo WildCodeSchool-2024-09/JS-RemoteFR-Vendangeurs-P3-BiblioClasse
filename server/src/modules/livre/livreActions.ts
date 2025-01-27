@@ -37,27 +37,46 @@ const read: RequestHandler = async (req, res, next) => {
 };
 
 // The A of BREAD - Add (Create) operation
+// const add: RequestHandler = async (req, res, next) => {
+//   try {
+//     // Extract the item data from the request body
+//     const newLivre = {
+//       ISBN: req.body.ISBN,
+//       titre: req.body.titre,
+//       auteur: req.body.auteur,
+//       couverture_img: req.body.couverture_img,
+//       livre_resume: req.body.livre_resume,
+//     };
+
+//     // Create the item
+//     const insertId = await livreRepository.create(newLivre);
+
+//     const newExemplaire = { ISBN: newLivre.ISBN, isAvailable: true };
+//     await exemplaireRepository.create(newExemplaire);
+
+//     // Respond with HTTP 201 (Created) and the ID of the newly inserted item
+//     res.status(201).json({ insertId });
+//   } catch (err) {
+//     // Pass any errors to the error-handling middleware
+//     next(err);
+//   }
+// };
+
 const add: RequestHandler = async (req, res, next) => {
   try {
-    // Extract the item data from the request body
-    const newLivre = {
-      ISBN: req.body.ISBN,
-      titre: req.body.titre,
-      auteur: req.body.auteur,
-      couverture_img: req.body.couverture_img,
-      livre_resume: req.body.livre_resume,
-    };
+    const { ISBN, titre, auteur, couverture_img, livre_resume } = req.body;
+    const newLivre = { ISBN, titre, auteur, couverture_img, livre_resume };
+    await livreRepository.create(newLivre);
 
-    // Create the item
-    const insertId = await livreRepository.create(newLivre);
-
-    const newExemplaire = { ISBN: newLivre.ISBN, isAvailable: true };
+    // Ajouter un exemplaire pour ce livre
+    const newExemplaire = { ISBN, isAvailable: true };
     await exemplaireRepository.create(newExemplaire);
 
-    // Respond with HTTP 201 (Created) and the ID of the newly inserted item
-    res.status(201).json({ insertId });
+    res
+      .status(201)
+      .json({ message: "Livre et exemplaire ajoutés avec succès" });
   } catch (err) {
-    // Pass any errors to the error-handling middleware
+    console.error("Erreur lors de l'ajout du livre:", err);
     next(err);
   }
 };

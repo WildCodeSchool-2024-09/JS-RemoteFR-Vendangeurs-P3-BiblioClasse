@@ -1,4 +1,5 @@
 import type { RequestHandler } from "express";
+import exemplaireRepository from "../exemplaire/exemplaireRepository";
 import empruntRepository from "./empruntRepository";
 
 const browse: RequestHandler = async (req, res, next) => {
@@ -25,15 +26,24 @@ const read: RequestHandler = async (req, res, next) => {
 
 const add: RequestHandler = async (req, res, next) => {
   try {
+    const { id_exemplaire, ISBN } = req.body;
     const newEmprunt = {
-      date_emprunt: req.body.date_emprunt,
-      date_retour: req.body.date_retour,
-      date_retour_effectif: req.body.date_retour_effectif,
-      id_exemplaire: req.body.id_exemplaire,
+      id_exemplaire,
+      date_emprunt: new Date().toISOString(),
+      date_retour: null,
+      date_retour_effectif: null,
       id_eleve: req.body.id_eleve,
     };
     const insertId = await empruntRepository.create(newEmprunt);
-    res.status(201).json({ insertId });
+
+    await exemplaireRepository.update(id_exemplaire, {
+      ISBN,
+      isAvailable: false,
+    });
+
+    res
+      .status(201)
+      .json({ id_emprunt: insertId, id_exemplaire, ISBN, isAvailable: false });
   } catch (err) {
     next(err);
   }

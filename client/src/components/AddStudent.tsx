@@ -1,12 +1,18 @@
 import "../styles/AddStudent.css";
 import { useState } from "react";
+import type { StudentProps } from "../pages/Ma_classe";
 
 interface AddStudentProps {
   showModal: boolean;
   handleModalClose: () => void;
+  handleStudentAdded: (newStudent: StudentProps) => void;
 }
 
-function AddStudent({ showModal, handleModalClose }: AddStudentProps) {
+function AddStudent({
+  showModal,
+  handleModalClose,
+  handleStudentAdded,
+}: AddStudentProps) {
   if (showModal === false) return null;
 
   const [nom, setNom] = useState("");
@@ -23,6 +29,14 @@ function AddStudent({ showModal, handleModalClose }: AddStudentProps) {
     });
     if (response.ok) {
       console.info("Élève ajouté avec succès");
+      const newStudent: StudentProps = {
+        nom,
+        prenom,
+        id_eleve: 0, // or any default value
+        returnDueDate: "", // or any default value
+        nbOfBooksBorrowed: 0, // or any default value
+      };
+      handleStudentAdded(newStudent);
       setNom("");
       setPrenom("");
     } else {

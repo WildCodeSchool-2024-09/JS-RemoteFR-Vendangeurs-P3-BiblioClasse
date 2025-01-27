@@ -9,10 +9,11 @@ type Exemplaire = {
 
 class ExemplaireRepository {
   async create(exemplaire: Exemplaire) {
-    const [result] = await databaseClient.query(
+    const [result] = await databaseClient.query<Result>(
       "INSERT INTO exemplaire (ISBN, isAvailable) VALUES (?, ?)",
       [exemplaire.ISBN, exemplaire.isAvailable],
     );
+    return result.insertId;
   }
 
   async read(id_exemplaire: number) {
@@ -32,9 +33,9 @@ class ExemplaireRepository {
       "SELECT * FROM exemplaire WHERE ISBN = ?",
       [ISBN],
     );
-
-    return [];
+    return rows as Exemplaire[];
   }
+
   async update(id_exemplaire: number, exemplaire: Exemplaire) {
     await databaseClient.query(
       "UPDATE exemplaire SET ISBN = ?, isAvailable = ? WHERE id_exemplaire = ?",

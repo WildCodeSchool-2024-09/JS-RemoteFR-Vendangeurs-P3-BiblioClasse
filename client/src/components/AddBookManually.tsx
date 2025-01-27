@@ -4,7 +4,7 @@ import { useState } from "react";
 interface AddBookManuallyProps {
   showModalBook: boolean;
   handleModalBookClose: () => void;
-  onBookAdded: (newBook: BookProps) => void;
+  handleBookAdded: (newBook: BookProps) => void;
 }
 interface BookProps {
   titre: string;
@@ -17,7 +17,7 @@ interface BookProps {
 function AddBookManually({
   showModalBook,
   handleModalBookClose,
-  onBookAdded,
+  handleBookAdded,
 }: AddBookManuallyProps) {
   if (showModalBook === false) return null;
 
@@ -61,14 +61,6 @@ function AddBookManually({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.info("Submitting book:", {
-      ISBN,
-      titre,
-      auteur,
-      livre_resume,
-      couverture_img,
-    });
-    // Envoyer les données du livre au serveur pour les ajouter à la base de données
     const response = await fetch("http://localhost:3310/api/livres", {
       method: "POST",
       headers: {
@@ -86,7 +78,7 @@ function AddBookManually({
     console.info("API response:", responseData);
     if (response.ok) {
       console.info("Livre ajouté avec succès");
-      onBookAdded({
+      handleBookAdded({
         ISBN,
         titre,
         auteur,

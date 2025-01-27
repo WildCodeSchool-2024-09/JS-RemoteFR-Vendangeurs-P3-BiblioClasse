@@ -4,7 +4,11 @@ import exemplaireRepository from "./exemplaireRepository";
 const browse: RequestHandler = async (req, res, next) => {
   try {
     const { ISBN } = req.query;
-    let exemplaires: Array<{ ISBN: string; isAvailable: boolean }>;
+    let exemplaires: Array<{
+      id_exemplaire?: number;
+      ISBN: string;
+      isAvailable: boolean;
+    }>;
     if (ISBN) {
       exemplaires = await exemplaireRepository.readAllByISBN(ISBN as string);
     } else {

@@ -9,7 +9,7 @@ import { Link } from "react-router-dom";
 import AddStudent from "../components/AddStudent";
 import SearchBar from "../components/Searchbar";
 
-interface StudentProps {
+export interface StudentProps {
   id_eleve: number;
   prenom: string;
   nom: string;
@@ -103,6 +103,11 @@ function Ma_classe() {
     } catch (error) {
       console.error("Erreur lors de la suppression du livre:", error);
     }
+  };
+
+  const handleStudentAdded = (newStudent: StudentProps) => {
+    setStudents((prevStudents) => [...prevStudents, newStudent]);
+    setFilteredStudents((prevStudents) => [...prevStudents, newStudent]);
   };
 
   return (
@@ -221,6 +226,7 @@ function Ma_classe() {
           <AddStudent
             showModal={showModal}
             handleModalClose={handleModalClose}
+            handleStudentAdded={handleStudentAdded}
           />
           <SearchBar onSearch={handleSearchClick} />
         </div>

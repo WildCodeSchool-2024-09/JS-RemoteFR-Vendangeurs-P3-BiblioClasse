@@ -242,7 +242,7 @@ function Ma_bibliotheque() {
           <AddBookManually
             showModalBook={showModalBook}
             handleModalBookClose={handleModalBookClose}
-            onBookAdded={handleBookAdded}
+            handleBookAdded={handleBookAdded}
           />
           <button
             type="button"

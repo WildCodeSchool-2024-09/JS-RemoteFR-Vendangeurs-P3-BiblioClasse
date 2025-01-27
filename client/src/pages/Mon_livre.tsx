@@ -2,6 +2,7 @@ import "../styles/Mon_livre.css";
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import AddExemplaire from "../components/AddExemplaire";
+import BorrowBookModal from "../components/BorrowBookModal";
 import EditBookModal from "../components/EditBookModal";
 import Header from "../components/Header";
 
@@ -17,6 +18,7 @@ function Mon_livre() {
     { id_exemplaire: number; ISBN: string; isAvailable: boolean }[]
   >([]);
   const [availableExemplaires, setAvailableExemplaires] = useState(0);
+  const [showBorrowModal, setShowBorrowModal] = useState(false);
 
   useEffect(() => {
     const fetchExemplaires = async () => {
@@ -25,6 +27,7 @@ function Mon_livre() {
           `http://localhost:3310/api/exemplaires?ISBN=${ISBN}`,
         );
         const data = await response.json();
+        console.info("Exemplaires:", data);
         setExemplaires(data);
         const available = data.filter(
           (exemplaire: { isAvailable: boolean }) => exemplaire.isAvailable,
@@ -43,8 +46,12 @@ function Mon_livre() {
   };
 
   const handleAddBorrowClick = () => {
-    // logique pour ajouter un emprunt
+    setShowBorrowModal(true);
     console.info("Add book borrow");
+  };
+
+  const handleBorrowModalClose = () => {
+    setShowBorrowModal(false);
   };
 
   const handleEditClick = () => {
@@ -83,6 +90,22 @@ function Mon_livre() {
     console.info("Exemplaire ajouté:", newExemplaire);
     setExemplaires((prevExemplaires) => [...prevExemplaires, newExemplaire]);
     setAvailableExemplaires((prevAvailable) => prevAvailable + 1);
+  };
+
+  const handleBookBorrowed = (borrowedBook: {
+    id_exemplaire: number;
+    id_eleve: number;
+    date_emprunt: string;
+  }) => {
+    console.info("Exemplaire emprunté:", borrowedBook);
+    setExemplaires((prevExemplaires) =>
+      prevExemplaires.map((exemplaire) =>
+        exemplaire.id_exemplaire === borrowedBook.id_exemplaire
+          ? { ...exemplaire, isAvailable: false }
+          : exemplaire,
+      ),
+    );
+    setAvailableExemplaires((prevAvailable) => prevAvailable - 1);
   };
 
   return (
@@ -143,6 +166,15 @@ function Mon_livre() {
           ISBN={currentBook.ISBN}
           onExemplaireAdded={handleExemplaireAdded}
           handleModalClose={handleAddExemplaireModalClose}
+        />
+      )}
+      {showBorrowModal && (
+        <BorrowBookModal
+          showModal={showBorrowModal}
+          ISBN={currentBook.ISBN}
+          exemplaires={exemplaires}
+          handleBookBorrowed={handleBookBorrowed}
+          handleModalClose={handleBorrowModalClose}
         />
       )}
     </div>
