@@ -181,7 +181,7 @@ function Ma_bibliotheque() {
           </label>
         </div>
         <div className="menu-item">
-          <Link to="/" onClick={closeMenu}>
+          <Link to="/accueil" onClick={closeMenu}>
             <strong>Accueil</strong>
           </Link>
         </div>

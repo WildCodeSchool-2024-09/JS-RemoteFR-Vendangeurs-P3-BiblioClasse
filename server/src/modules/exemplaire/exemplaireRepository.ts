@@ -36,6 +36,13 @@ class ExemplaireRepository {
     return rows as Exemplaire[];
   }
 
+  async readAvailableExemplaire() {
+    const [rows] = await databaseClient.query<Rows>(
+      "SELECT l.titre, e.id_exemplaire FROM exemplaire AS e JOIN livre AS l ON e.ISBN=l.ISBN WHERE e.isAvailable=true ORDER BY l.titre;",
+    );
+    return rows as Exemplaire[];
+  }
+
   async update(id_exemplaire: number, exemplaire: Exemplaire) {
     await databaseClient.query(
       "UPDATE exemplaire SET ISBN = ?, isAvailable = ? WHERE id_exemplaire = ?",

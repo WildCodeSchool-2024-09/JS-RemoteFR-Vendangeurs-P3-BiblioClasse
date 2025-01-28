@@ -2,14 +2,15 @@ import "../styles/Mon_livre.css";
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import AddExemplaire from "../components/AddExemplaire";
-import BorrowBookModal from "../components/BorrowBookModal";
+// import BorrowBookModal from "../components/BorrowBookModal";
 import EditBookModal from "../components/EditBookModal";
 import Header from "../components/Header";
 
 function Mon_livre() {
   const location = useLocation();
   const navigate = useNavigate();
-  const { titre, auteur, livre_resume, couverture_img, ISBN } = location.state;
+  const { titre, auteur, livre_resume, couverture_img, ISBN } =
+    location.state || {};
   const book = { titre, auteur, livre_resume, couverture_img, ISBN };
   const [showEditModal, setShowEditModal] = useState(false);
   const [showAddExemplaireModal, setShowAddExemplaireModal] = useState(false);
@@ -17,7 +18,7 @@ function Mon_livre() {
   const [exemplaires, setExemplaires] = useState<
     { id_exemplaire: number; ISBN: string; isAvailable: boolean }[]
   >([]);
-  const [availableExemplaires, setAvailableExemplaires] = useState(0);
+  const [nbAvailableExemplaires, setNbAvailableExemplaires] = useState(0);
   const [showBorrowModal, setShowBorrowModal] = useState(false);
 
   useEffect(() => {
@@ -32,7 +33,7 @@ function Mon_livre() {
         const available = data.filter(
           (exemplaire: { isAvailable: boolean }) => exemplaire.isAvailable,
         ).length;
-        setAvailableExemplaires(available);
+        setNbAvailableExemplaires(available);
       } catch (error) {
         console.error("Erreur lors de la récupération des exemplaires:", error);
       }
@@ -48,11 +49,12 @@ function Mon_livre() {
   const handleAddBorrowClick = () => {
     setShowBorrowModal(true);
     console.info("Add book borrow");
+    console.info(showBorrowModal);
   };
 
-  const handleBorrowModalClose = () => {
-    setShowBorrowModal(false);
-  };
+  // const handleBorrowModalClose = () => {
+  //   setShowBorrowModal(false);
+  // };
 
   const handleEditClick = () => {
     setShowEditModal(true);
@@ -89,24 +91,24 @@ function Mon_livre() {
   }) => {
     console.info("Exemplaire ajouté:", newExemplaire);
     setExemplaires((prevExemplaires) => [...prevExemplaires, newExemplaire]);
-    setAvailableExemplaires((prevAvailable) => prevAvailable + 1);
+    setNbAvailableExemplaires((prevAvailable) => prevAvailable + 1);
   };
 
-  const handleBookBorrowed = (borrowedBook: {
-    id_exemplaire: number;
-    id_eleve: number;
-    date_emprunt: string;
-  }) => {
-    console.info("Exemplaire emprunté:", borrowedBook);
-    setExemplaires((prevExemplaires) =>
-      prevExemplaires.map((exemplaire) =>
-        exemplaire.id_exemplaire === borrowedBook.id_exemplaire
-          ? { ...exemplaire, isAvailable: false }
-          : exemplaire,
-      ),
-    );
-    setAvailableExemplaires((prevAvailable) => prevAvailable - 1);
-  };
+  // const handleBookBorrowed = (borrowedBook: {
+  //   id_exemplaire: number;
+  //   id_eleve: number;
+  //   date_emprunt: string;
+  // }) => {
+  //   console.info("Exemplaire emprunté:", borrowedBook);
+  //   setExemplaires((prevExemplaires) =>
+  //     prevExemplaires.map((exemplaire) =>
+  //       exemplaire.id_exemplaire === borrowedBook.id_exemplaire
+  //         ? { ...exemplaire, isAvailable: false }
+  //         : exemplaire,
+  //     ),
+  //   );
+  //   setNbAvailableExemplaires((prevAvailable) => prevAvailable - 1);
+  // };
 
   return (
     <div>
@@ -130,7 +132,7 @@ function Mon_livre() {
         </div>
         <div className="infos_livre">
           <p className="exemplaire">
-            {availableExemplaires} exemplaires disponibles sur{" "}
+            {nbAvailableExemplaires} exemplaires disponibles sur{" "}
             {exemplaires.length}
           </p>
           <p className="titre">{currentBook.titre}</p>
@@ -168,7 +170,7 @@ function Mon_livre() {
           handleModalClose={handleAddExemplaireModalClose}
         />
       )}
-      {showBorrowModal && (
+      {/* {showBorrowModal && (
         <BorrowBookModal
           showModal={showBorrowModal}
           ISBN={currentBook.ISBN}
@@ -176,7 +178,7 @@ function Mon_livre() {
           handleBookBorrowed={handleBookBorrowed}
           handleModalClose={handleBorrowModalClose}
         />
-      )}
+      )} */}
     </div>
   );
 }

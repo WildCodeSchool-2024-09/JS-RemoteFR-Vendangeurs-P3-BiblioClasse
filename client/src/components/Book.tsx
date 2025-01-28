@@ -31,6 +31,7 @@ function Book({
       </figure>
       <section className="Infos_livre">
         <p className="Titre">{titre}</p>
+        <p className="Auteur">{auteur}</p>
         <p className="Emprunte">Emprunté par Marie Curie</p>
       </section>
     </div>

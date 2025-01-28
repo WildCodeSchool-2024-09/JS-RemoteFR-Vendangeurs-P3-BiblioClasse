@@ -6,10 +6,24 @@ import { useNavigate } from "react-router-dom";
 import "../styles/BurgerMenu.css";
 import AddBookManually from "../components/AddBookManually";
 import AddStudent from "../components/AddStudent";
+import BorrowBookModal from "../components/BorrowBookModal";
 import EmptyApp from "../components/EmptyApp";
 
 function BiblioClasse() {
-  // Données fictives
+  interface BorrowedBook {
+    id_exemplaire: number;
+    ISBN: string;
+    isAvailable: boolean;
+    id_eleve: number;
+    date_emprunt: string;
+  }
+
+  interface Exemplaire {
+    titre: string;
+    id_exemplaire: number;
+    isAvailable: boolean;
+    ISBN: string;
+  }
 
   const topBooks = [
     {
@@ -31,7 +45,6 @@ function BiblioClasse() {
   const loansInProgress = 11;
   const loansDueSoon = 6;
   const overdueLoans = 1;
-  const uniqueReferences = 32;
   const booksLoaned = 27;
 
   const [students, setStudents] = useState<number>(0);
@@ -41,6 +54,11 @@ function BiblioClasse() {
   const [showAddBookModal, setShowAddBookModal] = useState<boolean>(false);
   const [showAddStudentModal, setShowAddStudentModal] =
     useState<boolean>(false);
+  const [showBorrowModal, setShowBorrowModal] = useState<boolean>(false);
+  const [exemplaires, setExemplaires] = useState<Exemplaire[]>([]);
+  const [availableExemplaires, setAvailableExemplaires] = useState<
+    Exemplaire[]
+  >([]);
 
   ////////////////*FETCH DATA*////////////////////
   useEffect(() => {
@@ -67,8 +85,33 @@ function BiblioClasse() {
         console.error("Erreur lors de la récupération des livres:", error);
       }
     };
+
+    const fetchExemplaires = async () => {
+      try {
+        const response = await fetch("http://localhost:3310/api/exemplaires");
+        const data = await response.json();
+        setExemplaires(data);
+      } catch (error) {
+        console.error("Erreur lors de la récupération des exemplaires:", error);
+      }
+    };
+
+    const fetchAvailableExemplaires = async () => {
+      try {
+        const response = await fetch(
+          "http://localhost:3310/api/exemplaires_available",
+        );
+        const data = await response.json();
+        setAvailableExemplaires(data);
+      } catch (error) {
+        console.error("Erreur lors de la récupération des exemplaires:", error);
+      }
+    };
+
     fetchStudents();
     fetchBooks();
+    fetchExemplaires();
+    fetchAvailableExemplaires();
   }, []);
 
   ////////////////*MODALE VIDE*////////////////////
@@ -127,6 +170,27 @@ function BiblioClasse() {
     setStudents((prevStudents) => prevStudents + 1);
     setShowAddStudentModal(false);
     if (students > 0) setShowEmptyApp(false);
+  };
+
+  ////////////////*AJOUT D'EMPRUNT*////////////////
+  /*Assure l'ouverture de la modale d'ajout d'emprunt*/
+  const handleAddBorrowClick = () => {
+    setShowBorrowModal(true);
+  };
+  /*Assure la fermeture de la modale d'ajout d'emprunt*/
+  const handleBorrowModalClose = () => {
+    setShowBorrowModal(false);
+  };
+  /*Assure la logique d'emprunt*/
+  const handleBookBorrowed = (borrowedBook: BorrowedBook): void => {
+    console.info("Book borrowed:", borrowedBook);
+    setExemplaires((prevExemplaires) =>
+      prevExemplaires.map((exemplaire) =>
+        exemplaire.id_exemplaire === borrowedBook.id_exemplaire
+          ? { ...exemplaire, isAvailable: false }
+          : exemplaire,
+      ),
+    );
   };
 
   if (showEmptyApp) {
@@ -198,7 +262,7 @@ function BiblioClasse() {
 
       <section className="section-livres">
         <p className="intro">
-          J'ai {books} livres enregistrés, dont {uniqueReferences} références
+          J'ai {exemplaires.length} livres enregistrés, dont {books} références
           différentes :
         </p>
         <p>{booksLoaned} livres sont actuellement empruntés.</p>
@@ -222,13 +286,25 @@ function BiblioClasse() {
       </section>
 
       <section className="loan-actions">
-        <button type="button" className="action-button-emprunt">
+        <button
+          type="button"
+          className="action-button-emprunt"
+          onClick={handleAddBorrowClick}
+        >
           Nouvel emprunt
         </button>
         <button type="button" className="action-button-retour">
           Nouveau retour
         </button>
       </section>
+      {showBorrowModal && (
+        <BorrowBookModal
+          showModal={showBorrowModal}
+          handleModalClose={handleBorrowModalClose}
+          handleBookBorrowed={handleBookBorrowed}
+          availableExemplaires={availableExemplaires}
+        />
+      )}
     </div>
   );
 }

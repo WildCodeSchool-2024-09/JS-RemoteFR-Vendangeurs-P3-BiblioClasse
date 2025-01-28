@@ -32,7 +32,7 @@
   font-size: 20px;
   font-style: normal;
   font-weight: 700;
-  margin-top: 20px;
+  margin: 35px 0 20px 0;
 }
 .pmodal {
   color: var(--primary-color);

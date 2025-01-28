@@ -6,7 +6,7 @@ function Register() {
   const navigate = useNavigate();
 
   const handleAlreadyAccount = () => {
-    navigate("/login");
+    navigate("/");
   };
 
   return (

@@ -35,6 +35,19 @@ const read: RequestHandler = async (req, res, next) => {
   }
 };
 
+const readAvailableExemplaire: RequestHandler = async (req, res, next) => {
+  try {
+    const exemplaire = await exemplaireRepository.readAvailableExemplaire();
+    if (exemplaire == null) {
+      res.sendStatus(404);
+    } else {
+      res.json(exemplaire);
+    }
+  } catch (err) {
+    next(err);
+  }
+};
+
 const add: RequestHandler = async (req, res, next) => {
   try {
     const newExemplaire = {
@@ -69,4 +82,4 @@ const destroy: RequestHandler = async (req, res, next) => {
   }
 };
 
-export default { browse, read, add, edit, destroy };
+export default { browse, read, add, edit, destroy, readAvailableExemplaire };

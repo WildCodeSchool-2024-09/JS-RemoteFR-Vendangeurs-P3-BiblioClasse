@@ -25,6 +25,7 @@ function Ma_classe() {
   const [showModal, setShowModal] = useState<boolean>(false);
   const [editMode, setEditMode] = useState(false);
 
+  /*Récupération des élèves*/
   useEffect(() => {
     fetch("http://localhost:3310/api/eleves")
       .then((response) => response.json())
@@ -37,15 +38,16 @@ function Ma_classe() {
       );
   }, []);
 
+  /*Fonction pour ouvrir et fermer le menu*/
   const handleMenuStateChange = (state: { isOpen: boolean }) => {
     setMenuOpen(state.isOpen);
   };
-
   const closeMenu = () => {
     setMenuOpen(false);
     console.info(students);
   };
 
+  /*Fonction pour trier les élèves par nom ou par prénom*/
   const sortedStudents = [...filteredStudents].sort((a, b) => {
     if (sortStudents === "prenom") {
       return a.prenom.localeCompare(b.prenom);
@@ -56,14 +58,15 @@ function Ma_classe() {
     return 0;
   });
 
+  /*Gère l'ouverture et la fermeturer du modal pour ajouter un élève*/
   const handleAddStudentClick = () => {
     setShowModal(true);
   };
-
   const handleModalClose = () => {
     setShowModal(false);
   };
 
+  /*Fonction pour rechercher un élève*/
   const handleSearchClick = (searchTerm: string) => {
     fetch(`http://localhost:3310/api/eleves/search?q=${searchTerm}`)
       .then((response) => response.json())
@@ -105,6 +108,7 @@ function Ma_classe() {
     }
   };
 
+  /*Fonction pour mettre à jour la liste des élèves après en avoir ajouté un*/
   const handleStudentAdded = (newStudent: StudentProps) => {
     setStudents((prevStudents) => [...prevStudents, newStudent]);
     setFilteredStudents((prevStudents) => [...prevStudents, newStudent]);
@@ -169,7 +173,7 @@ function Ma_classe() {
           </label>
         </div>
         <div className="menu-item">
-          <Link to="/" onClick={closeMenu}>
+          <Link to="/accueil" onClick={closeMenu}>
             <strong>Accueil</strong>
           </Link>
         </div>

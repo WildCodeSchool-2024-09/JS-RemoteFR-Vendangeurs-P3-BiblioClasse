@@ -36,32 +36,6 @@ const read: RequestHandler = async (req, res, next) => {
   }
 };
 
-// The A of BREAD - Add (Create) operation
-// const add: RequestHandler = async (req, res, next) => {
-//   try {
-//     // Extract the item data from the request body
-//     const newLivre = {
-//       ISBN: req.body.ISBN,
-//       titre: req.body.titre,
-//       auteur: req.body.auteur,
-//       couverture_img: req.body.couverture_img,
-//       livre_resume: req.body.livre_resume,
-//     };
-
-//     // Create the item
-//     const insertId = await livreRepository.create(newLivre);
-
-//     const newExemplaire = { ISBN: newLivre.ISBN, isAvailable: true };
-//     await exemplaireRepository.create(newExemplaire);
-
-//     // Respond with HTTP 201 (Created) and the ID of the newly inserted item
-//     res.status(201).json({ insertId });
-//   } catch (err) {
-//     // Pass any errors to the error-handling middleware
-//     next(err);
-//   }
-// };
-
 const add: RequestHandler = async (req, res, next) => {
   try {
     const { ISBN, titre, auteur, couverture_img, livre_resume } = req.body;

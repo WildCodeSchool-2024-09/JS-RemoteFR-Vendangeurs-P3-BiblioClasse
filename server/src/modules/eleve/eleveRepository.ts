@@ -44,7 +44,7 @@ class eleveRepository {
 
   async search(searchTerm: string) {
     const [rows] = await databaseClient.query(
-      "SELECT * FROM eleve WHERE prenom LIKE ?",
+      "SELECT * FROM eleve WHERE prenom LIKE ? OR nom LIKE ?",
       [`%${searchTerm}%`, `%${searchTerm}%`],
     );
     return rows as Eleve[];

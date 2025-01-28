@@ -29,6 +29,10 @@ router.get("/api/exemplaires/:id_exemplaire", exemplaireActions.read);
 router.post("/api/exemplaires", exemplaireActions.add);
 router.put("/api/exemplaires/:id_exemplaire", exemplaireActions.edit);
 router.delete("/api/exemplaires/:id_exemplaire", exemplaireActions.destroy);
+router.get(
+  "/api/exemplaires_available",
+  exemplaireActions.readAvailableExemplaire,
+);
 
 import empruntActions from "./modules/emprunt/empruntActions";
 router.get("/api/emprunts", empruntActions.browse);
