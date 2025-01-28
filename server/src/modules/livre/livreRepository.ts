@@ -67,7 +67,7 @@ class livreRepository {
   async search(searchTerm: string) {
     const [rows] = await databaseClient.query(
       "SELECT * FROM livre WHERE titre LIKE ?",
-      [`%${searchTerm}%`, `%${searchTerm}%`],
+      [`%${searchTerm}%`],
     );
     return rows as Livre[];
   }

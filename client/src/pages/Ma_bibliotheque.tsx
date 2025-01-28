@@ -27,8 +27,8 @@ function Ma_bibliotheque() {
   const [showModalBook, setShowModalBook] = useState<boolean>(false);
   const [editMode, setEditMode] = useState(false);
 
+  /*Récupération des livres*/
   useEffect(() => {
-    // Faire une requête à l'API pour récupérer les livres
     const fetchBooks = async () => {
       try {
         const response = await fetch("http://localhost:3310/api/livres");
@@ -43,34 +43,13 @@ function Ma_bibliotheque() {
     fetchBooks();
   }, []);
 
-  /*Gère l'ouverture du menu tiroir*/
+  /*Gère l'ouverture et la fermeture du menu tiroir*/
   const handleMenuStateChange = (state: { isOpen: boolean }) => {
     setMenuOpen(state.isOpen);
   };
-  /*Gère la fermeture du menu tiroir*/
   const closeMenu = () => {
     setMenuOpen(false);
   };
-
-  /*Fonction pour ajouter un livre*/
-  const handleAddBookClick = () => {
-    setShowModal(true);
-    console.info("Add book");
-  };
-
-  /*Gère l'ouverture de la modale*/
-  const handleModalClose = () => {
-    setShowModal(false);
-  };
-
-  /* Gère l'ouverture de la modale 2 */
-  const handleAddBookManuallyClick = () => {
-    setShowModalBook(true);
-    setShowModal(false);
-  };
-
-  /*Gère la fermeture de la modale 2 */
-  const handleModalBookClose = () => setShowModalBook(false);
 
   /*Fonction pour trier les livres*/
   const sortedBooks = [...filteredBooks].sort((a, b) => {
@@ -82,6 +61,22 @@ function Ma_bibliotheque() {
     }
     return 0;
   });
+
+  /*Gère l'ouverture et la fermeturer du modal pour ajouter un livre*/
+  const handleAddBookClick = () => {
+    setShowModal(true);
+    console.info("Add book");
+  };
+  const handleModalClose = () => {
+    setShowModal(false);
+  };
+
+  /* Gère l'ouverture et la fermeture de la modale 2 */
+  const handleAddBookManuallyClick = () => {
+    setShowModalBook(true);
+    setShowModal(false);
+  };
+  const handleModalBookClose = () => setShowModalBook(false);
 
   /*Fonction pour rechercher un livre*/
   const handleSearchClick = (searchTerm: string) => {

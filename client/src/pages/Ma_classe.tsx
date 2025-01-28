@@ -25,7 +25,6 @@ function Ma_classe() {
   const [showModal, setShowModal] = useState<boolean>(false);
   const [editMode, setEditMode] = useState(false);
 
-  /*Récupération des élèves*/
   useEffect(() => {
     fetch("http://localhost:3310/api/eleves")
       .then((response) => response.json())
@@ -38,13 +37,28 @@ function Ma_classe() {
       );
   }, []);
 
-  /*Fonction pour ouvrir et fermer le menu*/
+  /*Récupération des élèves*/
+  useEffect(() => {
+    const fetchStudents = async () => {
+      try {
+        const response = await fetch("http://localhost:3310/api/eleves");
+        const data = await response.json();
+        setStudents(data);
+        setFilteredStudents(data);
+      } catch (error) {
+        console.error("Erreur lors de la récupération des livres:", error);
+      }
+    };
+
+    fetchStudents();
+  }, []);
+
+  /*Gère l'ouverture et la fermeture du menu tiroir*/
   const handleMenuStateChange = (state: { isOpen: boolean }) => {
     setMenuOpen(state.isOpen);
   };
   const closeMenu = () => {
     setMenuOpen(false);
-    console.info(students);
   };
 
   /*Fonction pour trier les élèves par nom ou par prénom*/
@@ -68,14 +82,18 @@ function Ma_classe() {
 
   /*Fonction pour rechercher un élève*/
   const handleSearchClick = (searchTerm: string) => {
-    fetch(`http://localhost:3310/api/eleves/search?q=${searchTerm}`)
-      .then((response) => response.json())
-      .then((data) => {
-        setFilteredStudents(data);
-      })
-      .catch((error) =>
-        console.error("Erreur lors de la recherche des élèves:", error),
-      );
+    const filtered = students.filter(
+      (student) =>
+        student.nom.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        student.prenom.toLowerCase().includes(searchTerm.toLowerCase()),
+    );
+    setFilteredStudents(filtered);
+  };
+
+  /*Fonction pour mettre à jour la liste des élèves après en avoir ajouté un*/
+  const handleStudentAdded = (newStudent: StudentProps) => {
+    setStudents((prevStudents) => [...prevStudents, newStudent]);
+    setFilteredStudents((prevStudents) => [...prevStudents, newStudent]);
   };
 
   /*Fonction pour éditer la liste*/
@@ -106,12 +124,6 @@ function Ma_classe() {
     } catch (error) {
       console.error("Erreur lors de la suppression du livre:", error);
     }
-  };
-
-  /*Fonction pour mettre à jour la liste des élèves après en avoir ajouté un*/
-  const handleStudentAdded = (newStudent: StudentProps) => {
-    setStudents((prevStudents) => [...prevStudents, newStudent]);
-    setFilteredStudents((prevStudents) => [...prevStudents, newStudent]);
   };
 
   return (
