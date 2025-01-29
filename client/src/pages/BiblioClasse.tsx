@@ -8,6 +8,7 @@ import AddBookManually from "../components/AddBookManually";
 import AddStudent from "../components/AddStudent";
 import BorrowBookModal from "../components/BorrowBookModal";
 import EmptyApp from "../components/EmptyApp";
+import ParametresModal from "../components/ParametresModal";
 
 function BiblioClasse() {
   interface BorrowedBook {
@@ -45,7 +46,6 @@ function BiblioClasse() {
 
   const loansDueSoon = 6;
   const overdueLoans = 1;
-  const booksLoaned = 27;
 
   const [students, setStudents] = useState<number>(0);
   const [books, setBooks] = useState<number>(0);
@@ -60,6 +60,9 @@ function BiblioClasse() {
     Exemplaire[]
   >([]);
   const [loansInProgress, setLoansInProgress] = useState<number>(0);
+  const [showParametresModal, setShowParametresModal] =
+    useState<boolean>(false);
+  const [loanDuration, setLoanDuration] = useState<number>(7); // Default loan duration is 7 days
 
   ////////////////*FETCH DATA*////////////////////
   useEffect(() => {
@@ -208,6 +211,11 @@ function BiblioClasse() {
     setShowBorrowModal(false);
   };
 
+  const handleOpenParametresModal = () => {
+    setShowParametresModal(true);
+    setMenuOpen(false);
+  };
+
   if (showEmptyApp) {
     return (
       <div>
@@ -245,7 +253,11 @@ function BiblioClasse() {
     <div>
       <Header />
       <Menu right isOpen={menuOpen} onStateChange={handleMenuStateChange}>
-        <div className="menu-item">
+        <div
+          className="menu-item"
+          onClick={handleOpenParametresModal}
+          onKeyDown={handleOpenParametresModal}
+        >
           <strong>Paramètres</strong>
         </div>
         <div className="menu-item">
@@ -280,7 +292,7 @@ function BiblioClasse() {
           J'ai {exemplaires.length} livres enregistrés, dont {books} références
           différentes :
         </p>
-        <p>{booksLoaned} livres sont actuellement empruntés.</p>
+        <p>{loansInProgress} livres sont actuellement empruntés.</p>
         <p className="p-emprunt">Les 3 livres les plus empruntés sont :</p>
         <div className="top-books">
           {topBooks.map((book) => (
@@ -318,6 +330,15 @@ function BiblioClasse() {
           handleBorrowModalClose={handleBorrowModalClose}
           handleBookBorrowed={handleBookBorrowed}
           availableExemplaires={availableExemplaires}
+          loanDuration={loanDuration}
+        />
+      )}
+      {showParametresModal && (
+        <ParametresModal
+          loanDuration={loanDuration}
+          setLoanDuration={setLoanDuration}
+          showModal={showParametresModal}
+          handleModalClose={() => setShowParametresModal(false)}
         />
       )}
     </div>

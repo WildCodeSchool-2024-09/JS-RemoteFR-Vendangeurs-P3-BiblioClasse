@@ -1,3 +1,4 @@
+import { addDays, format } from "date-fns";
 import { useEffect, useState } from "react";
 import "../styles/BorrowBookModal.css";
 
@@ -14,7 +15,9 @@ interface BorrowBookModalProps {
     isAvailable: boolean;
     id_eleve: number;
     date_emprunt: string;
+    date_retour: string;
   }) => void;
+  loanDuration: number;
 }
 
 interface StudenProps {
@@ -28,6 +31,7 @@ function BorrowBookModal({
   handleBorrowModalClose,
   handleBookBorrowed,
   availableExemplaires,
+  loanDuration,
 }: BorrowBookModalProps) {
   const [selectedExemplaire, setSelectedExemplaire] = useState<number | null>(
     null,
@@ -56,6 +60,14 @@ function BorrowBookModal({
     e.preventDefault();
     if (selectedExemplaire && studentId) {
       try {
+        const date_emprunt = new Date();
+        const date_retour = addDays(date_emprunt, loanDuration);
+        const formattedDateEmprunt = format(
+          date_emprunt,
+          "yyyy-MM-dd HH:mm:ss",
+        );
+        const formattedDateRetour = format(date_retour, "yyyy-MM-dd HH:mm:ss");
+
         const response = await fetch("http://localhost:3310/api/emprunts", {
           method: "POST",
           headers: {
@@ -64,6 +76,8 @@ function BorrowBookModal({
           body: JSON.stringify({
             id_exemplaire: selectedExemplaire,
             id_eleve: studentId,
+            date_emprunt: formattedDateEmprunt,
+            date_retour: formattedDateRetour,
           }),
         });
         if (!response.ok) {
