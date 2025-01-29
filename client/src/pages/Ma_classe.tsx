@@ -13,7 +13,7 @@ export interface StudentProps {
   id_eleve: number;
   prenom: string;
   nom: string;
-  returnDueDate: string;
+  date_retour: string;
   nbOfBooksBorrowed: number;
 }
 
@@ -31,6 +31,7 @@ function Ma_classe() {
       .then((data) => {
         setStudents(data);
         setFilteredStudents(data);
+        console.info("Elèves récupérés:", data);
       })
       .catch((error) =>
         console.error("Erreur lors de la récupération des élèves:", error),
@@ -214,7 +215,7 @@ function Ma_classe() {
                 id_eleve={student.id_eleve}
                 prenom={student.prenom}
                 nom={student.nom}
-                returnDueDate={student.returnDueDate}
+                date_retour={student.date_retour}
                 nbOfBooksBorrowed={student.nbOfBooksBorrowed}
               />
               {editMode && (

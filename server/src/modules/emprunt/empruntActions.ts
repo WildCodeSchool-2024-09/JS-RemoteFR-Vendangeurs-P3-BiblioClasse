@@ -39,8 +39,8 @@ const edit: RequestHandler = async (req, res, next) => {
 
 const add: RequestHandler = async (req, res, next): Promise<void> => {
   try {
-    const { id_exemplaire, id_eleve } = req.body;
-    const date_emprunt = format(new Date(), "yyyy-MM-dd HH:mm:ss");
+    const { id_exemplaire, id_eleve, date_emprunt, date_retour } = req.body;
+
     console.info("Received request to create emprunt:", {
       id_exemplaire,
       id_eleve,
@@ -54,10 +54,10 @@ const add: RequestHandler = async (req, res, next): Promise<void> => {
 
     const newEmprunt = {
       id_exemplaire,
-      date_emprunt,
-      date_retour: null,
-      date_retour_effectif: null,
       id_eleve,
+      date_emprunt,
+      date_retour,
+      date_retour_effectif: null,
     };
     const insertId = await empruntRepository.create(newEmprunt);
     console.info("Emprunt created with ID:", insertId);
@@ -93,4 +93,27 @@ const countLoansInProgress: RequestHandler = async (req, res, next) => {
   }
 };
 
-export default { browse, read, add, edit, destroy, countLoansInProgress };
+const LoansByStudent: RequestHandler = async (req, res, next) => {
+  try {
+    const { id_eleve } = req.params;
+    const emprunts = await empruntRepository.getEmpruntsByEleve(
+      Number(id_eleve),
+    );
+    res.json(emprunts);
+  } catch (error) {
+    console.error("Erreur lors de la récupération des emprunts:", error);
+    res
+      .status(500)
+      .json({ error: "Erreur lors de la récupération des emprunts" });
+  }
+};
+
+export default {
+  browse,
+  read,
+  add,
+  edit,
+  destroy,
+  countLoansInProgress,
+  LoansByStudent,
+};

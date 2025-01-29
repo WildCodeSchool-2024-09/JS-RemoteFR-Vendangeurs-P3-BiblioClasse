@@ -93,3 +93,15 @@
   font-weight: bold;
   border-radius: 5px;
 }
+/* //////Affichage conditionnelle en fonction de la date de retour////// */
+.BookColor.green {
+  background-color: var(--quaternary-color);
+}
+
+.BookColor.orange {
+  background-color: var(--tertiary-color);
+}
+
+.BookColor.red {
+  background-color: var(--secondary-color);
+}

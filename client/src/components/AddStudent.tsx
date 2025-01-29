@@ -32,7 +32,7 @@ function AddStudent({
         nom,
         prenom,
         id_eleve: 0, // or any default value
-        returnDueDate: "", // or any default value
+        date_retour: "", // or any default value
         nbOfBooksBorrowed: 0, // or any default value
       };
       handleStudentAdded(newStudent);

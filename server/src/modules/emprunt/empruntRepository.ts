@@ -64,6 +64,13 @@ class EmpruntRepository {
     );
     return rows[0].count;
   }
+  async getEmpruntsByEleve(id_eleve: number) {
+    const [rows] = await databaseClient.query(
+      "SELECT e.id_exemplaire, l.titre, l.auteur, l.livre_resume, l.couverture_img, l.ISBN, e.date_retour FROM emprunt e JOIN exemplaire ex ON e.id_exemplaire = ex.id_exemplaire JOIN livre l ON ex.ISBN = l.ISBN WHERE e.id_eleve = ?",
+      [id_eleve],
+    );
+    return rows;
+  }
 }
 
 export default new EmpruntRepository();

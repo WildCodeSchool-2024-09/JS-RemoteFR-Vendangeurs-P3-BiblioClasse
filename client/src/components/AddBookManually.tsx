@@ -99,7 +99,7 @@ function AddBookManually({
         >
           &times;
         </button>
-        <h2 className="h2modal">Ajouter le livre</h2>
+        <h2 className="h2modalAddBookManually">Ajouter le livre</h2>
         <form className="isbn-section">
           <label className="label-ISBN">
             <input
@@ -159,7 +159,7 @@ function AddBookManually({
               required
             />
           </label>
-          <button type="submit" className="button">
+          <button type="submit" className="add-book-submitbutton">
             Ajouter le livre
           </button>
         </form>

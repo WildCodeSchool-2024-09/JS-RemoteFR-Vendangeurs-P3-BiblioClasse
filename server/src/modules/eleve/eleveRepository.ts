@@ -25,7 +25,9 @@ class eleveRepository {
   }
 
   async readAll() {
-    const [rows] = await databaseClient.query<Rows>("SELECT * FROM eleve");
+    const [rows] = await databaseClient.query<Rows>(
+      "SELECT e.id_eleve, e.prenom, e.nom, MAX(em.date_retour) AS date_retour, COUNT(em.id_exemplaire) AS nbOfBooksBorrowed FROM eleve e LEFT JOIN emprunt em ON e.id_eleve = em.id_eleve GROUP BY e.id_eleve",
+    );
     return rows as Eleve[];
   }
 

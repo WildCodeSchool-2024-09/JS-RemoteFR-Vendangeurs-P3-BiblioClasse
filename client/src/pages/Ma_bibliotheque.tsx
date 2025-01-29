@@ -16,6 +16,7 @@ interface BookProps {
   livre_resume: string;
   couverture_img: string;
   ISBN: string;
+  date_retour?: string;
 }
 
 function Ma_bibliotheque() {
@@ -206,6 +207,8 @@ function Ma_bibliotheque() {
               livre_resume={book.livre_resume}
               couverture_img={book.couverture_img}
               ISBN={book.ISBN}
+              date_retour={book.date_retour}
+              context="bibliotheque"
             />
             {editMode && (
               <button

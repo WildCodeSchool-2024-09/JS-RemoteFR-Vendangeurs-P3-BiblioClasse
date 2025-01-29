@@ -2,16 +2,50 @@ import "../styles/Mon_eleve.css";
 import { useLocation, useNavigate } from "react-router-dom";
 import Header from "../components/Header";
 import "../styles/Buttons.css";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import Book from "../components/Book";
 import EditStudentModal from "../components/EditStudentModal";
+
+interface BorrowedBook {
+  id_exemplaire: number;
+  titre: string;
+  auteur: string;
+  livre_resume: string;
+  couverture_img: string;
+  ISBN: string;
+  date_retour: string;
+}
 
 function Mon_eleve() {
   const location = useLocation();
   const navigate = useNavigate();
-  const { prenom, nom, nbOfBooksBorrowed, id_eleve } = location.state;
-  const student = { prenom, nom, nbOfBooksBorrowed, id_eleve };
+  const { prenom, nom, id_eleve } = location.state;
+  const student = { prenom, nom, id_eleve, nbOfBooksBorrowed: "0" };
   const [showEditModal, setShowEditModal] = useState(false);
   const [currentStudent, setCurrentStudent] = useState(student);
+  const [borrowedBooks, setBorrowedBooks] = useState<BorrowedBook[]>([]);
+  const [nbOfBooksBorrowed, setNbOfBooksBorrowed] = useState(0);
+
+  useEffect(() => {
+    const fetchBorrowedBooks = async () => {
+      try {
+        const response = await fetch(
+          `http://localhost:3310/api/emprunts_by_student/${id_eleve}`,
+        );
+        const data = await response.json();
+        setBorrowedBooks(data);
+        setNbOfBooksBorrowed(data.length);
+        console.info("Livres empruntés:", data);
+      } catch (error) {
+        console.error(
+          "Erreur lors de la récupération des livres empruntés:",
+          error,
+        );
+      }
+    };
+
+    fetchBorrowedBooks();
+  }, [id_eleve]);
 
   const handleBackClick = () => {
     navigate(-1);
@@ -55,6 +89,22 @@ function Mon_eleve() {
             {nbOfBooksBorrowed} livres empruntés, dont 1 en retard
           </p>
         </div>
+      </section>
+      <section className="borrowed-books">
+        <h2>Livres empruntés</h2>
+        {borrowedBooks.map((book) => (
+          <div className="borrowed-book-container" key={book.id_exemplaire}>
+            <Book
+              titre={book.titre}
+              auteur={book.auteur}
+              livre_resume={book.livre_resume}
+              couverture_img={book.couverture_img}
+              ISBN={book.ISBN}
+              date_retour={book.date_retour}
+              context="mon_eleve"
+            />
+          </div>
+        ))}
       </section>
       <div className="buttons">
         <button type="button" className="edit_button" onClick={handleEditClick}>
