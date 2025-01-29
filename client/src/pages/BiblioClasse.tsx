@@ -42,7 +42,7 @@ function BiblioClasse() {
       img: "data:image/jpeg;base64,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",
     },
   ];
-  const loansInProgress = 11;
+
   const loansDueSoon = 6;
   const overdueLoans = 1;
   const booksLoaned = 27;
@@ -59,6 +59,7 @@ function BiblioClasse() {
   const [availableExemplaires, setAvailableExemplaires] = useState<
     Exemplaire[]
   >([]);
+  const [loansInProgress, setLoansInProgress] = useState<number>(0);
 
   ////////////////*FETCH DATA*////////////////////
   useEffect(() => {
@@ -66,9 +67,7 @@ function BiblioClasse() {
       try {
         const response = await fetch("http://localhost:3310/api/eleves");
         const data = await response.json();
-        console.info("Fetched students:", data);
         setStudents(data.length);
-        console.info(`longueur de tab student : ${data.length}`);
       } catch (error) {
         console.error("Erreur lors de la récupération des élèves:", error);
       }
@@ -78,9 +77,7 @@ function BiblioClasse() {
       try {
         const response = await fetch("http://localhost:3310/api/livres");
         const data = await response.json();
-        console.info("Fetched books:", data);
         setBooks(data.length);
-        console.info(`longueur de tab book : ${data.length}`);
       } catch (error) {
         console.error("Erreur lors de la récupération des livres:", error);
       }
@@ -108,10 +105,26 @@ function BiblioClasse() {
       }
     };
 
+    const fetchLoansInProgress = async () => {
+      try {
+        const response = await fetch(
+          "http://localhost:3310/api/emprunts_in-progress",
+        );
+        const data = await response.json();
+        setLoansInProgress(data.count);
+      } catch (error) {
+        console.error(
+          "Erreur lors de la récupération des emprunts en cours:",
+          error,
+        );
+      }
+    };
+
     fetchStudents();
     fetchBooks();
     fetchExemplaires();
     fetchAvailableExemplaires();
+    fetchLoansInProgress();
   }, []);
 
   ////////////////*MODALE VIDE*////////////////////
@@ -181,7 +194,7 @@ function BiblioClasse() {
   const handleBorrowModalClose = () => {
     setShowBorrowModal(false);
   };
-  /*Assure la logique d'emprunt*/
+  /*Met à jour la disponibilité de l'exemplaire emprunté*/
   const handleBookBorrowed = (borrowedBook: BorrowedBook): void => {
     console.info("Book borrowed:", borrowedBook);
     setExemplaires((prevExemplaires) =>
@@ -191,6 +204,8 @@ function BiblioClasse() {
           : exemplaire,
       ),
     );
+    setLoansInProgress((prevCount) => prevCount + 1);
+    setShowBorrowModal(false);
   };
 
   if (showEmptyApp) {
@@ -300,7 +315,7 @@ function BiblioClasse() {
       {showBorrowModal && (
         <BorrowBookModal
           showModal={showBorrowModal}
-          handleModalClose={handleBorrowModalClose}
+          handleBorrowModalClose={handleBorrowModalClose}
           handleBookBorrowed={handleBookBorrowed}
           availableExemplaires={availableExemplaires}
         />

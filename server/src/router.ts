@@ -40,6 +40,7 @@ router.get("/api/emprunts/:id_emprunt", empruntActions.read);
 router.post("/api/emprunts", empruntActions.add);
 router.put("/api/emprunts/:id_emprunt", empruntActions.edit);
 router.delete("/api/emprunts/:id_emprunt", empruntActions.destroy);
+router.get("/api/emprunts_in-progress", empruntActions.countLoansInProgress);
 /* ************************************************************************* */
 
 export default router;

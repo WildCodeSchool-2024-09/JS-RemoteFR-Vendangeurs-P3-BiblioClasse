@@ -1,3 +1,4 @@
+import { format } from "date-fns";
 import type { RequestHandler } from "express";
 import exemplaireRepository from "../exemplaire/exemplaireRepository";
 import empruntRepository from "./empruntRepository";
@@ -24,31 +25,6 @@ const read: RequestHandler = async (req, res, next) => {
   }
 };
 
-const add: RequestHandler = async (req, res, next) => {
-  try {
-    const { id_exemplaire, ISBN } = req.body;
-    const newEmprunt = {
-      id_exemplaire,
-      date_emprunt: new Date().toISOString(),
-      date_retour: null,
-      date_retour_effectif: null,
-      id_eleve: req.body.id_eleve,
-    };
-    const insertId = await empruntRepository.create(newEmprunt);
-
-    await exemplaireRepository.update(id_exemplaire, {
-      ISBN,
-      isAvailable: false,
-    });
-
-    res
-      .status(201)
-      .json({ id_emprunt: insertId, id_exemplaire, ISBN, isAvailable: false });
-  } catch (err) {
-    next(err);
-  }
-};
-
 const edit: RequestHandler = async (req, res, next) => {
   try {
     const updatedEmprunt = await empruntRepository.update(
@@ -57,6 +33,44 @@ const edit: RequestHandler = async (req, res, next) => {
     );
     res.json(updatedEmprunt);
   } catch (err) {
+    next(err);
+  }
+};
+
+const add: RequestHandler = async (req, res, next): Promise<void> => {
+  try {
+    const { id_exemplaire, id_eleve } = req.body;
+    const date_emprunt = format(new Date(), "yyyy-MM-dd HH:mm:ss");
+    console.info("Received request to create emprunt:", {
+      id_exemplaire,
+      id_eleve,
+    });
+
+    const exemplaire = await exemplaireRepository.read(id_exemplaire);
+    if (!exemplaire.isAvailable) {
+      res.status(400).json({ error: "Exemplaire non disponible" });
+      return;
+    }
+
+    const newEmprunt = {
+      id_exemplaire,
+      date_emprunt,
+      date_retour: null,
+      date_retour_effectif: null,
+      id_eleve,
+    };
+    const insertId = await empruntRepository.create(newEmprunt);
+    console.info("Emprunt created with ID:", insertId);
+
+    await exemplaireRepository.update(id_exemplaire, {
+      ISBN: exemplaire.ISBN,
+      isAvailable: false,
+    });
+    console.info("Exemplaire updated to not available:", id_exemplaire);
+
+    res.status(201).json({ id_emprunt: insertId, ...newEmprunt });
+  } catch (err) {
+    console.error("Error creating emprunt:", err);
     next(err);
   }
 };
@@ -70,4 +84,13 @@ const destroy: RequestHandler = async (req, res, next) => {
   }
 };
 
-export default { browse, read, add, edit, destroy };
+const countLoansInProgress: RequestHandler = async (req, res, next) => {
+  try {
+    const count = await empruntRepository.countLoansInProgress();
+    res.json({ count });
+  } catch (err) {
+    next(err);
+  }
+};
+
+export default { browse, read, add, edit, destroy, countLoansInProgress };

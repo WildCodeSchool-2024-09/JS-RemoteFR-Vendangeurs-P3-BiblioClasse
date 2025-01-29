@@ -28,7 +28,6 @@ function AddStudent({
       body: JSON.stringify({ nom, prenom }),
     });
     if (response.ok) {
-      console.info("Élève ajouté avec succès");
       const newStudent: StudentProps = {
         nom,
         prenom,

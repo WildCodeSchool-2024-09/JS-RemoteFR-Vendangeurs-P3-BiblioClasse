@@ -131,7 +131,7 @@ function Ma_classe() {
       <Header />
       {editMode && (
         <div className="delete-mode-banner">
-          <p>Cliquez sur un livre pour le supprimer.</p>
+          <p>Cliquez sur un élève pour le supprimer.</p>
           <button
             onClick={handleEditListClick}
             className="exit-delete-mode-button"

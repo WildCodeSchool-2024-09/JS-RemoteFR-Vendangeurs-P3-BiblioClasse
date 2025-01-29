@@ -65,7 +65,6 @@ function Ma_bibliotheque() {
   /*Gère l'ouverture et la fermeturer du modal pour ajouter un livre*/
   const handleAddBookClick = () => {
     setShowModal(true);
-    console.info("Add book");
   };
   const handleModalClose = () => {
     setShowModal(false);
@@ -80,8 +79,10 @@ function Ma_bibliotheque() {
 
   /*Fonction pour rechercher un livre*/
   const handleSearchClick = (searchTerm: string) => {
-    const filtered = books.filter((book) =>
-      book.titre.toLowerCase().includes(searchTerm.toLowerCase()),
+    const filtered = books.filter(
+      (book) =>
+        book.titre.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        book.auteur.toLowerCase().includes(searchTerm.toLowerCase()),
     );
     setFilteredBooks(filtered);
   };

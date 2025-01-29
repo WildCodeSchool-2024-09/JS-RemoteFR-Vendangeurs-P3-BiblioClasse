@@ -78,7 +78,7 @@ const EditBookModal: React.FC<EditBookModalProps> = ({
         <h2 className="h2modal">Modifier le livre</h2>
         <form onSubmit={handleSubmit} className="form-modal">
           <label className="label-bookModal">
-            ISBN :
+            <p className="p-edit-book">ISBN :</p>
             <input
               className="input-bookModal"
               type="text"
@@ -88,7 +88,7 @@ const EditBookModal: React.FC<EditBookModalProps> = ({
             />
           </label>
           <label className="label-bookModal">
-            Titre :
+            <p className="p-edit-book">Titre :</p>
             <input
               className="input-bookModal"
               type="text"
@@ -98,7 +98,7 @@ const EditBookModal: React.FC<EditBookModalProps> = ({
             />
           </label>
           <label className="label-bookModal">
-            Auteur :
+            <p className="p-edit-book">Auteur :</p>
             <input
               className="input-bookModal"
               type="text"
@@ -108,7 +108,7 @@ const EditBookModal: React.FC<EditBookModalProps> = ({
             />
           </label>
           <label className="label-bookModal">
-            Résumé :
+            <p className="p-edit-book">Résumé :</p>
             <textarea
               value={livre_resume}
               onChange={(e) => setLivre_resume(e.target.value)}
@@ -116,7 +116,7 @@ const EditBookModal: React.FC<EditBookModalProps> = ({
             />
           </label>
           <label className="label-bookModal">
-            Couverture :
+            <p className="p-edit-book">Couverture :</p>
             <input
               className="input-bookModal"
               type="text"
@@ -125,7 +125,7 @@ const EditBookModal: React.FC<EditBookModalProps> = ({
               required
             />
           </label>
-          <button type="submit" className="button">
+          <button type="submit" className="edit-book-button">
             Enregistrer
           </button>
         </form>

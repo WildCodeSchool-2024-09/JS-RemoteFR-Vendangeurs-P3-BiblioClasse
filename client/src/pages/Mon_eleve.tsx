@@ -38,7 +38,6 @@ function Mon_eleve() {
   }) => {
     // Mettre à jour l'état ou effectuer d'autres actions après la mise à jour du livre
     setCurrentStudent(updatedStudent);
-    console.info("Book updated:", updatedStudent);
   };
   return (
     <div>

@@ -10,8 +10,8 @@ interface Emprunt {
 }
 
 class EmpruntRepository {
-  async create(emprunt: Emprunt) {
-    const [result] = await databaseClient.query(
+  async create(emprunt: Omit<Emprunt, "id_emprunt">) {
+    const [result] = await databaseClient.query<Result>(
       "INSERT INTO emprunt (date_emprunt, date_retour, date_retour_effectif, id_exemplaire, id_eleve) VALUES (?, ?, ?, ?, ?)",
       [
         emprunt.date_emprunt,
@@ -21,6 +21,7 @@ class EmpruntRepository {
         emprunt.id_eleve,
       ],
     );
+    return result.insertId;
   }
 
   async read(id_emprunt: number) {
@@ -55,6 +56,13 @@ class EmpruntRepository {
     await databaseClient.query("DELETE FROM emprunt WHERE id_emprunt = ?", [
       id_emprunt,
     ]);
+  }
+
+  async countLoansInProgress() {
+    const [rows] = await databaseClient.query<Rows>(
+      "SELECT COUNT(*) as count FROM emprunt WHERE date_retour_effectif IS NULL",
+    );
+    return rows[0].count;
   }
 }
 

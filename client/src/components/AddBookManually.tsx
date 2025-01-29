@@ -29,25 +29,16 @@ function AddBookManually({
 
   const handleFetchBookInfo = async () => {
     try {
-      console.info(`Fetching book info for ISBN: ${ISBN}`);
       const response = await fetch(
         `https://www.googleapis.com/books/v1/volumes?q=isbn:${ISBN}`,
       );
       const data = await response.json();
-      console.info("Google Books API response:", data);
       if (data.items && data.items.length > 0) {
         const book = data.items[0].volumeInfo;
         setTitre(book.title);
         setAuteur(book.authors.join(", "));
         setLivre_resume(book.description);
         setCouverture_img(book.imageLinks?.thumbnail || "default_cover_url");
-        console.info("Book info set:", {
-          ISBN: ISBN,
-          titre: book.title,
-          auteur: book.authors.join(", "),
-          livre_resume: book.description,
-          couverture_img: book.imageLinks?.thumbnail || "default_cover_url",
-        });
       } else {
         console.error("Aucun livre trouvé pour cet ISBN");
       }
@@ -77,7 +68,6 @@ function AddBookManually({
     const responseData = await response.json();
     console.info("API response:", responseData);
     if (response.ok) {
-      console.info("Livre ajouté avec succès");
       handleBookAdded({
         ISBN,
         titre,

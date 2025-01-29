@@ -28,7 +28,6 @@ function Mon_livre() {
           `http://localhost:3310/api/exemplaires?ISBN=${ISBN}`,
         );
         const data = await response.json();
-        console.info("Exemplaires:", data);
         setExemplaires(data);
         const available = data.filter(
           (exemplaire: { isAvailable: boolean }) => exemplaire.isAvailable,
@@ -48,13 +47,8 @@ function Mon_livre() {
 
   const handleAddBorrowClick = () => {
     setShowBorrowModal(true);
-    console.info("Add book borrow");
     console.info(showBorrowModal);
   };
-
-  // const handleBorrowModalClose = () => {
-  //   setShowBorrowModal(false);
-  // };
 
   const handleEditClick = () => {
     setShowEditModal(true);
@@ -73,7 +67,6 @@ function Mon_livre() {
   }) => {
     // Mettre à jour l'état ou effectuer d'autres actions après la mise à jour du livre
     setCurrentBook(updatedBook);
-    console.info("Book updated:", updatedBook);
   };
 
   const handleAddExemplaireClick = () => {
@@ -89,26 +82,9 @@ function Mon_livre() {
     ISBN: string;
     isAvailable: boolean;
   }) => {
-    console.info("Exemplaire ajouté:", newExemplaire);
     setExemplaires((prevExemplaires) => [...prevExemplaires, newExemplaire]);
     setNbAvailableExemplaires((prevAvailable) => prevAvailable + 1);
   };
-
-  // const handleBookBorrowed = (borrowedBook: {
-  //   id_exemplaire: number;
-  //   id_eleve: number;
-  //   date_emprunt: string;
-  // }) => {
-  //   console.info("Exemplaire emprunté:", borrowedBook);
-  //   setExemplaires((prevExemplaires) =>
-  //     prevExemplaires.map((exemplaire) =>
-  //       exemplaire.id_exemplaire === borrowedBook.id_exemplaire
-  //         ? { ...exemplaire, isAvailable: false }
-  //         : exemplaire,
-  //     ),
-  //   );
-  //   setNbAvailableExemplaires((prevAvailable) => prevAvailable - 1);
-  // };
 
   return (
     <div>
