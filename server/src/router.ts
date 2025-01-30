@@ -46,6 +46,10 @@ router.put("/api/emprunts/:id_emprunt", empruntActions.edit);
 router.delete("/api/emprunts/:id_emprunt", empruntActions.destroy);
 router.get("/api/emprunts_by-status", empruntActions.countLoansByStatus);
 router.get("/api/emprunts_by_student/:id_eleve", empruntActions.LoansByStudent);
+
+import parametreActions from "./modules/parametre/parametreActions";
+router.get("/api/parametres/loanDuration", parametreActions.read);
+router.put("/api/parametres/:id_parametre", parametreActions.edit);
 /* ************************************************************************* */
 
 export default router;

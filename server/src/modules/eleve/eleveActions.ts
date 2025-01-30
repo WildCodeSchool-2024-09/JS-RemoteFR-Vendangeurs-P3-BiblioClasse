@@ -91,4 +91,11 @@ const search: RequestHandler = async (req, res, next) => {
   }
 };
 
-export default { browse, read, add, edit, destroy, search };
+export default {
+  browse,
+  read,
+  add,
+  edit,
+  destroy,
+  search,
+};

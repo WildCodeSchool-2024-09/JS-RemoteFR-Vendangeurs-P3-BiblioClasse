@@ -86,16 +86,13 @@ const destroy: RequestHandler = async (req, res, next) => {
 
 const countLoansByStatus: RequestHandler = async (req, res, next) => {
   try {
-    const loanDuration =
-      Number.parseInt(req.query.loanDuration as string, 10) || 7;
-    const count = await empruntRepository.countLoansByStatus(loanDuration);
-    res.json({ count });
+    const counts = await empruntRepository.countLoansByStatus();
+    res.json(counts);
   } catch (error) {
     console.error("Erreur lors de la récupération des emprunts:", error);
     res
       .status(500)
       .json({ error: "Erreur lors de la récupération des emprunts" });
-    next(error);
   }
 };
 

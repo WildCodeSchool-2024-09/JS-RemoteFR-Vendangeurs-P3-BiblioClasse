@@ -29,3 +29,9 @@ CREATE TABLE emprunt (
     FOREIGN KEY (id_exemplaire) REFERENCES exemplaire(id_exemplaire) ON DELETE CASCADE,
     FOREIGN KEY (id_eleve) REFERENCES eleve(id_eleve) ON DELETE CASCADE
 );
+
+CREATE TABLE parametre (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  loanDuration INT NOT NULL DEFAULT 7
+);
+INSERT INTO parametre (loanDuration) VALUES (DEFAULT);

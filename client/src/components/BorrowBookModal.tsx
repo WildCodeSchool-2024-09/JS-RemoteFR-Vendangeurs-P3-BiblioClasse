@@ -47,6 +47,7 @@ function BorrowBookModal({
         const response = await fetch("http://localhost:3310/api/eleves");
         const data = await response.json();
         setStudents(data);
+        console.info("Eleves récupérés:", data);
       } catch (error) {
         console.error("Erreur lors de la récupération des élèves:", error);
       }

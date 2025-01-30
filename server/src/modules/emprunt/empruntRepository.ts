@@ -58,10 +58,9 @@ class EmpruntRepository {
     ]);
   }
 
-  async countLoansByStatus(loanDuration: number) {
+  async countLoansByStatus() {
     const [rows] = await databaseClient.query<Rows>(
-      "SELECT SUM(CASE WHEN date_retour_effectif IS NULL THEN 1 ELSE 0 END) AS inProgress, SUM(CASE WHEN date_retour_effectif IS NULL AND date_retour <= DATE_ADD(NOW(), INTERVAL ? DAY) THEN 1 ELSE 0 END) AS dueSoon, SUM(CASE WHEN date_retour_effectif IS NULL AND date_retour < NOW() THEN 1 ELSE 0 END) AS overdue FROM emprunt;",
-      [loanDuration],
+      "SELECT SUM(CASE WHEN date_retour_effectif IS NULL THEN 1 ELSE 0 END) AS inProgress, SUM(CASE WHEN date_retour_effectif IS NULL AND date_retour <= DATE_ADD(NOW(), INTERVAL 7 DAY) THEN 1 ELSE 0 END) AS dueSoon, SUM(CASE WHEN date_retour_effectif IS NULL AND date_retour < NOW() THEN 1 ELSE 0 END) AS overdue FROM emprunt",
     );
     return rows[0];
   }

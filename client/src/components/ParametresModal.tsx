@@ -23,9 +23,26 @@ function ParametresModal({
     setLoanDuration(loanDuration > 1 ? loanDuration - 1 : 1);
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    handleModalClose();
+    try {
+      await fetch("http://localhost:3310/api/parametres/loanDuration", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ loanDuration }),
+      });
+      console.info("Durée d'emprunt mise à jour avec succès :", {
+        loanDuration,
+      });
+      handleModalClose();
+    } catch (error) {
+      console.error(
+        "Erreur lors de la mise à jour de la durée d'emprunt:",
+        error,
+      );
+    }
   };
 
   return (
@@ -70,6 +87,10 @@ function ParametresModal({
               </button>
             </div>
           </div>
+          <p className="parametres-info">
+            Attention, les dates retour des emprunts en cours ne seront pas
+            modifiées
+          </p>
           <button type="submit" className="submit-button">
             Valider
           </button>
