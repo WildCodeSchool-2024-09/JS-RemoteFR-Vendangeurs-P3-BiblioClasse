@@ -7,6 +7,13 @@ type Exemplaire = {
   isAvailable: boolean;
 };
 
+type borrowedExemplaireByISBN = {
+  nom: string;
+  prenom: string;
+  date_retour: string;
+  id_exemplaire: number;
+};
+
 class ExemplaireRepository {
   async create(exemplaire: Exemplaire) {
     const [result] = await databaseClient.query<Result>(
@@ -41,6 +48,16 @@ class ExemplaireRepository {
       "SELECT l.titre, e.id_exemplaire FROM exemplaire AS e JOIN livre AS l ON e.ISBN=l.ISBN WHERE e.isAvailable=true ORDER BY l.titre;",
     );
     return rows as Exemplaire[];
+  }
+
+  async readBorrowedExemplaireByISBN(
+    ISBN: string,
+  ): Promise<Array<borrowedExemplaireByISBN>> {
+    const [rows] = await databaseClient.query<Rows>(
+      "SELECT el.nom, el.prenom, em.date_retour, ex.id_exemplaire FROM emprunt AS em JOIN eleve AS el ON em.id_eleve=el.id_eleve JOIN exemplaire AS ex ON em.id_exemplaire=ex.id_exemplaire WHERE ex.ISBN=? AND ex.isAvailable=0 ORDER BY em.date_retour, el.nom, el.prenom;",
+      [ISBN],
+    );
+    return rows as borrowedExemplaireByISBN[];
   }
 
   async update(id_exemplaire: number, exemplaire: Exemplaire) {

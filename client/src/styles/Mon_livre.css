@@ -157,3 +157,13 @@
   outline: none;
   transition: 0.3s;
 }
+.h2-detail {
+  font-size: 14px;
+  font-weight: 700;
+  margin-top: 20px;
+  margin-bottom: 10px;
+  color: var(--primary-color);
+  text-align: left;
+  font-family: "Poppins", sans-serif;
+  font-style: normal;
+}

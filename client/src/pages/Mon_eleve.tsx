@@ -25,6 +25,7 @@ function Mon_eleve() {
   const [currentStudent, setCurrentStudent] = useState(student);
   const [borrowedBooks, setBorrowedBooks] = useState<BorrowedBook[]>([]);
   const [nbOfBooksBorrowed, setNbOfBooksBorrowed] = useState(0);
+  const [nbOfOverdueBooks, setNbOfOverdueBooks] = useState(0);
 
   useEffect(() => {
     const fetchBorrowedBooks = async () => {
@@ -35,7 +36,14 @@ function Mon_eleve() {
         const data = await response.json();
         setBorrowedBooks(data);
         setNbOfBooksBorrowed(data.length);
-        console.info("Livres empruntés:", data);
+        const overdueBooks = data.filter((book: BorrowedBook) => {
+          if (book.date_retour) {
+            const returnDate = new Date(book.date_retour);
+            return returnDate < new Date();
+          }
+          return false;
+        }).length;
+        setNbOfOverdueBooks(overdueBooks);
       } catch (error) {
         console.error(
           "Erreur lors de la récupération des livres empruntés:",
@@ -86,12 +94,13 @@ function Mon_eleve() {
           <p className="name">{currentStudent.prenom}</p>
           <p className="name">{currentStudent.nom}</p>
           <p className="infos_livre">
-            {nbOfBooksBorrowed} livres empruntés, dont 1 en retard
+            {nbOfBooksBorrowed} livres empruntés, dont {nbOfOverdueBooks} en
+            retard
           </p>
         </div>
       </section>
       <section className="borrowed-books">
-        <h2>Livres empruntés</h2>
+        <h2 className="h2-detail">Livres empruntés :</h2>
         {borrowedBooks.map((book) => (
           <div className="borrowed-book-container" key={book.id_exemplaire}>
             <Book

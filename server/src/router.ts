@@ -33,6 +33,10 @@ router.get(
   "/api/exemplaires_available",
   exemplaireActions.readAvailableExemplaire,
 );
+router.get(
+  "/api/exemplaires_borrowed/:ISBN",
+  exemplaireActions.readBorrowedExemplaireByISBN,
+);
 
 import empruntActions from "./modules/emprunt/empruntActions";
 router.get("/api/emprunts", empruntActions.browse);
@@ -40,7 +44,7 @@ router.get("/api/emprunts/:id_emprunt", empruntActions.read);
 router.post("/api/emprunts", empruntActions.add);
 router.put("/api/emprunts/:id_emprunt", empruntActions.edit);
 router.delete("/api/emprunts/:id_emprunt", empruntActions.destroy);
-router.get("/api/emprunts_in-progress", empruntActions.countLoansInProgress);
+router.get("/api/emprunts_by-status", empruntActions.countLoansByStatus);
 router.get("/api/emprunts_by_student/:id_eleve", empruntActions.LoansByStudent);
 /* ************************************************************************* */
 

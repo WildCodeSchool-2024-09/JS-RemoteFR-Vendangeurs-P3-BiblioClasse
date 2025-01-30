@@ -84,12 +84,18 @@ const destroy: RequestHandler = async (req, res, next) => {
   }
 };
 
-const countLoansInProgress: RequestHandler = async (req, res, next) => {
+const countLoansByStatus: RequestHandler = async (req, res, next) => {
   try {
-    const count = await empruntRepository.countLoansInProgress();
+    const loanDuration =
+      Number.parseInt(req.query.loanDuration as string, 10) || 7;
+    const count = await empruntRepository.countLoansByStatus(loanDuration);
     res.json({ count });
-  } catch (err) {
-    next(err);
+  } catch (error) {
+    console.error("Erreur lors de la récupération des emprunts:", error);
+    res
+      .status(500)
+      .json({ error: "Erreur lors de la récupération des emprunts" });
+    next(error);
   }
 };
 
@@ -114,6 +120,6 @@ export default {
   add,
   edit,
   destroy,
-  countLoansInProgress,
+  countLoansByStatus,
   LoansByStudent,
 };

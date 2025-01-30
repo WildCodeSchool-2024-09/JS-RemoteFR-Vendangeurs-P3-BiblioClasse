@@ -10,6 +10,7 @@ interface StudentProps {
   nom: string;
   date_retour: string;
   nbOfBooksBorrowed: number;
+  context: "mon_livre" | "classe";
 }
 
 function Student({
@@ -18,6 +19,7 @@ function Student({
   prenom,
   date_retour,
   nbOfBooksBorrowed,
+  context,
 }: StudentProps) {
   const navigate = useNavigate();
 
@@ -60,15 +62,29 @@ function Student({
       onClick={handleClick}
       onKeyUp={handleClick}
     >
-      <Nb_livres_a_rendre nbOfBooksBorrowed={nbOfBooksBorrowed} />
-      <section className="Infos_retour_livre">
-        <p className="Lastname_name">
-          {prenom} {nom}
-        </p>
-        <p className="Return_due_date">
-          A rendre avant le {formattedDateRetour}
-        </p>
-      </section>
+      {context === "classe" && (
+        <>
+          <Nb_livres_a_rendre nbOfBooksBorrowed={nbOfBooksBorrowed} />
+          <section className="Infos_retour_livre">
+            <p className="Lastname_name">
+              {prenom} {nom}
+            </p>
+            <p className="Return_due_date">
+              A rendre avant le {formattedDateRetour}
+            </p>
+          </section>
+        </>
+      )}
+      {context === "mon_livre" && (
+        <section className="Infos_retour_livre">
+          <p className="Lastname_name">
+            {prenom} {nom}
+          </p>
+          <p className="Return_due_date">
+            A rendre avant le {formattedDateRetour}
+          </p>
+        </section>
+      )}
     </div>
   );
 }

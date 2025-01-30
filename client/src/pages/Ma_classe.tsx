@@ -70,6 +70,9 @@ function Ma_classe() {
     if (sortStudents === "nom") {
       return a.nom.localeCompare(b.nom);
     }
+    if (sortStudents === "date_retour") {
+      return a.date_retour.localeCompare(b.date_retour);
+    }
     return 0;
   });
 
@@ -184,6 +187,19 @@ function Ma_classe() {
             />
             Trier par nom
           </label>
+          <label className="radio">
+            <input
+              type="radio"
+              name="sort"
+              value="date_retour"
+              checked={sortStudents === "date_retour"}
+              onChange={() => {
+                setSortStudents("date_retour");
+                closeMenu();
+              }}
+            />
+            Trier par date retour
+          </label>
         </div>
         <div className="menu-item">
           <Link to="/accueil" onClick={closeMenu}>
@@ -217,6 +233,7 @@ function Ma_classe() {
                 nom={student.nom}
                 date_retour={student.date_retour}
                 nbOfBooksBorrowed={student.nbOfBooksBorrowed}
+                context="classe"
               />
               {editMode && (
                 <button

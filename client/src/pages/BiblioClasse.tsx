@@ -44,9 +44,6 @@ function BiblioClasse() {
     },
   ];
 
-  const loansDueSoon = 6;
-  const overdueLoans = 1;
-
   const [students, setStudents] = useState<number>(0);
   const [books, setBooks] = useState<number>(0);
   const [showEmptyApp, setShowEmptyApp] = useState<boolean>(true);
@@ -60,6 +57,8 @@ function BiblioClasse() {
     Exemplaire[]
   >([]);
   const [loansInProgress, setLoansInProgress] = useState<number>(0);
+  const [loansDueSoon, setLoansDueSoon] = useState<number>(0);
+  const [overdueLoans, setOverdueLoans] = useState<number>(0);
   const [showParametresModal, setShowParametresModal] =
     useState<boolean>(false);
   const [loanDuration, setLoanDuration] = useState<number>(7); // Default loan duration is 7 days
@@ -108,13 +107,16 @@ function BiblioClasse() {
       }
     };
 
-    const fetchLoansInProgress = async () => {
+    const fetchLoansInProgressByStatus = async () => {
       try {
         const response = await fetch(
-          "http://localhost:3310/api/emprunts_in-progress",
+          "http://localhost:3310/api/emprunts_by-status",
         );
         const data = await response.json();
-        setLoansInProgress(data.count);
+        console.info("Data :", data);
+        setLoansInProgress(data.count.inProgress);
+        setLoansDueSoon(data.count.dueSoon);
+        setOverdueLoans(data.count.overdue);
       } catch (error) {
         console.error(
           "Erreur lors de la récupération des emprunts en cours:",
@@ -127,7 +129,7 @@ function BiblioClasse() {
     fetchBooks();
     fetchExemplaires();
     fetchAvailableExemplaires();
-    fetchLoansInProgress();
+    fetchLoansInProgressByStatus();
   }, []);
 
   ////////////////*MODALE VIDE*////////////////////
@@ -273,7 +275,10 @@ function BiblioClasse() {
           </li>
           <li className="stats-item">
             <span className="badge badge-orange">{loansDueSoon}</span>
-            <p>doivent rendre au moins 1 livre dans moins de 7 jours;</p>
+            <p>
+              doivent rendre au moins 1 livre dans moins de {loanDuration}{" "}
+              jours;
+            </p>
           </li>
           <li className="stats-item">
             <span className="badge badge-red">{overdueLoans}</span>

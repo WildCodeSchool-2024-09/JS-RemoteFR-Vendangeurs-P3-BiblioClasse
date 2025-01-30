@@ -58,12 +58,14 @@ class EmpruntRepository {
     ]);
   }
 
-  async countLoansInProgress() {
+  async countLoansByStatus(loanDuration: number) {
     const [rows] = await databaseClient.query<Rows>(
-      "SELECT COUNT(*) as count FROM emprunt WHERE date_retour_effectif IS NULL",
+      "SELECT SUM(CASE WHEN date_retour_effectif IS NULL THEN 1 ELSE 0 END) AS inProgress, SUM(CASE WHEN date_retour_effectif IS NULL AND date_retour <= DATE_ADD(NOW(), INTERVAL ? DAY) THEN 1 ELSE 0 END) AS dueSoon, SUM(CASE WHEN date_retour_effectif IS NULL AND date_retour < NOW() THEN 1 ELSE 0 END) AS overdue FROM emprunt;",
+      [loanDuration],
     );
-    return rows[0].count;
+    return rows[0];
   }
+
   async getEmpruntsByEleve(id_eleve: number) {
     const [rows] = await databaseClient.query(
       "SELECT e.id_exemplaire, l.titre, l.auteur, l.livre_resume, l.couverture_img, l.ISBN, e.date_retour FROM emprunt e JOIN exemplaire ex ON e.id_exemplaire = ex.id_exemplaire JOIN livre l ON ex.ISBN = l.ISBN WHERE e.id_eleve = ?",
