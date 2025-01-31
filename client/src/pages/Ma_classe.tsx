@@ -5,7 +5,7 @@ import Header from "../components/Header";
 import Student from "../components/Student";
 import "../styles/BurgerMenu.css";
 import "../styles/Buttons.css";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import AddStudent from "../components/AddStudent";
 import SearchBar from "../components/Searchbar";
 
@@ -18,12 +18,18 @@ export interface StudentProps {
 }
 
 function Ma_classe() {
+  const navigate = useNavigate();
   const [students, setStudents] = useState<StudentProps[]>([]);
   const [menuOpen, setMenuOpen] = useState<boolean>(false);
   const [filteredStudents, setFilteredStudents] = useState<StudentProps[]>([]);
   const [sortStudents, setSortStudents] = useState<string>("");
   const [showModal, setShowModal] = useState<boolean>(false);
   const [editMode, setEditMode] = useState(false);
+
+  /*Gère le retour à la page précédente*/
+  const handleBackClick = () => {
+    navigate(-1);
+  };
 
   useEffect(() => {
     fetch("http://localhost:3310/api/eleves")
@@ -262,6 +268,13 @@ function Ma_classe() {
             handleModalClose={handleModalClose}
             handleStudentAdded={handleStudentAdded}
           />
+          <button
+            type="button"
+            className="back_button_classe"
+            onClick={handleBackClick}
+          >
+            &#8617;
+          </button>
           <SearchBar onSearch={handleSearchClick} />
         </div>
       )}

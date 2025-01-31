@@ -50,6 +50,7 @@
   margin-left: 10px;
 }
 .exemplaire {
+  position: relative;
   border-radius: 5px;
   background: #7efe8b;
   height: 25px;
@@ -61,18 +62,14 @@
   display: flex;
   align-items: center;
 }
-.bookCover_container {
-  position: relative;
-}
-
 .bookCover_image {
   width: 100%;
   height: auto;
 }
-
 .add_exemplaire_button {
   position: absolute;
-  top: 105px;
+  z-index: 500;
+  top: 80px;
   right: 05px;
   background-color: #7efe8b;
   color: black;
@@ -82,6 +79,7 @@
   height: 30px;
   font-size: 20px;
   cursor: pointer;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
 }
 
 .overlay {

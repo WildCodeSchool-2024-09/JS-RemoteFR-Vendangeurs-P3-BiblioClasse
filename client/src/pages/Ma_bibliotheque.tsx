@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { slide as Menu } from "react-burger-menu";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "../styles/Book.css";
 import "../styles/BurgerMenu.css";
 import "../styles/Buttons.css";
@@ -20,6 +20,7 @@ interface BookProps {
 }
 
 function Ma_bibliotheque() {
+  const navigate = useNavigate();
   const [books, setBooks] = useState<BookProps[]>([]);
   const [menuOpen, setMenuOpen] = useState<boolean>(false);
   const [filteredBooks, setFilteredBooks] = useState<BookProps[]>([]);
@@ -27,6 +28,11 @@ function Ma_bibliotheque() {
   const [showModal, setShowModal] = useState<boolean>(false);
   const [showModalBook, setShowModalBook] = useState<boolean>(false);
   const [editMode, setEditMode] = useState(false);
+
+  /*Gère le retour à la page précédente*/
+  const handleBackClick = () => {
+    navigate(-1);
+  };
 
   /*Récupération des livres*/
   useEffect(() => {
@@ -235,7 +241,7 @@ function Ma_bibliotheque() {
           <Addbook
             showModal={showModal}
             handleModalClose={handleModalClose}
-            handleAddBookManuallyClick={handleAddBookManuallyClick} // Fonction pour ouvrir la modale enfant
+            handleAddBookManuallyClick={handleAddBookManuallyClick}
           />
           {/* Modale pour ajouter un livre manuellement */}
           <AddBookManually
@@ -243,6 +249,13 @@ function Ma_bibliotheque() {
             handleModalBookClose={handleModalBookClose}
             handleBookAdded={handleBookAdded}
           />
+          <button
+            type="button"
+            className="back_button_bibliotheque"
+            onClick={handleBackClick}
+          >
+            &#8617;
+          </button>
           <button
             type="button"
             className="search_button"

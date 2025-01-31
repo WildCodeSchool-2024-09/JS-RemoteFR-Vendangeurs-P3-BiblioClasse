@@ -71,7 +71,7 @@ function Book({
         <section className="Infos_livre">
           <p className="Titre">{titre}</p>
           <p className="Auteur">{auteur}</p>
-          <p className="Emprunte">Emprunté par Marie Curie</p>
+          <p className="Dispo">1 exemplaire(s) disponible(s) sur les 10</p>
         </section>
       )}
       {context === "mon_eleve" && (

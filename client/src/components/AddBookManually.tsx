@@ -1,5 +1,6 @@
 import "../styles/AddBookManually.css";
 import { useState } from "react";
+import defaultCover from "/src/assets/images/default_book_cover.png";
 
 interface AddBookManuallyProps {
   showModalBook: boolean;
@@ -38,9 +39,29 @@ function AddBookManually({
         setTitre(book.title);
         setAuteur(book.authors.join(", "));
         setLivre_resume(book.description);
-        setCouverture_img(book.imageLinks?.thumbnail || "default_cover_url");
+        setCouverture_img(book.imageLinks?.thumbnail || defaultCover);
       } else {
-        console.error("Aucun livre trouvé pour cet ISBN");
+        console.error("Aucun livre trouvé pour cet ISBN sur Google Books API");
+        const openLibraryResponse = await fetch(
+          `https://openlibrary.org/api/books?bibkeys=ISBN:${ISBN}&format=json&jscmd=data`,
+        );
+        const openLibraryData = await openLibraryResponse.json();
+        const bookKey = `ISBN:${ISBN}`;
+        if (openLibraryData[bookKey]) {
+          const book = openLibraryData[bookKey];
+          setTitre(book.title);
+          setAuteur(
+            book.authors
+              .map((author: { name: string }) => author.name)
+              .join(", "),
+          );
+          setLivre_resume(book.notes || "Pas de résumé disponible.");
+          setCouverture_img(book.cover?.medium || defaultCover);
+        } else {
+          console.error(
+            "Aucun livre trouvé pour cet ISBN sur Open Library API",
+          );
+        }
       }
     } catch (error) {
       console.error(

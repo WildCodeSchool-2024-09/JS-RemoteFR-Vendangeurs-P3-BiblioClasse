@@ -7,6 +7,8 @@ interface BorrowBookModalProps {
   availableExemplaires: {
     id_exemplaire: number;
     titre: string;
+    ISBN: string;
+    isAvailable: boolean;
   }[];
   handleBorrowModalClose: () => void;
   handleBookBorrowed: (borrowedBook: {

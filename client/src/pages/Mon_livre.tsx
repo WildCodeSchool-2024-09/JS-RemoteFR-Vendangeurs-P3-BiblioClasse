@@ -2,16 +2,15 @@ import "../styles/Mon_livre.css";
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import AddExemplaire from "../components/AddExemplaire";
-// import BorrowBookModal from "../components/BorrowBookModal";
 import EditBookModal from "../components/EditBookModal";
 import Header from "../components/Header";
 import Student from "../components/Student";
 
 function Mon_livre() {
   const location = useLocation();
-  const navigate = useNavigate();
   const { titre, auteur, livre_resume, couverture_img, ISBN } =
     location.state || {};
+  const navigate = useNavigate();
   const book = { titre, auteur, livre_resume, couverture_img, ISBN };
   const [showEditModal, setShowEditModal] = useState(false);
   const [showAddExemplaireModal, setShowAddExemplaireModal] = useState(false);
@@ -177,16 +176,15 @@ function Mon_livre() {
         <button type="button" className="edit_button" onClick={handleEditClick}>
           <img src="/src/assets/images/edit-btn.png" alt="stylo" />
         </button>
-
-        <button type="button" className="back_button" onClick={handleBackClick}>
-          &#8617;
-        </button>
         <button
           type="button"
           className="add_borrow_button"
           onClick={handleAddBorrowClick}
         >
           +
+        </button>
+        <button type="button" className="back_button" onClick={handleBackClick}>
+          &#8617;
         </button>
       </div>
       <EditBookModal

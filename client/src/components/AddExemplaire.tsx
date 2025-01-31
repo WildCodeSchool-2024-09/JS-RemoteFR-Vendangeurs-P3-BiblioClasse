@@ -6,6 +6,7 @@ interface AddExemplaireProps {
     id_exemplaire: number;
     ISBN: string;
     isAvailable: boolean;
+    titre: string;
   }) => void;
   handleModalClose: () => void;
   ISBN: string;

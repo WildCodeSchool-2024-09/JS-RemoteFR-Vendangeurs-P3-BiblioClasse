@@ -4,7 +4,9 @@
 .add_book_button,
 .search_button,
 .searchbar_button,
-.edit_button {
+.edit_button,
+.back_button_bibliotheque,
+.back_button_classe {
   background-color: var(--primary-color);
   border: none;
   height: 50px;
@@ -20,9 +22,7 @@
   bottom: 20px;
   right: 20px;
 }
-.add_borrow_button,
-.add_student_button,
-.add_book_button {
+.add_borrow_button {
   position: fixed;
   bottom: 80px;
   right: 20px;
@@ -55,4 +55,16 @@ button img {
   display: flex;
   flex-direction: row;
   justify-content: flex-end;
+}
+.back_button_bibliotheque,
+.back_button_classe {
+  position: fixed;
+  bottom: 80px;
+  right: 20px;
+}
+.add_book_button,
+.add_student_button {
+  position: fixed;
+  bottom: 140px;
+  right: 20px;
 }

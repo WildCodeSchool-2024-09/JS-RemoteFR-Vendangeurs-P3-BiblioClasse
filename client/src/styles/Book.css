@@ -17,11 +17,11 @@
 .Titre {
   font-weight: bold;
 }
-.Emprunte {
+.Dispo {
   font-style: italic;
 }
 .Titre,
-.Emprunte,
+.Dispo,
 .Auteur {
   font-size: 0.85rem;
   margin-left: 10px;

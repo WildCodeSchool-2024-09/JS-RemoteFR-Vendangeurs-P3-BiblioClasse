@@ -286,20 +286,22 @@ function BiblioClasse() {
       </Menu>
       <section className="section-eleves">
         <p className="intro">J'ai {students} élèves enregistrés :</p>
-        <ul className="statistiques-liste">
-          <li className="stats-item">
+        <section className="statistiques-liste">
+          <div className="stats-item">
             <span className="badge badge-green">{loansInProgress}</span>
-            <p>ont un emprunt en cours;</p>
-          </li>
-          <li className="stats-item">
+            <p className="texte-stat-item">ont un emprunt en cours;</p>
+          </div>
+          <div className="stats-item">
             <span className="badge badge-orange">{loansDueSoon}</span>
-            <p>doivent rendre au moins 1 livre dans moins de 7 jours;</p>
-          </li>
-          <li className="stats-item">
+            <p className="texte-stat-item">
+              doivent rendre au moins 1 livre dans moins de 7 jours;
+            </p>
+          </div>
+          <div className="stats-item">
             <span className="badge badge-red">{overdueLoans}</span>
-            <p>est en retard.</p>
-          </li>
-        </ul>
+            <p className="texte-stat-item">est en retard.</p>
+          </div>
+        </section>
         <div className="button-container">
           <button type="button" className="button" onClick={handleClasseClick}>
             Voir ma classe

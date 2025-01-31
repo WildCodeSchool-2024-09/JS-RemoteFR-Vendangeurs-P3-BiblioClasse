@@ -67,7 +67,7 @@ function ParametresModal({
         <form onSubmit={handleSubmit}>
           <div className="parametres-item">
             <label htmlFor="loanDuration">
-              Durée d'emprunt souhaitée (jours) :
+              Durée d'emprunt souhaitée (jours)* :
             </label>
             <div className="quantity-control">
               <button
@@ -88,8 +88,7 @@ function ParametresModal({
             </div>
           </div>
           <p className="parametres-info">
-            Attention, les dates retour des emprunts en cours ne seront pas
-            modifiées
+            *Les dates retour des emprunts en cours ne seront pas modifiées
           </p>
           <button type="submit" className="submit-button">
             Valider
