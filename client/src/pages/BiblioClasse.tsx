@@ -61,10 +61,13 @@ function BiblioClasse() {
     useState<boolean>(false);
   const [showReturnModal, setShowReturnModal] = useState<boolean>(false);
   const [errorLoanMessage, setErrorLoanMessage] = useState<string>("");
-  const [confirmationLoanMessage, setConfirmationLoanMessage] =
-    useState<string>("");
+  useState<string>("");
   const [showConfirmationLoanModal, setShowConfirmationLoanModal] =
     useState<boolean>(false);
+  const [confirmationStudent, setConfirmationStudent] = useState<string>("");
+  const [confirmationBook, setConfirmationBook] = useState<string>("");
+  const [confirmationDateRetour, setConfirmationDateRetour] =
+    useState<string>("");
 
   ////////////////*FETCH DATA*////////////////////
   useEffect(() => {
@@ -480,7 +483,9 @@ function BiblioClasse() {
           loanDuration={loanDuration}
           setErrorLoanMessage={setErrorLoanMessage}
           errorLoanMessage={errorLoanMessage}
-          setConfirmationLoanMessage={setConfirmationLoanMessage}
+          setConfirmationStudent={setConfirmationStudent}
+          setConfirmationBook={setConfirmationBook}
+          setConfirmationDateRetour={setConfirmationDateRetour}
         />
       )}
       {showParametresModal && (
@@ -493,7 +498,9 @@ function BiblioClasse() {
       )}
       {showConfirmationLoanModal && (
         <ConfirmationLoanModale
-          confirmationLoanMessage={confirmationLoanMessage}
+          confirmationStudent={confirmationStudent}
+          confirmationBook={confirmationBook}
+          confirmationDateRetour={confirmationDateRetour}
         />
       )}
     </div>

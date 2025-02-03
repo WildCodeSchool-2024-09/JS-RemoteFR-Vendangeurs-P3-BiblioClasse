@@ -68,6 +68,13 @@ class ExemplaireRepository {
     return this.read(id_exemplaire);
   }
 
+  async updateAvailability(id_exemplaire: number) {
+    await databaseClient.query(
+      "UPDATE exemplaire SET isAvailable = TRUE WHERE id_exemplaire = ?",
+      [id_exemplaire],
+    );
+  }
+
   async delete(id_exemplaire: number) {
     await databaseClient.query(
       "DELETE FROM exemplaire WHERE id_exemplaire = ?",

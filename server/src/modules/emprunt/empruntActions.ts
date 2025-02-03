@@ -37,17 +37,6 @@ const edit: RequestHandler = async (req, res, next) => {
   }
 };
 
-const returnBook: RequestHandler = async (req, res, next) => {
-  try {
-    const updatedEmprunt = await empruntRepository.returnBook(
-      Number(req.params.id_emprunt),
-    );
-    res.json(updatedEmprunt);
-  } catch (err) {
-    next(err);
-  }
-};
-
 const add: RequestHandler = async (req, res, next): Promise<void> => {
   try {
     const { id_exemplaire, id_eleve, date_emprunt, date_retour } = req.body;
@@ -179,5 +168,4 @@ export default {
   countStudentsWithOverdueLoans,
   LoansInProgress,
   LoansByStudent,
-  returnBook,
 };

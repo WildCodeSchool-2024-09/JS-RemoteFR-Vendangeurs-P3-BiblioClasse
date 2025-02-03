@@ -22,7 +22,9 @@ interface BorrowBookModalProps {
   loanDuration: number;
   setErrorLoanMessage: (message: string) => void;
   errorLoanMessage: string;
-  setConfirmationLoanMessage: (message: string) => void;
+  setConfirmationStudent: (message: string) => void;
+  setConfirmationBook: (message: string) => void;
+  setConfirmationDateRetour: (message: string) => void;
 }
 
 interface StudenProps {
@@ -39,7 +41,9 @@ function BorrowBookModal({
   loanDuration,
   setErrorLoanMessage,
   errorLoanMessage,
-  setConfirmationLoanMessage,
+  setConfirmationStudent,
+  setConfirmationBook,
+  setConfirmationDateRetour,
 }: BorrowBookModalProps) {
   if (!showModal) return null;
 
@@ -115,10 +119,14 @@ function BorrowBookModal({
           const book = availableExemplaires.find(
             (exemplaire) => exemplaire.id_exemplaire === selectedExemplaire,
           );
-          setConfirmationLoanMessage(
-            `${student?.nom} ${student?.prenom} emprunte le livre "${book?.titre}" à rendre avant le ${dateRetour}`,
-          );
           setErrorLoanMessage("");
+          if (student) {
+            setConfirmationStudent(`${student.nom} ${student.prenom}`);
+          }
+          if (book) {
+            setConfirmationBook(book.titre);
+          }
+          setConfirmationDateRetour(dateRetour);
         } else {
           console.error("Erreur lors de la création de l'emprunt");
         }

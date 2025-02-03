@@ -52,13 +52,16 @@ class EmpruntRepository {
     return this.read(id_emprunt);
   }
 
-  async returnBook(id_emprunt: number) {
-    const dateRetourEffectif = new Date().toISOString().slice(0, 10);
-    await databaseClient.query(
-      "UPDATE emprunt SET date_retour_effectif = ? WHERE id_emprunt = ?",
-      [dateRetourEffectif, id_emprunt],
+  async updateReturnDate(
+    id_exemplaire: number,
+    id_eleve: number,
+    date_retour_effectif: string,
+  ) {
+    const [rows] = await databaseClient.query<Rows>(
+      "UPDATE emprunt SET date_retour_effectif = ? WHERE id_exemplaire = ? AND id_eleve = ? AND date_retour_effectif IS NULL",
+      [date_retour_effectif, id_exemplaire, id_eleve],
     );
-    return this.read(id_emprunt);
+    return rows;
   }
 
   async delete(id_emprunt: number) {
@@ -95,7 +98,7 @@ class EmpruntRepository {
 
   async getEmpruntsByEleve(id_eleve: number) {
     const [rows] = await databaseClient.query(
-      "SELECT e.id_exemplaire, l.titre, l.auteur, l.livre_resume, l.couverture_img, l.ISBN, e.date_retour FROM emprunt e JOIN exemplaire ex ON e.id_exemplaire = ex.id_exemplaire JOIN livre l ON ex.ISBN = l.ISBN WHERE e.id_eleve = ?",
+      "SELECT e.id_exemplaire, l.titre, l.auteur, l.livre_resume, l.couverture_img, l.ISBN, e.date_retour FROM emprunt e JOIN exemplaire ex ON e.id_exemplaire = ex.id_exemplaire JOIN livre l ON ex.ISBN = l.ISBN WHERE e.id_eleve = ? AND date_retour_effectif IS NULL ORDER BY l.titre",
       [id_eleve],
     );
     return rows;

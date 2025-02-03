@@ -55,7 +55,10 @@ router.get(
 );
 router.get("/api/emprunts_in-progress", empruntActions.LoansInProgress);
 router.get("/api/emprunts_by_student/:id_eleve", empruntActions.LoansByStudent);
-router.post("/api/emprunts/return/:id_emprunt", empruntActions.returnBook);
+
+import retour from "./modules/retour/retourActions";
+router.post("/api/emprunts/retours", retour.returnBook);
+
 import parametreActions from "./modules/parametre/parametreActions";
 router.get("/api/parametres/loanDuration", parametreActions.read);
 router.put("/api/parametres/:id_parametre", parametreActions.edit);
