@@ -52,17 +52,45 @@ class EmpruntRepository {
     return this.read(id_emprunt);
   }
 
+  async returnBook(id_emprunt: number) {
+    const dateRetourEffectif = new Date().toISOString().slice(0, 10);
+    await databaseClient.query(
+      "UPDATE emprunt SET date_retour_effectif = ? WHERE id_emprunt = ?",
+      [dateRetourEffectif, id_emprunt],
+    );
+    return this.read(id_emprunt);
+  }
+
   async delete(id_emprunt: number) {
     await databaseClient.query("DELETE FROM emprunt WHERE id_emprunt = ?", [
       id_emprunt,
     ]);
   }
 
-  async countLoansByStatus() {
+  async countStudentsWithLoansInProgress() {
     const [rows] = await databaseClient.query<Rows>(
-      "SELECT SUM(CASE WHEN date_retour_effectif IS NULL THEN 1 ELSE 0 END) AS inProgress, SUM(CASE WHEN date_retour_effectif IS NULL AND date_retour <= DATE_ADD(NOW(), INTERVAL 7 DAY) THEN 1 ELSE 0 END) AS dueSoon, SUM(CASE WHEN date_retour_effectif IS NULL AND date_retour < NOW() THEN 1 ELSE 0 END) AS overdue FROM emprunt",
+      "SELECT COUNT(DISTINCT id_eleve) AS nb_eleves_emprunt_en_cours FROM emprunt WHERE date_retour_effectif IS NULL;",
     );
-    return rows[0];
+    return rows[0].nb_eleves_emprunt_en_cours;
+  }
+  async countStudentsWithLoansDueSoon() {
+    const [rows] = await databaseClient.query<Rows>(
+      "SELECT COUNT(DISTINCT id_eleve) AS nb_eleves_a_rendre_dans_7_jours FROM emprunt WHERE date_retour_effectif IS NULL AND date_retour <= CURDATE() + INTERVAL 7 DAY;",
+    );
+    return rows[0].nb_eleves_a_rendre_dans_7_jours;
+  }
+  async countStudentsWithOverdueLoans() {
+    const [rows] = await databaseClient.query<Rows>(
+      "SELECT COUNT(DISTINCT id_eleve) AS nb_eleves_en_retard FROM emprunt WHERE date_retour_effectif IS NULL AND date_retour < CURDATE();",
+    );
+    return rows[0].nb_eleves_en_retard;
+  }
+
+  async LoansInProgress() {
+    const [rows] = await databaseClient.query<Rows>(
+      "SELECT SUM(CASE WHEN date_retour_effectif IS NULL THEN 1 ELSE 0 END) AS inProgress FROM emprunt;",
+    );
+    return rows[0].inProgress;
   }
 
   async getEmpruntsByEleve(id_eleve: number) {

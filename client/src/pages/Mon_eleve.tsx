@@ -116,18 +116,18 @@ function Mon_eleve() {
         ))}
       </section>
       <div className="buttons">
-        <button type="button" className="edit_button" onClick={handleEditClick}>
-          <img src="/src/assets/images/edit-btn.png" alt="stylo" />
-        </button>
-        <button type="button" className="back_button" onClick={handleBackClick}>
-          &#8617;
-        </button>
         <button
           type="button"
           className="add_borrow_button"
           onClick={handleAddBorrowClick}
         >
           +
+        </button>
+        <button type="button" className="back_button" onClick={handleBackClick}>
+          &#8617;
+        </button>
+        <button type="button" className="edit_button" onClick={handleEditClick}>
+          <img src="/src/assets/images/edit-btn.png" alt="stylo" />
         </button>
       </div>
       <EditStudentModal

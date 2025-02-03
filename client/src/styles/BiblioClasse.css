@@ -1,6 +1,6 @@
 .section-eleves,
 .section-livres {
-  margin: 20px;
+  margin: 15px 20px 0px 20px;
 }
 .intro {
   color: #000;
@@ -86,7 +86,8 @@
 }
 
 .p-emprunt {
-  margin-bottom: 7px;
+  margin-bottom: 10px;
+  margin-top: 10px;
 }
 
 .top-books {

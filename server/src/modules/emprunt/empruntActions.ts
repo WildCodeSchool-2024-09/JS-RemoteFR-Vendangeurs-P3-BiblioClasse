@@ -37,6 +37,17 @@ const edit: RequestHandler = async (req, res, next) => {
   }
 };
 
+const returnBook: RequestHandler = async (req, res, next) => {
+  try {
+    const updatedEmprunt = await empruntRepository.returnBook(
+      Number(req.params.id_emprunt),
+    );
+    res.json(updatedEmprunt);
+  } catch (err) {
+    next(err);
+  }
+};
+
 const add: RequestHandler = async (req, res, next): Promise<void> => {
   try {
     const { id_exemplaire, id_eleve, date_emprunt, date_retour } = req.body;
@@ -84,9 +95,55 @@ const destroy: RequestHandler = async (req, res, next) => {
   }
 };
 
-const countLoansByStatus: RequestHandler = async (req, res, next) => {
+const countStudentsWithLoansInProgress: RequestHandler = async (
+  req,
+  res,
+  next,
+) => {
   try {
-    const counts = await empruntRepository.countLoansByStatus();
+    const counts = await empruntRepository.countStudentsWithLoansInProgress();
+    res.json(counts);
+  } catch (error) {
+    console.error("Erreur lors de la récupération des emprunts:", error);
+    res
+      .status(500)
+      .json({ error: "Erreur lors de la récupération des emprunts" });
+  }
+};
+const countStudentsWithLoansDueSoon: RequestHandler = async (
+  req,
+  res,
+  next,
+) => {
+  try {
+    const counts = await empruntRepository.countStudentsWithLoansDueSoon();
+    res.json(counts);
+  } catch (error) {
+    console.error("Erreur lors de la récupération des emprunts:", error);
+    res
+      .status(500)
+      .json({ error: "Erreur lors de la récupération des emprunts" });
+  }
+};
+const countStudentsWithOverdueLoans: RequestHandler = async (
+  req,
+  res,
+  next,
+) => {
+  try {
+    const counts = await empruntRepository.countStudentsWithOverdueLoans();
+    res.json(counts);
+  } catch (error) {
+    console.error("Erreur lors de la récupération des emprunts:", error);
+    res
+      .status(500)
+      .json({ error: "Erreur lors de la récupération des emprunts" });
+  }
+};
+
+const LoansInProgress: RequestHandler = async (req, res, next) => {
+  try {
+    const counts = await empruntRepository.LoansInProgress();
     res.json(counts);
   } catch (error) {
     console.error("Erreur lors de la récupération des emprunts:", error);
@@ -117,6 +174,10 @@ export default {
   add,
   edit,
   destroy,
-  countLoansByStatus,
+  countStudentsWithLoansInProgress,
+  countStudentsWithLoansDueSoon,
+  countStudentsWithOverdueLoans,
+  LoansInProgress,
   LoansByStudent,
+  returnBook,
 };

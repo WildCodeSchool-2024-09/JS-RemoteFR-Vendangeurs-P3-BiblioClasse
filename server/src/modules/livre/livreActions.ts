@@ -3,59 +3,37 @@ import type { RequestHandler } from "express";
 import exemplaireRepository from "../exemplaire/exemplaireRepository";
 import livreRepository from "./livreRepository";
 
-// The B of BREAD - Browse (Read All) operation
 const browse: RequestHandler = async (req, res, next) => {
   try {
-    // Fetch all items
     const livres = await livreRepository.readAll();
-
-    // Respond with the items in JSON format
     res.json(livres);
   } catch (err) {
-    // Pass any errors to the error-handling middleware
     next(err);
   }
 };
 
-// The R of BREAD - Read operation
 const read: RequestHandler = async (req, res, next) => {
   try {
-    // Fetch a specific item based on the provided ID
     const livre = await livreRepository.read(req.params.ISBN);
-
-    // If the item is not found, respond with HTTP 404 (Not Found)
-    // Otherwise, respond with the item in JSON format
     if (livre == null) {
       res.sendStatus(404);
     } else {
       res.json(livre);
     }
   } catch (err) {
-    // Pass any errors to the error-handling middleware
     next(err);
   }
 };
 
-const add: RequestHandler = async (req, res, next) => {
+const getTopBooks: RequestHandler = async (req, res, next) => {
   try {
-    const { ISBN, titre, auteur, couverture_img, livre_resume } = req.body;
-    const newLivre = { ISBN, titre, auteur, couverture_img, livre_resume };
-    await livreRepository.create(newLivre);
-
-    // Ajouter un exemplaire pour ce livre
-    const newExemplaire = { ISBN, isAvailable: true };
-    await exemplaireRepository.create(newExemplaire);
-
-    res
-      .status(201)
-      .json({ message: "Livre et exemplaire ajoutés avec succès" });
+    const topBorrowedBooks = await livreRepository.getTopBooks();
+    res.json(topBorrowedBooks);
   } catch (err) {
-    console.error("Erreur lors de l'ajout du livre:", err);
     next(err);
   }
 };
 
-// The E of BREAD - Edit operation
 const edit: RequestHandler = async (req, res, next) => {
   try {
     const updatedLivre = await livreRepository.update(
@@ -68,7 +46,22 @@ const edit: RequestHandler = async (req, res, next) => {
   }
 };
 
-// The D of BREAD - Delete operation
+const add: RequestHandler = async (req, res, next) => {
+  try {
+    const { ISBN, titre, auteur, couverture_img, livre_resume } = req.body;
+    const newLivre = { ISBN, titre, auteur, couverture_img, livre_resume };
+    await livreRepository.create(newLivre);
+    const newExemplaire = { ISBN, isAvailable: true };
+    await exemplaireRepository.create(newExemplaire);
+    res
+      .status(201)
+      .json({ message: "Livre et exemplaire ajoutés avec succès" });
+  } catch (err) {
+    console.error("Erreur lors de l'ajout du livre:", err);
+    next(err);
+  }
+};
+
 const destroy: RequestHandler = async (req, res, next) => {
   try {
     await livreRepository.delete(req.params.ISBN);
@@ -78,7 +71,6 @@ const destroy: RequestHandler = async (req, res, next) => {
   }
 };
 
-//The S of breadS - Search operation
 const search: RequestHandler = async (req, res, next) => {
   try {
     const searchTerm = req.query.q as string;
@@ -89,4 +81,12 @@ const search: RequestHandler = async (req, res, next) => {
   }
 };
 
-export default { browse, read, add, edit, destroy, search };
+export default {
+  browse,
+  read,
+  add,
+  edit,
+  destroy,
+  search,
+  getTopBooks,
+};

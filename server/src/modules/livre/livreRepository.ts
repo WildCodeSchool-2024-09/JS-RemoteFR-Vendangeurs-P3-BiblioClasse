@@ -1,3 +1,4 @@
+import { T } from "@faker-js/faker/dist/airline-C5Qwd7_q";
 import databaseClient from "../../../database/client";
 import type { Result, Rows } from "../../../database/client";
 
@@ -7,6 +8,14 @@ type Livre = {
   auteur: string;
   couverture_img: string;
   livre_resume: string;
+};
+
+type TopBooks = {
+  ISBN: string;
+  couverture_img: string;
+  titre: string;
+  nb_emprunts: number;
+  auteur: string;
 };
 
 class livreRepository {
@@ -42,6 +51,13 @@ class livreRepository {
   async readAll() {
     const [rows] = await databaseClient.query<Rows>("SELECT * FROM livre");
     return rows as Livre[];
+  }
+
+  async getTopBooks() {
+    const [rows] = await databaseClient.query<Rows>(
+      "SELECT l.ISBN, l.couverture_img, l.titre, l.auteur, COUNT(em.id_exemplaire) AS nb_emprunts FROM livre l JOIN exemplaire ex ON l.ISBN = ex.ISBN JOIN emprunt em ON ex.id_exemplaire = em.id_exemplaire GROUP BY l.ISBN, l.titre, l.auteur, l.couverture_img ORDER BY nb_emprunts DESC LIMIT 3;",
+    );
+    return rows as TopBooks[];
   }
 
   // The U of CRUD - Update operation

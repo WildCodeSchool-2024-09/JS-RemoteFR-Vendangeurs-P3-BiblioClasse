@@ -20,6 +20,9 @@ interface BorrowBookModalProps {
     date_retour: string;
   }) => void;
   loanDuration: number;
+  setErrorLoanMessage: (message: string) => void;
+  errorLoanMessage: string;
+  setConfirmationLoanMessage: (message: string) => void;
 }
 
 interface StudenProps {
@@ -34,13 +37,34 @@ function BorrowBookModal({
   handleBookBorrowed,
   availableExemplaires,
   loanDuration,
+  setErrorLoanMessage,
+  errorLoanMessage,
+  setConfirmationLoanMessage,
 }: BorrowBookModalProps) {
+  if (!showModal) return null;
+
   const [selectedExemplaire, setSelectedExemplaire] = useState<number | null>(
     null,
   );
   const [studentId, setStudentId] = useState<number | null>(null);
   const [students, setStudents] = useState<StudenProps[]>([]);
   const [searchText, setSearchText] = useState<string>("");
+  const [selectedStudentSetted, setSelectedStudentSetted] =
+    useState<boolean>(false);
+  const [dateRetour, setDateRetour] = useState<string>("");
+  const [dateEmprunt, setDateEmprunt] = useState<string>();
+
+  /* Calcul de la date de retour */
+  useEffect(() => {
+    if (selectedStudentSetted && selectedExemplaire) {
+      const date_emprunt = new Date();
+      const date_retour = addDays(date_emprunt, loanDuration);
+      const formattedDateEmprunt = format(date_emprunt, "yyyy-MM-dd");
+      const formattedDateRetour = format(date_retour, "yyyy-MM-dd");
+      setDateEmprunt(formattedDateEmprunt);
+      setDateRetour(formattedDateRetour);
+    }
+  }, [loanDuration, selectedStudentSetted, selectedExemplaire]);
 
   /* Récupération des élèves */
   useEffect(() => {
@@ -61,16 +85,14 @@ function BorrowBookModal({
   /* Fonction pour créer un emprunt */
   const handleBorrowSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (selectedExemplaire && studentId) {
+    if (!selectedStudentSetted || !selectedExemplaire || !dateRetour) {
+      setErrorLoanMessage(
+        "Veuillez sélectionner un élève, un livre et une date de retour avant de valider l'emprunt.",
+      );
+      return;
+    }
+    if (selectedExemplaire && studentId && dateRetour) {
       try {
-        const date_emprunt = new Date();
-        const date_retour = addDays(date_emprunt, loanDuration);
-        const formattedDateEmprunt = format(
-          date_emprunt,
-          "yyyy-MM-dd HH:mm:ss",
-        );
-        const formattedDateRetour = format(date_retour, "yyyy-MM-dd HH:mm:ss");
-
         const response = await fetch("http://localhost:3310/api/emprunts", {
           method: "POST",
           headers: {
@@ -79,21 +101,30 @@ function BorrowBookModal({
           body: JSON.stringify({
             id_exemplaire: selectedExemplaire,
             id_eleve: studentId,
-            date_emprunt: formattedDateEmprunt,
-            date_retour: formattedDateRetour,
+            date_emprunt: dateEmprunt,
+            date_retour: dateRetour,
           }),
         });
-        if (!response.ok) {
-          throw new Error("Erreur lors de la création de l'emprunt");
+
+        if (response.ok) {
+          const borrowedBook = await response.json();
+          handleBookBorrowed(borrowedBook);
+          const student = students.find(
+            (student) => student.id_eleve === studentId,
+          );
+          const book = availableExemplaires.find(
+            (exemplaire) => exemplaire.id_exemplaire === selectedExemplaire,
+          );
+          setConfirmationLoanMessage(
+            `${student?.nom} ${student?.prenom} emprunte le livre "${book?.titre}" à rendre avant le ${dateRetour}`,
+          );
+          setErrorLoanMessage("");
+        } else {
+          console.error("Erreur lors de la création de l'emprunt");
         }
-        const borrowedBook = await response.json();
-        handleBookBorrowed(borrowedBook);
-        alert("Emprunt créé avec succès");
       } catch (error) {
         console.error("Erreur lors de la création de l'emprunt:", error);
       }
-    } else {
-      alert("Veuillez sélectionner un élève et un exemplaire");
     }
   };
 
@@ -108,9 +139,8 @@ function BorrowBookModal({
   const handleStudentClick = (student: StudenProps) => {
     setStudentId(student.id_eleve);
     setSearchText(`${student.nom} ${student.prenom}`);
+    setSelectedStudentSetted(true);
   };
-
-  if (!showModal) return null;
 
   return (
     <div
@@ -134,29 +164,9 @@ function BorrowBookModal({
         <form onSubmit={handleBorrowSubmit}>
           <section className="modal-borrow-content">
             <div>
-              <label htmlFor="exemplaire">Livre :</label>
-              <select
-                className="option-exemplaire"
-                id="exemplaire"
-                value={selectedExemplaire || ""}
-                onChange={(e) => setSelectedExemplaire(Number(e.target.value))}
-              >
-                <option value="" disabled className="option-exemplaire">
-                  Sélectionnez un livre
-                </option>
-                {availableExemplaires.map((exemplaire) => (
-                  <option
-                    key={exemplaire.id_exemplaire}
-                    value={exemplaire.id_exemplaire}
-                    className="option-exemplaire"
-                  >
-                    {exemplaire.titre}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div>
-              <label htmlFor="student">Élève :</label>
+              <label className="label-borrow-book" htmlFor="student">
+                Sélectionnez l'élève :
+              </label>
               <input
                 type="text"
                 id="student"
@@ -179,7 +189,57 @@ function BorrowBookModal({
                 ))}
               </div>
             </div>
+            {selectedStudentSetted && (
+              <div>
+                <label className="label-borrow-book" htmlFor="exemplaire">
+                  Choisissez le livre :
+                </label>
+                <select
+                  className="option-exemplaire"
+                  id="exemplaire"
+                  value={selectedExemplaire || ""}
+                  onChange={(e) =>
+                    setSelectedExemplaire(Number(e.target.value))
+                  }
+                >
+                  <option value="" disabled className="option-exemplaire">
+                    Sélectionnez un livre
+                  </option>
+                  {availableExemplaires.map((exemplaire) => (
+                    <option
+                      key={exemplaire.id_exemplaire}
+                      value={exemplaire.id_exemplaire}
+                      className="option-exemplaire"
+                    >
+                      {exemplaire.titre}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            )}
+            {selectedStudentSetted && selectedExemplaire && (
+              <div className="field">
+                <label className="label-borrow-book" htmlFor="date_retour">
+                  Date de retour* :
+                </label>
+                <div className="control">
+                  <input
+                    type="date"
+                    className="input-date-retour"
+                    value={dateRetour}
+                    onChange={(e) => setDateRetour(e.target.value)}
+                  />
+                </div>
+                <p className="p-loan-duration">
+                  * Pour modifier la durée d'emprunt par défaut : Menu Accueil
+                  &gt; Paramètres
+                </p>
+              </div>
+            )}
           </section>
+          {errorLoanMessage && (
+            <div className="error-loan-message">{errorLoanMessage}</div>
+          )}
           <button type="submit" className="borrow-button">
             Emprunter
           </button>
