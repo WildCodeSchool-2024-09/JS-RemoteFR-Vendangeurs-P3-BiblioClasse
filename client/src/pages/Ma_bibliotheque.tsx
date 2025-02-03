@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { slide as Menu } from "react-burger-menu";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "../styles/Book.css";
 import "../styles/BurgerMenu.css";
 import "../styles/Buttons.css";
@@ -16,9 +16,11 @@ interface BookProps {
   livre_resume: string;
   couverture_img: string;
   ISBN: string;
+  date_retour?: string;
 }
 
 function Ma_bibliotheque() {
+  const navigate = useNavigate();
   const [books, setBooks] = useState<BookProps[]>([]);
   const [menuOpen, setMenuOpen] = useState<boolean>(false);
   const [filteredBooks, setFilteredBooks] = useState<BookProps[]>([]);
@@ -27,8 +29,13 @@ function Ma_bibliotheque() {
   const [showModalBook, setShowModalBook] = useState<boolean>(false);
   const [editMode, setEditMode] = useState(false);
 
+  /*Gère le retour à la page précédente*/
+  const handleBackClick = () => {
+    navigate(-1);
+  };
+
+  /*Récupération des livres*/
   useEffect(() => {
-    // Faire une requête à l'API pour récupérer les livres
     const fetchBooks = async () => {
       try {
         const response = await fetch("http://localhost:3310/api/livres");
@@ -43,34 +50,13 @@ function Ma_bibliotheque() {
     fetchBooks();
   }, []);
 
-  /*Gère l'ouverture du menu tiroir*/
+  /*Gère l'ouverture et la fermeture du menu tiroir*/
   const handleMenuStateChange = (state: { isOpen: boolean }) => {
     setMenuOpen(state.isOpen);
   };
-  /*Gère la fermeture du menu tiroir*/
   const closeMenu = () => {
     setMenuOpen(false);
   };
-
-  /*Fonction pour ajouter un livre*/
-  const handleAddBookClick = () => {
-    setShowModal(true);
-    console.info("Add book");
-  };
-
-  /*Gère l'ouverture de la modale*/
-  const handleModalClose = () => {
-    setShowModal(false);
-  };
-
-  /* Gère l'ouverture de la modale 2 */
-  const handleAddBookManuallyClick = () => {
-    setShowModalBook(true);
-    setShowModal(false);
-  };
-
-  /*Gère la fermeture de la modale 2 */
-  const handleModalBookClose = () => setShowModalBook(false);
 
   /*Fonction pour trier les livres*/
   const sortedBooks = [...filteredBooks].sort((a, b) => {
@@ -83,10 +69,27 @@ function Ma_bibliotheque() {
     return 0;
   });
 
+  /*Gère l'ouverture et la fermeturer du modal pour ajouter un livre*/
+  const handleAddBookClick = () => {
+    setShowModal(true);
+  };
+  const handleModalClose = () => {
+    setShowModal(false);
+  };
+
+  /* Gère l'ouverture et la fermeture de la modale 2 */
+  const handleAddBookManuallyClick = () => {
+    setShowModalBook(true);
+    setShowModal(false);
+  };
+  const handleModalBookClose = () => setShowModalBook(false);
+
   /*Fonction pour rechercher un livre*/
   const handleSearchClick = (searchTerm: string) => {
-    const filtered = books.filter((book) =>
-      book.titre.toLowerCase().includes(searchTerm.toLowerCase()),
+    const filtered = books.filter(
+      (book) =>
+        book.titre.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        book.auteur.toLowerCase().includes(searchTerm.toLowerCase()),
     );
     setFilteredBooks(filtered);
   };
@@ -181,7 +184,7 @@ function Ma_bibliotheque() {
           </label>
         </div>
         <div className="menu-item">
-          <Link to="/" onClick={closeMenu}>
+          <Link to="/accueil" onClick={closeMenu}>
             <strong>Accueil</strong>
           </Link>
         </div>
@@ -210,6 +213,8 @@ function Ma_bibliotheque() {
               livre_resume={book.livre_resume}
               couverture_img={book.couverture_img}
               ISBN={book.ISBN}
+              date_retour={book.date_retour}
+              context="bibliotheque"
             />
             {editMode && (
               <button
@@ -236,14 +241,21 @@ function Ma_bibliotheque() {
           <Addbook
             showModal={showModal}
             handleModalClose={handleModalClose}
-            handleAddBookManuallyClick={handleAddBookManuallyClick} // Fonction pour ouvrir la modale enfant
+            handleAddBookManuallyClick={handleAddBookManuallyClick}
           />
           {/* Modale pour ajouter un livre manuellement */}
           <AddBookManually
             showModalBook={showModalBook}
             handleModalBookClose={handleModalBookClose}
-            onBookAdded={handleBookAdded}
+            handleBookAdded={handleBookAdded}
           />
+          <button
+            type="button"
+            className="back_button_bibliotheque"
+            onClick={handleBackClick}
+          >
+            &#8617;
+          </button>
           <button
             type="button"
             className="search_button"

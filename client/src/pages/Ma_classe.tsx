@@ -5,19 +5,20 @@ import Header from "../components/Header";
 import Student from "../components/Student";
 import "../styles/BurgerMenu.css";
 import "../styles/Buttons.css";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import AddStudent from "../components/AddStudent";
 import SearchBar from "../components/Searchbar";
 
-interface StudentProps {
+export interface StudentProps {
   id_eleve: number;
   prenom: string;
   nom: string;
-  returnDueDate: string;
+  date_retour: string;
   nbOfBooksBorrowed: number;
 }
 
 function Ma_classe() {
+  const navigate = useNavigate();
   const [students, setStudents] = useState<StudentProps[]>([]);
   const [menuOpen, setMenuOpen] = useState<boolean>(false);
   const [filteredStudents, setFilteredStudents] = useState<StudentProps[]>([]);
@@ -25,27 +26,49 @@ function Ma_classe() {
   const [showModal, setShowModal] = useState<boolean>(false);
   const [editMode, setEditMode] = useState(false);
 
+  /*Gère le retour à la page précédente*/
+  const handleBackClick = () => {
+    navigate(-1);
+  };
+
   useEffect(() => {
     fetch("http://localhost:3310/api/eleves")
       .then((response) => response.json())
       .then((data) => {
         setStudents(data);
         setFilteredStudents(data);
+        console.info("Elèves récupérés:", data);
       })
       .catch((error) =>
         console.error("Erreur lors de la récupération des élèves:", error),
       );
   }, []);
 
+  /*Récupération des élèves*/
+  useEffect(() => {
+    const fetchStudents = async () => {
+      try {
+        const response = await fetch("http://localhost:3310/api/eleves");
+        const data = await response.json();
+        setStudents(data);
+        setFilteredStudents(data);
+      } catch (error) {
+        console.error("Erreur lors de la récupération des livres:", error);
+      }
+    };
+
+    fetchStudents();
+  }, []);
+
+  /*Gère l'ouverture et la fermeture du menu tiroir*/
   const handleMenuStateChange = (state: { isOpen: boolean }) => {
     setMenuOpen(state.isOpen);
   };
-
   const closeMenu = () => {
     setMenuOpen(false);
-    console.info(students);
   };
 
+  /*Fonction pour trier les élèves par nom ou par prénom*/
   const sortedStudents = [...filteredStudents].sort((a, b) => {
     if (sortStudents === "prenom") {
       return a.prenom.localeCompare(b.prenom);
@@ -53,26 +76,34 @@ function Ma_classe() {
     if (sortStudents === "nom") {
       return a.nom.localeCompare(b.nom);
     }
+    if (sortStudents === "date_retour") {
+      return a.date_retour.localeCompare(b.date_retour);
+    }
     return 0;
   });
 
+  /*Gère l'ouverture et la fermeturer du modal pour ajouter un élève*/
   const handleAddStudentClick = () => {
     setShowModal(true);
   };
-
   const handleModalClose = () => {
     setShowModal(false);
   };
 
+  /*Fonction pour rechercher un élève*/
   const handleSearchClick = (searchTerm: string) => {
-    fetch(`http://localhost:3310/api/eleves/search?q=${searchTerm}`)
-      .then((response) => response.json())
-      .then((data) => {
-        setFilteredStudents(data);
-      })
-      .catch((error) =>
-        console.error("Erreur lors de la recherche des élèves:", error),
-      );
+    const filtered = students.filter(
+      (student) =>
+        student.nom.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        student.prenom.toLowerCase().includes(searchTerm.toLowerCase()),
+    );
+    setFilteredStudents(filtered);
+  };
+
+  /*Fonction pour mettre à jour la liste des élèves après en avoir ajouté un*/
+  const handleStudentAdded = (newStudent: StudentProps) => {
+    setStudents((prevStudents) => [...prevStudents, newStudent]);
+    setFilteredStudents((prevStudents) => [...prevStudents, newStudent]);
   };
 
   /*Fonction pour éditer la liste*/
@@ -110,7 +141,7 @@ function Ma_classe() {
       <Header />
       {editMode && (
         <div className="delete-mode-banner">
-          <p>Cliquez sur un livre pour le supprimer.</p>
+          <p>Cliquez sur un élève pour le supprimer.</p>
           <button
             onClick={handleEditListClick}
             className="exit-delete-mode-button"
@@ -162,9 +193,22 @@ function Ma_classe() {
             />
             Trier par nom
           </label>
+          <label className="radio">
+            <input
+              type="radio"
+              name="sort"
+              value="date_retour"
+              checked={sortStudents === "date_retour"}
+              onChange={() => {
+                setSortStudents("date_retour");
+                closeMenu();
+              }}
+            />
+            Trier par date retour
+          </label>
         </div>
         <div className="menu-item">
-          <Link to="/" onClick={closeMenu}>
+          <Link to="/accueil" onClick={closeMenu}>
             <strong>Accueil</strong>
           </Link>
         </div>
@@ -193,8 +237,9 @@ function Ma_classe() {
                 id_eleve={student.id_eleve}
                 prenom={student.prenom}
                 nom={student.nom}
-                returnDueDate={student.returnDueDate}
+                date_retour={student.date_retour}
                 nbOfBooksBorrowed={student.nbOfBooksBorrowed}
+                context="classe"
               />
               {editMode && (
                 <button
@@ -221,7 +266,15 @@ function Ma_classe() {
           <AddStudent
             showModal={showModal}
             handleModalClose={handleModalClose}
+            handleStudentAdded={handleStudentAdded}
           />
+          <button
+            type="button"
+            className="back_button_classe"
+            onClick={handleBackClick}
+          >
+            &#8617;
+          </button>
           <SearchBar onSearch={handleSearchClick} />
         </div>
       )}

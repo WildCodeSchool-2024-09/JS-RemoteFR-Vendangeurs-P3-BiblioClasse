@@ -1,29 +1,35 @@
+.overlay {
+  position: fixed;
+  top: 10.5%;
+  left: 0;
+  width: 100%;
+  height: 90%;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 999;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 .close-button-modal {
   position: absolute;
   right: 10px;
-  top: 0px;
-  margin: 0px;
-  padding: 0px;
   border: none;
   font-size: 30px;
   background: transparent;
   cursor: pointer;
   color: var(--primary-color);
 }
-.AddStudent {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -90%);
+.EditStudentModal {
+  position: relative;
   z-index: 1000;
   border-radius: 13px;
   background: #fcfcfc;
   box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
   width: 90%;
-  height: 35%;
+  height: auto;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: flex-start;
 }
 .h2modal {
   color: var(--primary-color);
@@ -34,22 +40,53 @@
   font-weight: 700;
   margin: 35px 0 20px 0;
 }
+
+.form-modal {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  text-align: center;
+}
+
 .pmodal {
   color: var(--primary-color);
   font-family: "Poppins", sans-serif;
   font-size: 18px;
   font-style: normal;
   font-weight: 400;
-  margin: 0 20px;
 }
 .buttons-modal {
   display: flex;
   justify-content: space-between;
 }
-.button-modal-all {
+
+.label-studentModal {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  width: 100%;
+  font-size: 15px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  margin: 0;
+  margin-bottom: 10px;
+  padding-left: 20px;
+  padding-right: 20px;
+}
+.input-studentModal {
+  width: 100%;
+  border: 1px solid #ccc;
+  border-radius: 13px;
+  font-size: 14px;
+  outline: none;
+  box-sizing: border-box;
+  padding: 5px 5px 5px 10px;
+}
+.edit-student-button {
   width: 100%;
   height: 54px;
-  flex-shrink: 0;
   border-radius: 0px 0px 13px 13px;
   background: var(--primary-color);
   color: #fcfcfc;
@@ -59,26 +96,8 @@
   cursor: pointer;
   outline: none;
   transition: 0.3s;
+  margin-top: auto;
 }
-label {
-  color: var(--primary-color);
-  font-family: "Poppins", sans-serif;
-  font-size: 20px;
-  font-style: normal;
-  font-weight: 400;
-  line-height: normal;
-  display: flex;
-  flex-direction: row nowrap;
-  align-items: center;
-  margin: 10px 20px;
-}
-input {
-  font-family: "Poppins", sans-serif;
-  font-size: 20px;
-  font-style: normal;
-  font-weight: 400;
-  line-height: normal;
-  width: 65%;
-  margin-left: 5px;
-  border: none;
+.etiquette-student {
+  width: 90px;
 }

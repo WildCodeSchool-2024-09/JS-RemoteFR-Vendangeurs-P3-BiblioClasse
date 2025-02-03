@@ -1,0 +1,106 @@
+.overlay {
+  position: fixed;
+  top: 10.5%;
+  left: 0;
+  width: 100%;
+  height: 90%;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 999;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.BorrowBookModal {
+  position: relative;
+  z-index: 1000;
+  border-radius: 13px;
+  background: #fcfcfc;
+  box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+  width: 90%;
+  height: auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+.modal-borrow-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: left;
+  padding-left: 20px;
+  padding-right: 20px;
+}
+.borrow-button {
+  width: 100%;
+  height: 54px;
+  border-radius: 0px 0px 13px 13px;
+  background: var(--primary-color);
+  color: #fcfcfc;
+  font-size: 20px;
+  font-weight: 700;
+  border: none;
+  cursor: pointer;
+  outline: none;
+  transition: 0.3s;
+  margin-top: auto;
+}
+.student-list-container {
+  max-height: 150px;
+  overflow-y: auto;
+  border: 1px solid #ccc;
+  padding: 5px;
+  margin: 10px 0;
+  border-radius: 13px;
+}
+
+.student-item {
+  padding: 5px;
+  cursor: pointer;
+  font-size: 14px;
+}
+.option-exemplaire {
+  font-family: "Poppins", sans-serif;
+  font-size: 14px;
+  width: 100%;
+  padding: 5px 5px 5px 10px;
+  border-radius: 13px;
+  margin-bottom: 20px;
+  border-color: #ccc;
+}
+.input-student {
+  width: 100%;
+  border: 1px solid #ccc;
+  border-radius: 13px;
+  font-size: 14px;
+  padding: 5px 5px 5px 10px;
+  margin-left: 0;
+}
+.input-date-retour {
+  font-size: 14px;
+  border-radius: 13px;
+  border-width: 1px;
+  border-style: solid;
+  border-color: #ccc;
+  padding: 5px 5px 5px 10px;
+  margin-left: 0px;
+}
+.label-borrow-book {
+  margin-bottom: 10px;
+  margin-top: 0px;
+  font-size: 18px;
+  margin-left: 0px;
+}
+.error-loan-message {
+  color: red;
+  font-size: 14px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  text-align: center;
+}
+.p-loan-duration {
+  font-size: 10px;
+  font-style: italic;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  text-align: left;
+}

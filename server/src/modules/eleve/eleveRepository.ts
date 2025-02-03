@@ -24,8 +24,11 @@ class eleveRepository {
     return rows[0] as Eleve;
   }
 
+  /*Student avec nbOfBooksBorrowed et date_retour*/
   async readAll() {
-    const [rows] = await databaseClient.query<Rows>("SELECT * FROM eleve");
+    const [rows] = await databaseClient.query<Rows>(
+      "SELECT e.id_eleve, e.prenom, e.nom, MIN(em.date_retour) AS date_retour, COUNT(em.id_exemplaire) AS nbOfBooksBorrowed FROM eleve e LEFT JOIN emprunt em ON e.id_eleve = em.id_eleve GROUP BY e.id_eleve ORDER BY date_retour ASC;",
+    );
     return rows as Eleve[];
   }
 
@@ -44,7 +47,7 @@ class eleveRepository {
 
   async search(searchTerm: string) {
     const [rows] = await databaseClient.query(
-      "SELECT * FROM eleve WHERE prenom LIKE ?",
+      "SELECT * FROM eleve WHERE prenom LIKE ? OR nom LIKE ?",
       [`%${searchTerm}%`, `%${searchTerm}%`],
     );
     return rows as Eleve[];

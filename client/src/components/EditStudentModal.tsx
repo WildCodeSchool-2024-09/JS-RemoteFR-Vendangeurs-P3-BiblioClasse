@@ -1,5 +1,5 @@
 import { useState } from "react";
-import "../styles/EditBookModal.css";
+import "../styles/EditStudentModal.css";
 
 interface EditStudentModalProps {
   showModal: boolean;
@@ -66,7 +66,7 @@ const EditStudentModal: React.FC<EditStudentModalProps> = ({
       onKeyDown={handleModalClose}
     >
       <div
-        className="EditBookModal"
+        className="EditStudentModal"
         onClick={(e) => e.stopPropagation()}
         onKeyDown={(e) => e.stopPropagation()}
         onKeyUp={(e) => e.stopPropagation()}
@@ -78,29 +78,29 @@ const EditStudentModal: React.FC<EditStudentModalProps> = ({
         >
           &times;
         </button>
-        <h2 className="h2modal">Modifier le livre</h2>
+        <h2 className="h2modal">Modifier les informations de l'élève</h2>
         <form onSubmit={handleSubmit} className="form-modal">
-          <label className="label-bookModal">
-            Prénom :
+          <label className="label-studentModal">
+            <p className="etiquette-student">Prénom :</p>
             <input
-              className="input-bookModal"
+              className="input-studentModal"
               type="text"
               value={prenom}
               onChange={(e) => setPrenom(e.target.value)}
               required
             />
           </label>
-          <label className="label-bookModal">
-            Nom :
+          <label className="label-studentModal">
+            <p className="etiquette-student">Nom :</p>
             <input
-              className="input-bookModal"
+              className="input-studentModal"
               type="text"
               value={nom}
               onChange={(e) => setNom(e.target.value)}
               required
             />
           </label>
-          <button type="submit" className="button">
+          <button type="submit" className="edit-student-button">
             Enregistrer
           </button>
         </form>

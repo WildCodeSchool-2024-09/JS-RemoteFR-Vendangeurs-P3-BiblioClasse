@@ -6,7 +6,7 @@ function Register() {
   const navigate = useNavigate();
 
   const handleAlreadyAccount = () => {
-    navigate("/login");
+    navigate("/");
   };
 
   return (
@@ -27,7 +27,11 @@ function Register() {
             placeholder="Nouveau mot de passe"
             className="input-field"
           />
-          <button type="submit" className="register-button">
+          <button
+            type="submit"
+            className="register-button"
+            onClick={handleAlreadyAccount}
+          >
             S'inscrire
           </button>
         </form>

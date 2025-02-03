@@ -1,10 +1,11 @@
 import "../styles/AddBookManually.css";
 import { useState } from "react";
+import defaultCover from "/src/assets/images/default_book_cover.png";
 
 interface AddBookManuallyProps {
   showModalBook: boolean;
   handleModalBookClose: () => void;
-  onBookAdded: (newBook: BookProps) => void;
+  handleBookAdded: (newBook: BookProps) => void;
 }
 interface BookProps {
   titre: string;
@@ -17,7 +18,7 @@ interface BookProps {
 function AddBookManually({
   showModalBook,
   handleModalBookClose,
-  onBookAdded,
+  handleBookAdded,
 }: AddBookManuallyProps) {
   if (showModalBook === false) return null;
 
@@ -29,27 +30,38 @@ function AddBookManually({
 
   const handleFetchBookInfo = async () => {
     try {
-      console.info(`Fetching book info for ISBN: ${ISBN}`);
       const response = await fetch(
         `https://www.googleapis.com/books/v1/volumes?q=isbn:${ISBN}`,
       );
       const data = await response.json();
-      console.info("Google Books API response:", data);
       if (data.items && data.items.length > 0) {
         const book = data.items[0].volumeInfo;
         setTitre(book.title);
         setAuteur(book.authors.join(", "));
         setLivre_resume(book.description);
-        setCouverture_img(book.imageLinks?.thumbnail || "default_cover_url");
-        console.info("Book info set:", {
-          ISBN: ISBN,
-          titre: book.title,
-          auteur: book.authors.join(", "),
-          livre_resume: book.description,
-          couverture_img: book.imageLinks?.thumbnail || "default_cover_url",
-        });
+        setCouverture_img(book.imageLinks?.thumbnail || defaultCover);
       } else {
-        console.error("Aucun livre trouvé pour cet ISBN");
+        console.error("Aucun livre trouvé pour cet ISBN sur Google Books API");
+        const openLibraryResponse = await fetch(
+          `https://openlibrary.org/api/books?bibkeys=ISBN:${ISBN}&format=json&jscmd=data`,
+        );
+        const openLibraryData = await openLibraryResponse.json();
+        const bookKey = `ISBN:${ISBN}`;
+        if (openLibraryData[bookKey]) {
+          const book = openLibraryData[bookKey];
+          setTitre(book.title);
+          setAuteur(
+            book.authors
+              .map((author: { name: string }) => author.name)
+              .join(", "),
+          );
+          setLivre_resume(book.notes || "Pas de résumé disponible.");
+          setCouverture_img(book.cover?.medium || defaultCover);
+        } else {
+          console.error(
+            "Aucun livre trouvé pour cet ISBN sur Open Library API",
+          );
+        }
       }
     } catch (error) {
       console.error(
@@ -61,14 +73,6 @@ function AddBookManually({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.info("Submitting book:", {
-      ISBN,
-      titre,
-      auteur,
-      livre_resume,
-      couverture_img,
-    });
-    // Envoyer les données du livre au serveur pour les ajouter à la base de données
     const response = await fetch("http://localhost:3310/api/livres", {
       method: "POST",
       headers: {
@@ -85,15 +89,14 @@ function AddBookManually({
     const responseData = await response.json();
     console.info("API response:", responseData);
     if (response.ok) {
-      console.info("Livre ajouté avec succès");
-      onBookAdded({
+      handleBookAdded({
         ISBN,
         titre,
         auteur,
         livre_resume,
         couverture_img,
       });
-      handleModalBookClose(); // Fermer la modale après une soumission réussie
+      handleModalBookClose();
     } else {
       console.error("Erreur lors de l'ajout du livre");
     }
@@ -117,7 +120,7 @@ function AddBookManually({
         >
           &times;
         </button>
-        <h2 className="h2modal">Ajouter le livre</h2>
+        <h2 className="h2modalAddBookManually">Ajouter le livre</h2>
         <form className="isbn-section">
           <label className="label-ISBN">
             <input
@@ -177,7 +180,7 @@ function AddBookManually({
               required
             />
           </label>
-          <button type="submit" className="button">
+          <button type="submit" className="add-book-submitbutton">
             Ajouter le livre
           </button>
         </form>

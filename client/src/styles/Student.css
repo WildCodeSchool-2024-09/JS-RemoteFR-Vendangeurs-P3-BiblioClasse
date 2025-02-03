@@ -25,14 +25,14 @@
 }
 
 /* //////Affichage conditionnelle en fonction de la date de retour////// */
-.Student.green {
+.StudentColor.green {
   background-color: var(--quaternary-color);
 }
 
-.Student.orange {
+.StudentColor.orange {
   background-color: var(--tertiary-color);
 }
 
-.Student.red {
+.StudentColor.red {
   background-color: var(--secondary-color);
 }

@@ -22,9 +22,9 @@ function SearchBar({ onSearch }: SearchBarProps) {
     const path = location.pathname;
     switch (path) {
       case "/bibliotheque":
-        return "Rechercher par titre...";
+        return "Rechercher par titre ou auteur...";
       case "/classe":
-        return "Rechercher par prénom...";
+        return "Rechercher par nom ou prénom";
       default:
         return "Rechercher...";
     }
