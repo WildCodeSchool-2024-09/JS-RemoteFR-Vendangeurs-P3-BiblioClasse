@@ -31,24 +31,13 @@ function Ma_classe() {
     navigate(-1);
   };
 
-  useEffect(() => {
-    fetch("http://localhost:3310/api/eleves")
-      .then((response) => response.json())
-      .then((data) => {
-        setStudents(data);
-        setFilteredStudents(data);
-        console.info("Elèves récupérés:", data);
-      })
-      .catch((error) =>
-        console.error("Erreur lors de la récupération des élèves:", error),
-      );
-  }, []);
-
   /*Récupération des élèves*/
   useEffect(() => {
     const fetchStudents = async () => {
       try {
-        const response = await fetch("http://localhost:3310/api/eleves");
+        const response = await fetch(
+          "http://localhost:3310/api/eleves_with_borrows",
+        );
         const data = await response.json();
         setStudents(data);
         setFilteredStudents(data);

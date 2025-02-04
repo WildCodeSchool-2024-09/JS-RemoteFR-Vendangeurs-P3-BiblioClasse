@@ -134,7 +134,7 @@ function Mon_eleve() {
         showModal={showEditModal}
         handleModalClose={handleModalClose}
         student={currentStudent}
-        onStudentUpdated={handleStudentUpdated}
+        handleStudentUpdated={handleStudentUpdated}
       />
     </div>
   );

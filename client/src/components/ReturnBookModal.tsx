@@ -51,7 +51,9 @@ function ReturnBookModal({
   useEffect(() => {
     const fetchStudents = async () => {
       try {
-        const response = await fetch("http://localhost:3310/api/eleves");
+        const response = await fetch(
+          "http://localhost:3310/api/eleves_with_borrows",
+        );
         const data = await response.json();
         setStudents(data);
         console.info("Élèves récupérés:", data);

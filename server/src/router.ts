@@ -14,6 +14,10 @@ router.get("/api/top_books", livreActions.getTopBooks);
 import eleveActions from "./modules/eleve/eleveActions";
 router.get("/api/eleves", eleveActions.browse);
 router.get("/api/eleves/:id_eleve", eleveActions.read);
+router.get(
+  "/api/eleves_with_borrows",
+  eleveActions.browseStudentsWithBorrowsInProgress,
+);
 router.post("/api/eleves", eleveActions.add);
 router.put("/api/eleves/:id_eleve", eleveActions.edit);
 router.delete("/api/eleves/:id_eleve", eleveActions.destroy);
@@ -39,7 +43,6 @@ router.get("/api/emprunts", empruntActions.browse);
 router.get("/api/emprunts/:id_emprunt", empruntActions.read);
 router.post("/api/emprunts", empruntActions.add);
 router.put("/api/emprunts/:id_emprunt", empruntActions.edit);
-
 router.delete("/api/emprunts/:id_emprunt", empruntActions.destroy);
 router.get(
   "/api/students-with-loans-in-progress",
