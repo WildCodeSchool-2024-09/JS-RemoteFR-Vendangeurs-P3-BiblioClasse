@@ -54,7 +54,7 @@ class ExemplaireRepository {
     ISBN: string,
   ): Promise<Array<borrowedExemplaireByISBN>> {
     const [rows] = await databaseClient.query<Rows>(
-      "SELECT el.nom, el.prenom, em.date_retour, ex.id_exemplaire FROM emprunt AS em JOIN eleve AS el ON em.id_eleve=el.id_eleve JOIN exemplaire AS ex ON em.id_exemplaire=ex.id_exemplaire WHERE ex.ISBN=? AND ex.isAvailable=0 ORDER BY em.date_retour, el.nom, el.prenom;",
+      "SELECT el.nom, el.prenom, em.date_retour, ex.id_exemplaire FROM emprunt AS em JOIN eleve AS el ON em.id_eleve=el.id_eleve JOIN exemplaire AS ex ON em.id_exemplaire=ex.id_exemplaire WHERE ex.ISBN=? AND ex.isAvailable=0 AND date_retour_effectif IS NULL ORDER BY em.date_retour, el.nom, el.prenom;",
       [ISBN],
     );
     return rows as borrowedExemplaireByISBN[];
