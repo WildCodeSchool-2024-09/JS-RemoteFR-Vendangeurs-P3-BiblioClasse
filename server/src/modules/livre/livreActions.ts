@@ -12,6 +12,15 @@ const browse: RequestHandler = async (req, res, next) => {
   }
 };
 
+const browseWithExemplaires: RequestHandler = async (req, res, next) => {
+  try {
+    const livres = await livreRepository.readAllWithExemplaires();
+    res.json(livres);
+  } catch (err) {
+    next(err);
+  }
+};
+
 const read: RequestHandler = async (req, res, next) => {
   try {
     const livre = await livreRepository.read(req.params.ISBN);
@@ -83,6 +92,7 @@ const search: RequestHandler = async (req, res, next) => {
 
 export default {
   browse,
+  browseWithExemplaires,
   read,
   add,
   edit,

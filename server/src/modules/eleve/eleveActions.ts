@@ -29,6 +29,20 @@ const browseStudentsWithBorrowsInProgress: RequestHandler = async (
   }
 };
 
+const browseStudentsWithBorrowsInformation: RequestHandler = async (
+  req,
+  res,
+  next,
+) => {
+  try {
+    const eleves =
+      await eleveRepository.readAllStudentsWithBorrowsInformation();
+    res.json(eleves);
+  } catch (err) {
+    next(err);
+  }
+};
+
 // The R of BREAD - Read operation
 const read: RequestHandler = async (req, res, next) => {
   try {
@@ -107,6 +121,7 @@ const search: RequestHandler = async (req, res, next) => {
 export default {
   browse,
   browseStudentsWithBorrowsInProgress,
+  browseStudentsWithBorrowsInformation,
   read,
   add,
   edit,

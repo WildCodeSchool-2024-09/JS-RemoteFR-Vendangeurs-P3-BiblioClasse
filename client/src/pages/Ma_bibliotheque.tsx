@@ -17,6 +17,8 @@ interface BookProps {
   couverture_img: string;
   ISBN: string;
   date_retour?: string;
+  nombre_exemplaires: number;
+  nombre_exemplaires_disponibles: number;
 }
 
 function Ma_bibliotheque() {
@@ -38,7 +40,9 @@ function Ma_bibliotheque() {
   useEffect(() => {
     const fetchBooks = async () => {
       try {
-        const response = await fetch("http://localhost:3310/api/livres");
+        const response = await fetch(
+          "http://localhost:3310/api/livres_with_exemplaires",
+        );
         const data = await response.json();
         setBooks(data);
         setFilteredBooks(data);
@@ -214,6 +218,10 @@ function Ma_bibliotheque() {
               couverture_img={book.couverture_img}
               ISBN={book.ISBN}
               date_retour={book.date_retour}
+              nombre_exemplaires={book.nombre_exemplaires}
+              nombre_exemplaires_disponibles={
+                book.nombre_exemplaires_disponibles
+              }
               context="bibliotheque"
             />
             {editMode && (

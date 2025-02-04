@@ -398,25 +398,39 @@ function BiblioClasse() {
         </div>
       </Menu>
       <section className="section-eleves">
-        <p className="intro">J'ai {students} élèves enregistrés :</p>
+        <p className="intro">
+          {students > 1
+            ? `J'ai ${students} élèves enregistrés :`
+            : `J'ai ${students} élève enregistré :`}
+        </p>
         <section className="statistiques-liste">
           <div className="stats-item">
             <span className="badge badge-green">
               {studentsWithLoansInProgress}
             </span>
-            <p className="texte-stat-item">ont un emprunt en cours;</p>
+            <p className="texte-stat-item">
+              {studentsWithLoansInProgress > 1
+                ? "ont un emprunt en cours;"
+                : "a un emprunt en cours;"}
+            </p>
           </div>
           <div className="stats-item">
             <span className="badge badge-orange">
               {studentsWithLoansDueIn7Days}
             </span>
             <p className="texte-stat-item">
-              doivent rendre au moins 1 livre dans moins de 7 jours;
+              {studentsWithLoansDueIn7Days > 1
+                ? "doivent rendre au moins 1 livre dans moins de 7 jours;"
+                : "doit rendre au moins 1 livre dans moins de 7 jours;"}
             </p>
           </div>
           <div className="stats-item">
             <span className="badge badge-red">{studentsWithOverdueLoans}</span>
-            <p className="texte-stat-item">est en retard.</p>
+            <p className="texte-stat-item">
+              {studentsWithOverdueLoans > 1
+                ? "sont en retard."
+                : "est en retard."}
+            </p>
           </div>
         </section>
         <div className="button-container">
@@ -428,11 +442,23 @@ function BiblioClasse() {
 
       <section className="section-livres">
         <p className="intro">
-          J'ai {exemplaires.length} livres enregistrés, dont {books} références
-          différentes :
+          <span>
+            {exemplaires.length > 1
+              ? `J'ai ${exemplaires.length} livres enregistrés, `
+              : `J'ai ${exemplaires.length} livre enregistré, `}
+          </span>
+          <span>
+            {books > 1
+              ? `dont ${books} références
+          différentes :`
+              : `dont ${books} référence
+          différente :`}
+          </span>
         </p>
         <p className="p-emprunt">
-          {loansInProgress} livres sont actuellement empruntés.
+          {loansInProgress > 1
+            ? `${loansInProgress} sont actuellement empruntés.`
+            : `${loansInProgress} est actuellement emprunté.`}
         </p>
         <p className="p-emprunt">Les 3 livres les plus empruntés sont :</p>
         <div className="top-books">

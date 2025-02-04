@@ -4,6 +4,7 @@ const router = express.Router();
 
 import livreActions from "./modules/livre/livreActions";
 router.get("/api/livres", livreActions.browse);
+router.get("/api/livres_with_exemplaires", livreActions.browseWithExemplaires);
 router.get("/api/livres/:ISBN", livreActions.read);
 router.post("/api/livres", livreActions.add);
 router.put("/api/livres/:ISBN", livreActions.edit);
@@ -17,6 +18,10 @@ router.get("/api/eleves/:id_eleve", eleveActions.read);
 router.get(
   "/api/eleves_with_borrows",
   eleveActions.browseStudentsWithBorrowsInProgress,
+);
+router.get(
+  "/api/eleves_with_borrows_information",
+  eleveActions.browseStudentsWithBorrowsInformation,
 );
 router.post("/api/eleves", eleveActions.add);
 router.put("/api/eleves/:id_eleve", eleveActions.edit);

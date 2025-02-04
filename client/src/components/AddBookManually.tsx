@@ -13,6 +13,9 @@ interface BookProps {
   livre_resume: string;
   couverture_img: string;
   ISBN: string;
+  date_retour?: string;
+  nombre_exemplaires: number;
+  nombre_exemplaires_disponibles: number;
 }
 
 function AddBookManually({
@@ -95,6 +98,8 @@ function AddBookManually({
         auteur,
         livre_resume,
         couverture_img,
+        nombre_exemplaires: 1,
+        nombre_exemplaires_disponibles: 1,
       });
       handleModalBookClose();
     } else {

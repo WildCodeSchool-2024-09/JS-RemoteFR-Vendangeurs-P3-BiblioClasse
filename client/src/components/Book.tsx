@@ -9,7 +9,9 @@ interface BookProps {
   livre_resume: string;
   couverture_img: string;
   ISBN: string;
-  date_retour?: string | null;
+  date_retour?: string;
+  nombre_exemplaires: number;
+  nombre_exemplaires_disponibles: number;
   context: "mon_eleve" | "bibliotheque";
 }
 
@@ -21,6 +23,8 @@ function Book({
   ISBN,
   date_retour,
   context,
+  nombre_exemplaires,
+  nombre_exemplaires_disponibles,
 }: BookProps) {
   const navigate = useNavigate();
 
@@ -71,7 +75,11 @@ function Book({
         <section className="Infos_livre">
           <p className="Titre">{titre}</p>
           <p className="Auteur">{auteur}</p>
-          <p className="Dispo">1 exemplaire(s) disponible(s) sur les 10</p>
+          <p className="Dispo">
+            {nombre_exemplaires_disponibles > 1
+              ? `${nombre_exemplaires_disponibles} exemplaires disponibles sur ${nombre_exemplaires}`
+              : `${nombre_exemplaires_disponibles} exemplaire disponible sur ${nombre_exemplaires}`}
+          </p>
         </section>
       )}
       {context === "mon_eleve" && (

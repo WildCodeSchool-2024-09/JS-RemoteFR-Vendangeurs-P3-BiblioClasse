@@ -36,7 +36,7 @@ function Ma_classe() {
     const fetchStudents = async () => {
       try {
         const response = await fetch(
-          "http://localhost:3310/api/eleves_with_borrows",
+          "http://localhost:3310/api/eleves_with_borrows_information",
         );
         const data = await response.json();
         setStudents(data);
@@ -102,7 +102,18 @@ function Ma_classe() {
   };
 
   /*Fonction pour supprimer un livre*/
-  const handleDeleteStudent = async (id_eleve: number) => {
+  const handleDeleteStudent = async (
+    id_eleve: number,
+    nom: string,
+    prenom: string,
+  ) => {
+    const confirmDelete = window.confirm(
+      `Êtes-vous sûr de vouloir supprimer ${prenom} ${nom} ? Une fois la suppression validée, vous ne pourrez plus revenir en arrière.`,
+    );
+
+    if (!confirmDelete) {
+      return;
+    }
     try {
       const response = await fetch(
         `http://localhost:3310/api/eleves/${id_eleve}`,
@@ -217,7 +228,11 @@ function Ma_classe() {
               onContextMenu={(e) => {
                 e.preventDefault();
                 if (editMode) {
-                  handleDeleteStudent(student.id_eleve);
+                  handleDeleteStudent(
+                    student.id_eleve,
+                    student.nom,
+                    student.prenom,
+                  );
                 }
               }}
             >
@@ -234,7 +249,13 @@ function Ma_classe() {
                 <button
                   type="button"
                   className="delete-button"
-                  onClick={() => handleDeleteStudent(student.id_eleve)}
+                  onClick={() =>
+                    handleDeleteStudent(
+                      student.id_eleve,
+                      student.nom,
+                      student.prenom,
+                    )
+                  }
                 >
                   &times;
                 </button>

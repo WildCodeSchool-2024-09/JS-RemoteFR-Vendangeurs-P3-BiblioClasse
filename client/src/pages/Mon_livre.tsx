@@ -140,8 +140,9 @@ function Mon_livre() {
         </div>
         <div className="infos_livre">
           <p className="exemplaire">
-            {nbAvailableExemplaires} exemplaires disponibles sur{" "}
-            {exemplaires.length}
+            {nbAvailableExemplaires > 1
+              ? `${nbAvailableExemplaires} exemplaires disponibles sur ${exemplaires.length}`
+              : `${nbAvailableExemplaires} exemplaire disponible sur ${exemplaires.length}`}
           </p>
           <p className="titre">{currentBook.titre}</p>
           <p className="auteur">De : {currentBook.auteur}</p>

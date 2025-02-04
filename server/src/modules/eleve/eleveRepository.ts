@@ -38,6 +38,14 @@ class eleveRepository {
     return rows as Eleve[];
   }
 
+  /*Student avec nbOfBooksBorrowed et date_retour*/
+  async readAllStudentsWithBorrowsInformation() {
+    const [rows] = await databaseClient.query<Rows>(
+      "SELECT e.id_eleve, e.prenom, e.nom, CASE WHEN COUNT(em.id_exemplaire) = 0 THEN '2600-01-01' ELSE MIN(em.date_retour) END AS date_retour, COUNT(em.id_exemplaire) AS nbOfBooksBorrowed FROM eleve e LEFT JOIN emprunt em ON e.id_eleve = em.id_eleve AND em.date_retour_effectif IS NULL GROUP BY e.id_eleve, e.nom, e.prenom ORDER BY date_retour ASC, nbOfBooksBorrowed DESC ;",
+    );
+    return rows as Eleve[];
+  }
+
   async update(id_eleve: string, eleve: Eleve) {
     await databaseClient.query(
       "UPDATE eleve SET nom = ?, prenom = ? WHERE id_eleve = ?",
