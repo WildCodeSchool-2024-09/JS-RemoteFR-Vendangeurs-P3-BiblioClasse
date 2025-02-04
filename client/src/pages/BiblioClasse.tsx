@@ -8,6 +8,7 @@ import AddBookManually from "../components/AddBookManually";
 import AddStudent from "../components/AddStudent";
 import BorrowBookModal from "../components/BorrowBookModal";
 import ConfirmationLoanModale from "../components/ConfirmationLoanModale";
+import ConfirmationReturnModale from "../components/ConfirmationReturnModale";
 import EmptyApp from "../components/EmptyApp";
 import ParametresModal from "../components/ParametresModal";
 import ReturnBookModal from "../components/ReturnBookModal";
@@ -68,6 +69,11 @@ function BiblioClasse() {
   const [confirmationBook, setConfirmationBook] = useState<string>("");
   const [confirmationDateRetour, setConfirmationDateRetour] =
     useState<string>("");
+  const [showConfirmationReturnModal, setShowConfirmationReturnModal] =
+    useState<boolean>(false);
+  const [confirmationReturnMessage, setConfirmationReturnMessage] =
+    useState<string>("");
+  const [borrowLimit, setBorrowLimit] = useState<number>(5);
 
   ////////////////*FETCH DATA*////////////////////
   useEffect(() => {
@@ -189,6 +195,21 @@ function BiblioClasse() {
       }
     };
 
+    const fetchBorrowLimit = async () => {
+      try {
+        const response = await fetch(
+          "http://localhost:3310/api/parametres/borrowLimit",
+        );
+        const data = await response.json();
+        setBorrowLimit(data);
+      } catch (error) {
+        console.error(
+          "Erreur lors de la récupération de la limite d'emprunt:",
+          error,
+        );
+      }
+    };
+
     const fetchTopBooks = async () => {
       try {
         const response = await fetch("http://localhost:3310/api/top_books");
@@ -209,6 +230,7 @@ function BiblioClasse() {
     fetchLoansInProgress();
     fetchLoanDuration();
     fetchTopBooks();
+    fetchBorrowLimit();
   }, []);
 
   ////////////////*MODALE VIDE*////////////////////
@@ -285,6 +307,9 @@ function BiblioClasse() {
   };
   const handleReturnModalClose = () => {
     setShowReturnModal(false);
+    setTimeout(() => {
+      setShowConfirmationReturnModal(false);
+    }, 2000);
   };
 
   ////////////////*AJOUT D'EMPRUNT*////////////////
@@ -472,6 +497,8 @@ function BiblioClasse() {
           showReturnModal={showReturnModal}
           handleReturnModalClose={handleReturnModalClose}
           setShowReturnModal={setShowReturnModal}
+          setConfirmationReturnMessage={setConfirmationReturnMessage}
+          setShowConfirmationReturnModal={setShowConfirmationReturnModal}
         />
       )}
       {showBorrowModal && (
@@ -486,6 +513,7 @@ function BiblioClasse() {
           setConfirmationStudent={setConfirmationStudent}
           setConfirmationBook={setConfirmationBook}
           setConfirmationDateRetour={setConfirmationDateRetour}
+          borrowLimit={borrowLimit}
         />
       )}
       {showParametresModal && (
@@ -494,6 +522,8 @@ function BiblioClasse() {
           setLoanDuration={setLoanDuration}
           showModal={showParametresModal}
           handleModalClose={() => setShowParametresModal(false)}
+          borrowLimit={borrowLimit}
+          setBorrowLimit={setBorrowLimit}
         />
       )}
       {showConfirmationLoanModal && (
@@ -501,6 +531,11 @@ function BiblioClasse() {
           confirmationStudent={confirmationStudent}
           confirmationBook={confirmationBook}
           confirmationDateRetour={confirmationDateRetour}
+        />
+      )}
+      {showConfirmationReturnModal && (
+        <ConfirmationReturnModale
+          confirmationReturnMessage={confirmationReturnMessage}
         />
       )}
     </div>

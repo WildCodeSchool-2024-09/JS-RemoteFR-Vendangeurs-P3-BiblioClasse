@@ -5,6 +5,8 @@ interface ParametresProps {
   setLoanDuration: (duration: number) => void;
   showModal: boolean;
   handleModalClose: () => void;
+  borrowLimit: number;
+  setBorrowLimit: (limit: number) => void;
 }
 
 function ParametresModal({
@@ -12,15 +14,25 @@ function ParametresModal({
   setLoanDuration,
   showModal,
   handleModalClose,
+  borrowLimit,
+  setBorrowLimit,
 }: ParametresProps) {
   if (!showModal) return null;
 
-  const handleIncrement = () => {
+  const handleIncrementLoanDuration = () => {
     setLoanDuration(loanDuration + 1);
   };
 
-  const handleDecrement = () => {
+  const handleDecrementLoanDuration = () => {
     setLoanDuration(loanDuration > 1 ? loanDuration - 1 : 1);
+  };
+
+  const handleIncrementBorrowLimit = () => {
+    setBorrowLimit(borrowLimit + 1);
+  };
+
+  const handleDecrementBorrowLimit = () => {
+    setBorrowLimit(borrowLimit > 1 ? borrowLimit - 1 : 1);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -33,15 +45,21 @@ function ParametresModal({
         },
         body: JSON.stringify({ loanDuration }),
       });
-      console.info("Durée d'emprunt mise à jour avec succès :", {
-        loanDuration,
+      await fetch("http://localhost:3310/api/parametres/borrowLimit", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ borrowLimit }),
       });
+      console.info(
+        "Paramètres mis à jour avec succès:",
+        loanDuration,
+        borrowLimit,
+      );
       handleModalClose();
     } catch (error) {
-      console.error(
-        "Erreur lors de la mise à jour de la durée d'emprunt:",
-        error,
-      );
+      console.error("Erreur lors de la mise à jour des paramètres :", error);
     }
   };
 
@@ -64,7 +82,7 @@ function ParametresModal({
           &times;
         </button>
         <h2 className="h2modalParam">Paramètres</h2>
-        <form onSubmit={handleSubmit}>
+        <form id="durée-d-emprunt" onSubmit={handleSubmit}>
           <div className="parametres-item">
             <label htmlFor="loanDuration">
               Durée d'emprunt souhaitée (jours)* :
@@ -73,7 +91,7 @@ function ParametresModal({
               <button
                 type="button"
                 className="quantity-setter-button"
-                onClick={handleDecrement}
+                onClick={handleDecrementLoanDuration}
               >
                 -
               </button>
@@ -81,7 +99,7 @@ function ParametresModal({
               <button
                 type="button"
                 className="quantity-setter-button"
-                onClick={handleIncrement}
+                onClick={handleIncrementLoanDuration}
               >
                 +
               </button>
@@ -89,6 +107,31 @@ function ParametresModal({
           </div>
           <p className="parametres-info">
             *Les dates retour des emprunts en cours ne seront pas modifiées
+          </p>
+          <div className="parametres-item">
+            <label htmlFor="borrowLimit">
+              Nombre de livres empruntables simultanément* :
+            </label>
+            <div className="quantity-control">
+              <button
+                type="button"
+                className="quantity-setter-button"
+                onClick={handleDecrementBorrowLimit}
+              >
+                -
+              </button>
+              <span className="span-quantity">{borrowLimit}</span>
+              <button
+                type="button"
+                className="quantity-setter-button"
+                onClick={handleIncrementBorrowLimit}
+              >
+                +
+              </button>
+            </div>
+          </div>
+          <p className="parametres-info">
+            *Les emprunts en cours ne seront pas affectés
           </p>
           <button type="submit" className="submit-button">
             Valider

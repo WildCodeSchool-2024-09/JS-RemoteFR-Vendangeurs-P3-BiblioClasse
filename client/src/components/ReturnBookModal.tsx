@@ -4,6 +4,8 @@ interface ReturnBookModalProps {
   showReturnModal: boolean;
   handleReturnModalClose: () => void;
   setShowReturnModal: (show: boolean) => void;
+  setConfirmationReturnMessage: (message: string) => void;
+  setShowConfirmationReturnModal: (show: boolean) => void;
 }
 
 interface StudentProps {
@@ -26,6 +28,8 @@ function ReturnBookModal({
   showReturnModal,
   handleReturnModalClose,
   setShowReturnModal,
+  setConfirmationReturnMessage,
+  setShowConfirmationReturnModal,
 }: ReturnBookModalProps) {
   if (!showReturnModal) {
     return null;
@@ -103,6 +107,8 @@ function ReturnBookModal({
       );
 
       if (response.ok) {
+        setConfirmationReturnMessage("Le retour a bien été enregistré");
+        setShowConfirmationReturnModal(true);
         setShowReturnModal(false);
         handleReturnModalClose();
       } else {

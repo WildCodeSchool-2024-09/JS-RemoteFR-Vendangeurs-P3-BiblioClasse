@@ -60,8 +60,10 @@ import retour from "./modules/retour/retourActions";
 router.post("/api/emprunts/retours", retour.returnBook);
 
 import parametreActions from "./modules/parametre/parametreActions";
-router.get("/api/parametres/loanDuration", parametreActions.read);
-router.put("/api/parametres/:id_parametre", parametreActions.edit);
+router.get("/api/parametres/loanDuration", parametreActions.readLoanDuration);
+router.put("/api/parametres/loanDuration", parametreActions.editLoanDuration);
+router.get("/api/parametres/borrowLimit", parametreActions.readBorrowLimit);
+router.put("/api/parametres/borrowLimit", parametreActions.editBorrowLimit);
 /* ************************************************************************* */
 
 export default router;
