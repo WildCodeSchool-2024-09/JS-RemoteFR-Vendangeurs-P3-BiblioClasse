@@ -31,6 +31,11 @@ function AddBookManually({
   const [livre_resume, setLivre_resume] = useState("");
   const [couverture_img, setCouverture_img] = useState("");
 
+  const handleISBNChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const cleanedISBN = e.target.value.replace(/[^a-zA-Z0-9]/g, "");
+    setISBN(cleanedISBN);
+  };
+
   const handleFetchBookInfo = async () => {
     try {
       const response = await fetch(
@@ -133,7 +138,7 @@ function AddBookManually({
               placeholder="ISBN"
               type="text"
               value={ISBN}
-              onChange={(e) => setISBN(e.target.value)}
+              onChange={handleISBNChange}
               required
             />
           </label>

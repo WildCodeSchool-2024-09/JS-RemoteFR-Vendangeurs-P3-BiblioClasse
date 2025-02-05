@@ -62,38 +62,101 @@ function Book({
     }
   }
 
+  /*définition de la couleur du cadre en fonction du nombre d'exemplaires restants*/
+  let studentClassName = "StudentColor";
+  if (nombre_exemplaires <= 1) {
+    if (nombre_exemplaires_disponibles >= 1) {
+      studentClassName += " green";
+    } else {
+      studentClassName += " red";
+    }
+  } else {
+    if (nombre_exemplaires_disponibles > 1) {
+      studentClassName += " green";
+    } else if (nombre_exemplaires_disponibles <= 1) {
+      studentClassName += " orange";
+    } else {
+      studentClassName += " red";
+    }
+  }
+
   return (
-    <div
-      className={`Book ${className}`}
-      onClick={handleClick}
-      onKeyUp={handleClick}
-    >
-      <figure className="Image_livre_container">
-        <img src={couverture_img} alt={titre} />
-      </figure>
+    <>
       {context === "bibliotheque" && (
-        <section className="Infos_livre">
-          <p className="Titre">{titre}</p>
-          <p className="Auteur">{auteur}</p>
-          <p className="Dispo">
-            {nombre_exemplaires_disponibles > 1
-              ? `${nombre_exemplaires_disponibles} exemplaires disponibles sur ${nombre_exemplaires}`
-              : `${nombre_exemplaires_disponibles} exemplaire disponible sur ${nombre_exemplaires}`}
-          </p>
-        </section>
+        <div
+          className={`Student ${studentClassName}`}
+          onClick={handleClick}
+          onKeyUp={handleClick}
+        >
+          <figure className="Image_livre_container">
+            <img src={couverture_img} alt={titre} />
+          </figure>
+          <section className="Infos_livre">
+            <p className="Titre">{titre}</p>
+            <p className="Auteur">{auteur}</p>
+            <p className="Dispo">
+              {nombre_exemplaires_disponibles > 1
+                ? `${nombre_exemplaires_disponibles} exemplaires disponibles sur ${nombre_exemplaires}`
+                : `${nombre_exemplaires_disponibles} exemplaire disponible sur ${nombre_exemplaires}`}
+            </p>
+          </section>
+        </div>
       )}
       {context === "mon_eleve" && (
-        <section className="Infos_livre">
-          <p className="Titre">{titre}</p>
-          <p className="Auteur">
-            {date_retour
-              ? `A rendre avant le : ${formattedDateRetour}`
-              : "Pas de date de retour"}
-          </p>
-        </section>
+        <div
+          className={`Book ${className}`}
+          onClick={handleClick}
+          onKeyUp={handleClick}
+        >
+          <figure className="Image_livre_container">
+            <img src={couverture_img} alt={titre} />
+          </figure>
+          <section className="Infos_livre">
+            <p className="Titre">{titre}</p>
+            <p className="Auteur">
+              {date_retour
+                ? `A rendre avant le : ${formattedDateRetour}`
+                : "Pas de date de retour"}
+            </p>
+          </section>
+        </div>
       )}
-    </div>
+    </>
   );
 }
+
+// return (
+//   <div
+//     className={`Book ${className}`}
+//     onClick={handleClick}
+//     onKeyUp={handleClick}
+//   >
+//     <figure className="Image_livre_container">
+//       <img src={couverture_img} alt={titre} />
+//     </figure>
+//     {context === "bibliotheque" && (
+//       <section className="Infos_livre">
+//         <p className="Titre">{titre}</p>
+//         <p className="Auteur">{auteur}</p>
+//         <p className="Dispo">
+//           {nombre_exemplaires_disponibles > 1
+//             ? `${nombre_exemplaires_disponibles} exemplaires disponibles sur ${nombre_exemplaires}`
+//             : `${nombre_exemplaires_disponibles} exemplaire disponible sur ${nombre_exemplaires}`}
+//         </p>
+//       </section>
+//     )}
+//     {context === "mon_eleve" && (
+//       <section className="Infos_livre">
+//         <p className="Titre">{titre}</p>
+//         <p className="Auteur">
+//           {date_retour
+//             ? `A rendre avant le : ${formattedDateRetour}`
+//             : "Pas de date de retour"}
+//         </p>
+//       </section>
+//     )}
+//   </div>
+// );
+// }
 
 export default Book;

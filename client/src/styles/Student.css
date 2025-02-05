@@ -1,7 +1,6 @@
 .Student {
   width: 95vw;
   height: 12vh;
-  background-color: var(--quaternary-color);
   border-radius: 13px;
   display: flex;
   flex-direction: row;
@@ -34,5 +33,16 @@
 }
 
 .StudentColor.red {
+  background-color: var(--secondary-color);
+}
+.BookColor.green {
+  background-color: var(--quaternary-color);
+}
+
+.BookColor.orange {
+  background-color: var(--tertiary-color);
+}
+
+.BookColor.red {
   background-color: var(--secondary-color);
 }
