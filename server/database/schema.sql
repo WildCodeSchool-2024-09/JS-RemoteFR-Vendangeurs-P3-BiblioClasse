@@ -32,6 +32,7 @@ CREATE TABLE emprunt (
 
 CREATE TABLE parametre (
   id INT AUTO_INCREMENT PRIMARY KEY,
-  loanDuration INT NOT NULL DEFAULT 7
+  loanDuration INT NOT NULL DEFAULT 7,
+  borrowLimit INT NOT NULL DEFAULT 5
 );
 INSERT INTO parametre (loanDuration) VALUES (DEFAULT);

@@ -22,7 +22,10 @@ interface BorrowBookModalProps {
   loanDuration: number;
   setErrorLoanMessage: (message: string) => void;
   errorLoanMessage: string;
-  setConfirmationLoanMessage: (message: string) => void;
+  setConfirmationStudent: (message: string) => void;
+  setConfirmationBook: (message: string) => void;
+  setConfirmationDateRetour: (message: string) => void;
+  borrowLimit: number;
 }
 
 interface StudenProps {
@@ -39,7 +42,10 @@ function BorrowBookModal({
   loanDuration,
   setErrorLoanMessage,
   errorLoanMessage,
-  setConfirmationLoanMessage,
+  setConfirmationStudent,
+  setConfirmationBook,
+  setConfirmationDateRetour,
+  borrowLimit,
 }: BorrowBookModalProps) {
   if (!showModal) return null;
 
@@ -53,6 +59,8 @@ function BorrowBookModal({
     useState<boolean>(false);
   const [dateRetour, setDateRetour] = useState<string>("");
   const [dateEmprunt, setDateEmprunt] = useState<string>();
+  const [showAllForm, setShowAllForm] = useState<boolean>(true);
+  const [errorBorrowLimitMessage, setErrorBorrowLimitMessage] = useState("");
 
   /* Calcul de la date de retour */
   useEffect(() => {
@@ -73,7 +81,6 @@ function BorrowBookModal({
         const response = await fetch("http://localhost:3310/api/eleves");
         const data = await response.json();
         setStudents(data);
-        console.info("Eleves récupérés:", data);
       } catch (error) {
         console.error("Erreur lors de la récupération des élèves:", error);
       }
@@ -82,49 +89,83 @@ function BorrowBookModal({
     fetchStudents();
   }, []);
 
+  /* Récupération du nb de livres empruntés par l'élève */
+  const countBorrowedBooksByStudent = async (id_eleve: number) => {
+    const response = await fetch(
+      `http://localhost:3310/api/emprunts_by_student/${id_eleve}`,
+    );
+    const borrowedBooksbySudent = await response.json();
+    return borrowedBooksbySudent.length;
+  };
+
   /* Fonction pour créer un emprunt */
   const handleBorrowSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!selectedStudentSetted || !selectedExemplaire || !dateRetour) {
+    if (!studentId || !selectedExemplaire) {
+      setErrorLoanMessage("Veuillez sélectionner un élève et un exemplaire.");
+      return;
+    }
+
+    const selectedStudent = students.find(
+      (student) => student.id_eleve === studentId,
+    );
+    const book = availableExemplaires.find(
+      (exemplaire) => exemplaire.id_exemplaire === selectedExemplaire,
+    );
+
+    if (!selectedStudent || !book) {
       setErrorLoanMessage(
-        "Veuillez sélectionner un élève, un livre et une date de retour avant de valider l'emprunt.",
+        "Erreur lors de la sélection de l'élève ou du livre.",
       );
       return;
     }
-    if (selectedExemplaire && studentId && dateRetour) {
-      try {
-        const response = await fetch("http://localhost:3310/api/emprunts", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            id_exemplaire: selectedExemplaire,
-            id_eleve: studentId,
-            date_emprunt: dateEmprunt,
-            date_retour: dateRetour,
-          }),
-        });
 
-        if (response.ok) {
-          const borrowedBook = await response.json();
-          handleBookBorrowed(borrowedBook);
-          const student = students.find(
-            (student) => student.id_eleve === studentId,
-          );
-          const book = availableExemplaires.find(
-            (exemplaire) => exemplaire.id_exemplaire === selectedExemplaire,
-          );
-          setConfirmationLoanMessage(
-            `${student?.nom} ${student?.prenom} emprunte le livre "${book?.titre}" à rendre avant le ${dateRetour}`,
-          );
-          setErrorLoanMessage("");
-        } else {
-          console.error("Erreur lors de la création de l'emprunt");
-        }
-      } catch (error) {
-        console.error("Erreur lors de la création de l'emprunt:", error);
+    const borrowedBooksCount = await countBorrowedBooksByStudent(studentId);
+    if (borrowedBooksCount >= borrowLimit) {
+      setShowAllForm(false);
+      setErrorBorrowLimitMessage(
+        "Limite de livres empruntés atteinte, veuillez rendre un livre avant d'en emprunter un nouveau. Pour modifier la limite par défaut : Menu Accueil > Paramètres",
+      );
+      return;
+    }
+
+    const borrowedBook = {
+      id_exemplaire: selectedExemplaire,
+      ISBN: book.ISBN,
+      isAvailable: false,
+      id_eleve: studentId,
+      date_emprunt: dateEmprunt,
+      date_retour: dateRetour,
+    };
+
+    try {
+      const response = await fetch("http://localhost:3310/api/emprunts", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(borrowedBook),
+      });
+
+      if (response.ok) {
+        const result = await response.json();
+        handleBookBorrowed(result);
+        setErrorLoanMessage("");
+        setErrorBorrowLimitMessage("");
+        setConfirmationStudent(
+          `${selectedStudent.nom} ${selectedStudent.prenom}`,
+        );
+        setConfirmationBook(book.titre);
+        setConfirmationDateRetour(dateRetour);
+      } else {
+        const errorData = await response.json();
+        setErrorLoanMessage(
+          errorData.error || "Erreur lors de la création de l'emprunt",
+        );
       }
+    } catch (error) {
+      console.error("Erreur lors de la création de l'emprunt:", error);
+      setErrorLoanMessage("Erreur lors de la création de l'emprunt");
     }
   };
 
@@ -161,89 +202,101 @@ function BorrowBookModal({
           &times;
         </button>
         <h2 className="h2modal">Nouvel Emprunt</h2>
-        <form onSubmit={handleBorrowSubmit}>
-          <section className="modal-borrow-content">
-            <div>
-              <label className="label-borrow-book" htmlFor="student">
-                Sélectionnez l'élève :
-              </label>
-              <input
-                type="text"
-                id="student"
-                placeholder="Rechercher par nom ou prénom"
-                value={searchText}
-                className="input-student"
-                onChange={(e) => setSearchText(e.target.value)}
-              />
-              <div className="student-list-container">
-                {filteredStudents.map((student) => (
-                  <div
-                    key={student.id_eleve}
-                    className={`student-item ${studentId === student.id_eleve ? "selected" : ""}`}
-                    onClick={() => handleStudentClick(student)}
-                    onKeyDown={() => handleStudentClick(student)}
-                    onKeyUp={() => handleStudentClick(student)}
-                  >
-                    {student.nom} {student.prenom}
-                  </div>
-                ))}
-              </div>
-            </div>
-            {selectedStudentSetted && (
+
+        {showAllForm && (
+          <form onSubmit={handleBorrowSubmit}>
+            <section className="modal-borrow-content">
               <div>
-                <label className="label-borrow-book" htmlFor="exemplaire">
-                  Choisissez le livre :
+                <label className="label-borrow-book" htmlFor="student">
+                  Sélectionnez l'élève :
                 </label>
-                <select
-                  className="option-exemplaire"
-                  id="exemplaire"
-                  value={selectedExemplaire || ""}
-                  onChange={(e) =>
-                    setSelectedExemplaire(Number(e.target.value))
-                  }
-                >
-                  <option value="" disabled className="option-exemplaire">
-                    Sélectionnez un livre
-                  </option>
-                  {availableExemplaires.map((exemplaire) => (
-                    <option
-                      key={exemplaire.id_exemplaire}
-                      value={exemplaire.id_exemplaire}
-                      className="option-exemplaire"
+                <input
+                  type="text"
+                  id="student"
+                  placeholder="Rechercher par nom ou prénom"
+                  value={searchText}
+                  className="input-student"
+                  onChange={(e) => setSearchText(e.target.value)}
+                />
+                <div className="student-list-container">
+                  {filteredStudents.map((student) => (
+                    <div
+                      key={student.id_eleve}
+                      className={`student-item ${
+                        studentId === student.id_eleve ? "selected" : ""
+                      }`}
+                      onClick={() => handleStudentClick(student)}
+                      onKeyDown={() => handleStudentClick(student)}
+                      onKeyUp={() => handleStudentClick(student)}
                     >
-                      {exemplaire.titre}
-                    </option>
+                      {student.nom} {student.prenom}
+                    </div>
                   ))}
-                </select>
-              </div>
-            )}
-            {selectedStudentSetted && selectedExemplaire && (
-              <div className="field">
-                <label className="label-borrow-book" htmlFor="date_retour">
-                  Date de retour* :
-                </label>
-                <div className="control">
-                  <input
-                    type="date"
-                    className="input-date-retour"
-                    value={dateRetour}
-                    onChange={(e) => setDateRetour(e.target.value)}
-                  />
                 </div>
-                <p className="p-loan-duration">
-                  * Pour modifier la durée d'emprunt par défaut : Menu Accueil
-                  &gt; Paramètres
-                </p>
               </div>
+
+              {selectedStudentSetted && (
+                <div>
+                  <label className="label-borrow-book" htmlFor="exemplaire">
+                    Choisissez le livre :
+                  </label>
+                  <select
+                    className="option-exemplaire"
+                    id="exemplaire"
+                    value={selectedExemplaire || ""}
+                    onChange={(e) =>
+                      setSelectedExemplaire(Number(e.target.value))
+                    }
+                  >
+                    <option value="" disabled className="option-exemplaire">
+                      Sélectionnez un livre
+                    </option>
+                    {availableExemplaires.map((exemplaire) => (
+                      <option
+                        key={exemplaire.id_exemplaire}
+                        value={exemplaire.id_exemplaire}
+                        className="option-exemplaire"
+                      >
+                        {exemplaire.titre}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              )}
+
+              {selectedStudentSetted && selectedExemplaire && (
+                <div className="field">
+                  <label className="label-borrow-book" htmlFor="date_retour">
+                    Date de retour* :
+                  </label>
+                  <div className="control">
+                    <input
+                      type="date"
+                      className="input-date-retour"
+                      value={dateRetour}
+                      onChange={(e) => setDateRetour(e.target.value)}
+                    />
+                  </div>
+                  <p className="p-loan-duration">
+                    * Pour modifier la durée d'emprunt par défaut : Menu Accueil
+                    &gt; Paramètres
+                  </p>
+                </div>
+              )}
+            </section>
+
+            {errorLoanMessage && (
+              <div className="error-loan-message">{errorLoanMessage}</div>
             )}
-          </section>
-          {errorLoanMessage && (
-            <div className="error-loan-message">{errorLoanMessage}</div>
-          )}
-          <button type="submit" className="borrow-button">
-            Emprunter
-          </button>
-        </form>
+
+            <button type="submit" className="borrow-button">
+              Emprunter
+            </button>
+          </form>
+        )}
+        {errorBorrowLimitMessage && (
+          <div className="error-loan-message">{errorBorrowLimitMessage}</div>
+        )}
       </div>
     </div>
   );

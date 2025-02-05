@@ -23,11 +23,25 @@ class eleveRepository {
 
     return rows[0] as Eleve;
   }
-
-  /*Student avec nbOfBooksBorrowed et date_retour*/
   async readAll() {
     const [rows] = await databaseClient.query<Rows>(
       "SELECT e.id_eleve, e.prenom, e.nom, MIN(em.date_retour) AS date_retour, COUNT(em.id_exemplaire) AS nbOfBooksBorrowed FROM eleve e LEFT JOIN emprunt em ON e.id_eleve = em.id_eleve GROUP BY e.id_eleve ORDER BY date_retour ASC;",
+    );
+    return rows as Eleve[];
+  }
+
+  /*Student avec nbOfBooksBorrowed et date_retour*/
+  async readAllStudentsWithBorrowsInProgress() {
+    const [rows] = await databaseClient.query<Rows>(
+      "SELECT e.id_eleve, e.prenom, e.nom, MIN(em.date_retour) AS date_retour, COUNT(em.id_exemplaire) AS nbOfBooksBorrowed FROM eleve e LEFT JOIN emprunt em ON e.id_eleve = em.id_eleve WHERE date_retour_effectif IS NULL GROUP BY e.id_eleve ORDER BY date_retour ASC;",
+    );
+    return rows as Eleve[];
+  }
+
+  /*Student avec nbOfBooksBorrowed et date_retour*/
+  async readAllStudentsWithBorrowsInformation() {
+    const [rows] = await databaseClient.query<Rows>(
+      "SELECT e.id_eleve, e.prenom, e.nom, CASE WHEN COUNT(em.id_exemplaire) = 0 THEN '2600-01-01' ELSE MIN(em.date_retour) END AS date_retour, COUNT(em.id_exemplaire) AS nbOfBooksBorrowed FROM eleve e LEFT JOIN emprunt em ON e.id_eleve = em.id_eleve AND em.date_retour_effectif IS NULL GROUP BY e.id_eleve, e.nom, e.prenom ORDER BY date_retour ASC, nbOfBooksBorrowed DESC ;",
     );
     return rows as Eleve[];
   }

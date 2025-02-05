@@ -53,6 +53,26 @@ class livreRepository {
     return rows as Livre[];
   }
 
+  async readAllWithExemplaires() {
+    const [rows] = await databaseClient.query<Rows>(
+      `SELECT 
+        l.ISBN,
+        l.titre,
+        l.auteur,
+        l.couverture_img,
+        l.livre_resume,
+        COUNT(e.id_exemplaire) AS nombre_exemplaires,
+        SUM(CASE WHEN e.isAvailable = TRUE THEN 1 ELSE 0 END) AS nombre_exemplaires_disponibles
+      FROM 
+        livre l
+      LEFT JOIN 
+        exemplaire e ON l.ISBN = e.ISBN
+      GROUP BY 
+        l.ISBN, l.titre, l.auteur, l.couverture_img, l.livre_resume;`,
+    );
+    return rows as Livre[];
+  }
+
   async getTopBooks() {
     const [rows] = await databaseClient.query<Rows>(
       "SELECT l.ISBN, l.couverture_img, l.titre, l.auteur, COUNT(em.id_exemplaire) AS nb_emprunts FROM livre l JOIN exemplaire ex ON l.ISBN = ex.ISBN JOIN emprunt em ON ex.id_exemplaire = em.id_exemplaire GROUP BY l.ISBN, l.titre, l.auteur, l.couverture_img ORDER BY nb_emprunts DESC LIMIT 3;",

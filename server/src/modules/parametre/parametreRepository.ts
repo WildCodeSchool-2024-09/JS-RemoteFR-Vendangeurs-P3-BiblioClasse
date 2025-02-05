@@ -19,6 +19,19 @@ class parametreRepository {
     );
     return rows[0].loanDuration;
   }
+
+  async setBorrowLimit(borrowLimit: string) {
+    await databaseClient.query("UPDATE parametre SET borrowLimit = ?", [
+      borrowLimit,
+    ]);
+  }
+
+  async getBorrowLimit() {
+    const [rows] = await databaseClient.query<Rows>(
+      "SELECT borrowLimit FROM parametre",
+    );
+    return rows[0].borrowLimit;
+  }
 }
 
 export default new parametreRepository();

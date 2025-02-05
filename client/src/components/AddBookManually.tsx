@@ -13,6 +13,9 @@ interface BookProps {
   livre_resume: string;
   couverture_img: string;
   ISBN: string;
+  date_retour?: string;
+  nombre_exemplaires: number;
+  nombre_exemplaires_disponibles: number;
 }
 
 function AddBookManually({
@@ -27,6 +30,11 @@ function AddBookManually({
   const [auteur, setAuteur] = useState("");
   const [livre_resume, setLivre_resume] = useState("");
   const [couverture_img, setCouverture_img] = useState("");
+
+  const handleISBNChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const cleanedISBN = e.target.value.replace(/[^a-zA-Z0-9]/g, "");
+    setISBN(cleanedISBN);
+  };
 
   const handleFetchBookInfo = async () => {
     try {
@@ -95,6 +103,8 @@ function AddBookManually({
         auteur,
         livre_resume,
         couverture_img,
+        nombre_exemplaires: 1,
+        nombre_exemplaires_disponibles: 1,
       });
       handleModalBookClose();
     } else {
@@ -128,7 +138,7 @@ function AddBookManually({
               placeholder="ISBN"
               type="text"
               value={ISBN}
-              onChange={(e) => setISBN(e.target.value)}
+              onChange={handleISBNChange}
               required
             />
           </label>

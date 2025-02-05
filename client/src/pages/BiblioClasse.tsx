@@ -8,6 +8,7 @@ import AddBookManually from "../components/AddBookManually";
 import AddStudent from "../components/AddStudent";
 import BorrowBookModal from "../components/BorrowBookModal";
 import ConfirmationLoanModale from "../components/ConfirmationLoanModale";
+import ConfirmationReturnModale from "../components/ConfirmationReturnModale";
 import EmptyApp from "../components/EmptyApp";
 import ParametresModal from "../components/ParametresModal";
 import ReturnBookModal from "../components/ReturnBookModal";
@@ -61,10 +62,18 @@ function BiblioClasse() {
     useState<boolean>(false);
   const [showReturnModal, setShowReturnModal] = useState<boolean>(false);
   const [errorLoanMessage, setErrorLoanMessage] = useState<string>("");
-  const [confirmationLoanMessage, setConfirmationLoanMessage] =
-    useState<string>("");
+  useState<string>("");
   const [showConfirmationLoanModal, setShowConfirmationLoanModal] =
     useState<boolean>(false);
+  const [confirmationStudent, setConfirmationStudent] = useState<string>("");
+  const [confirmationBook, setConfirmationBook] = useState<string>("");
+  const [confirmationDateRetour, setConfirmationDateRetour] =
+    useState<string>("");
+  const [showConfirmationReturnModal, setShowConfirmationReturnModal] =
+    useState<boolean>(false);
+  const [confirmationReturnMessage, setConfirmationReturnMessage] =
+    useState<string>("");
+  const [borrowLimit, setBorrowLimit] = useState<number>(5);
 
   ////////////////*FETCH DATA*////////////////////
   useEffect(() => {
@@ -162,7 +171,6 @@ function BiblioClasse() {
         );
         const data = await response.json();
         setLoansInProgress(data);
-        console.info("Data Loans in Progress :", data);
       } catch (error) {
         console.error(
           "Erreur lors de la récupération des emprunts en cours:",
@@ -181,6 +189,21 @@ function BiblioClasse() {
       } catch (error) {
         console.error(
           "Erreur lors de la récupération de la durée d'emprunt:",
+          error,
+        );
+      }
+    };
+
+    const fetchBorrowLimit = async () => {
+      try {
+        const response = await fetch(
+          "http://localhost:3310/api/parametres/borrowLimit",
+        );
+        const data = await response.json();
+        setBorrowLimit(data);
+      } catch (error) {
+        console.error(
+          "Erreur lors de la récupération de la limite d'emprunt:",
           error,
         );
       }
@@ -206,6 +229,7 @@ function BiblioClasse() {
     fetchLoansInProgress();
     fetchLoanDuration();
     fetchTopBooks();
+    fetchBorrowLimit();
   }, []);
 
   ////////////////*MODALE VIDE*////////////////////
@@ -282,6 +306,9 @@ function BiblioClasse() {
   };
   const handleReturnModalClose = () => {
     setShowReturnModal(false);
+    setTimeout(() => {
+      setShowConfirmationReturnModal(false);
+    }, 2000);
   };
 
   ////////////////*AJOUT D'EMPRUNT*////////////////
@@ -296,7 +323,6 @@ function BiblioClasse() {
   };
   /*Met à jour la disponibilité de l'exemplaire emprunté*/
   const handleBookBorrowed = (borrowedBook: BorrowedBook): void => {
-    console.info("Book borrowed:", borrowedBook);
     setExemplaires((prevExemplaires) =>
       prevExemplaires.map((exemplaire) =>
         exemplaire.id_exemplaire === borrowedBook.id_exemplaire
@@ -370,25 +396,39 @@ function BiblioClasse() {
         </div>
       </Menu>
       <section className="section-eleves">
-        <p className="intro">J'ai {students} élèves enregistrés :</p>
+        <p className="intro">
+          {students > 1
+            ? `J'ai ${students} élèves enregistrés :`
+            : `J'ai ${students} élève enregistré :`}
+        </p>
         <section className="statistiques-liste">
           <div className="stats-item">
             <span className="badge badge-green">
               {studentsWithLoansInProgress}
             </span>
-            <p className="texte-stat-item">ont un emprunt en cours;</p>
+            <p className="texte-stat-item">
+              {studentsWithLoansInProgress > 1
+                ? "ont un emprunt en cours;"
+                : "a un emprunt en cours;"}
+            </p>
           </div>
           <div className="stats-item">
             <span className="badge badge-orange">
               {studentsWithLoansDueIn7Days}
             </span>
             <p className="texte-stat-item">
-              doivent rendre au moins 1 livre dans moins de 7 jours;
+              {studentsWithLoansDueIn7Days > 1
+                ? "doivent rendre au moins 1 livre dans moins de 7 jours;"
+                : "doit rendre au moins 1 livre dans moins de 7 jours;"}
             </p>
           </div>
           <div className="stats-item">
             <span className="badge badge-red">{studentsWithOverdueLoans}</span>
-            <p className="texte-stat-item">est en retard.</p>
+            <p className="texte-stat-item">
+              {studentsWithOverdueLoans > 1
+                ? "sont en retard."
+                : "est en retard."}
+            </p>
           </div>
         </section>
         <div className="button-container">
@@ -400,11 +440,23 @@ function BiblioClasse() {
 
       <section className="section-livres">
         <p className="intro">
-          J'ai {exemplaires.length} livres enregistrés, dont {books} références
-          différentes :
+          <span>
+            {exemplaires.length > 1
+              ? `J'ai ${exemplaires.length} livres enregistrés, `
+              : `J'ai ${exemplaires.length} livre enregistré, `}
+          </span>
+          <span>
+            {books > 1
+              ? `dont ${books} références
+          différentes :`
+              : `dont ${books} référence
+          différente :`}
+          </span>
         </p>
         <p className="p-emprunt">
-          {loansInProgress} livres sont actuellement empruntés.
+          {loansInProgress > 1
+            ? `${loansInProgress} sont actuellement empruntés.`
+            : `${loansInProgress} est actuellement emprunté.`}
         </p>
         <p className="p-emprunt">Les 3 livres les plus empruntés sont :</p>
         <div className="top-books">
@@ -469,6 +521,8 @@ function BiblioClasse() {
           showReturnModal={showReturnModal}
           handleReturnModalClose={handleReturnModalClose}
           setShowReturnModal={setShowReturnModal}
+          setConfirmationReturnMessage={setConfirmationReturnMessage}
+          setShowConfirmationReturnModal={setShowConfirmationReturnModal}
         />
       )}
       {showBorrowModal && (
@@ -480,7 +534,10 @@ function BiblioClasse() {
           loanDuration={loanDuration}
           setErrorLoanMessage={setErrorLoanMessage}
           errorLoanMessage={errorLoanMessage}
-          setConfirmationLoanMessage={setConfirmationLoanMessage}
+          setConfirmationStudent={setConfirmationStudent}
+          setConfirmationBook={setConfirmationBook}
+          setConfirmationDateRetour={setConfirmationDateRetour}
+          borrowLimit={borrowLimit}
         />
       )}
       {showParametresModal && (
@@ -489,11 +546,20 @@ function BiblioClasse() {
           setLoanDuration={setLoanDuration}
           showModal={showParametresModal}
           handleModalClose={() => setShowParametresModal(false)}
+          borrowLimit={borrowLimit}
+          setBorrowLimit={setBorrowLimit}
         />
       )}
       {showConfirmationLoanModal && (
         <ConfirmationLoanModale
-          confirmationLoanMessage={confirmationLoanMessage}
+          confirmationStudent={confirmationStudent}
+          confirmationBook={confirmationBook}
+          confirmationDateRetour={confirmationDateRetour}
+        />
+      )}
+      {showConfirmationReturnModal && (
+        <ConfirmationReturnModale
+          confirmationReturnMessage={confirmationReturnMessage}
         />
       )}
     </div>

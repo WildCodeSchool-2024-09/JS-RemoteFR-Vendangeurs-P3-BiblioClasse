@@ -10,7 +10,7 @@ interface EditStudentModalProps {
     id_eleve: number;
     nbOfBooksBorrowed: string;
   };
-  onStudentUpdated: (updatedStudent: {
+  handleStudentUpdated: (updatedStudent: {
     prenom: string;
     nom: string;
     id_eleve: number;
@@ -22,7 +22,7 @@ const EditStudentModal: React.FC<EditStudentModalProps> = ({
   showModal,
   handleModalClose,
   student,
-  onStudentUpdated,
+  handleStudentUpdated,
 }) => {
   const [prenom, setPrenom] = useState(student.prenom);
   const [nom, setNom] = useState(student.nom);
@@ -47,7 +47,7 @@ const EditStudentModal: React.FC<EditStudentModalProps> = ({
         },
       );
       if (response.ok) {
-        onStudentUpdated(updatedStudent);
+        handleStudentUpdated(updatedStudent);
         handleModalClose();
       } else {
         console.error("Erreur lors de la mise à jour du livre");

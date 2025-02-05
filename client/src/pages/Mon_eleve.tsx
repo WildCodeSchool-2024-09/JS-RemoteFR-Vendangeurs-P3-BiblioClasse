@@ -94,8 +94,11 @@ function Mon_eleve() {
           <p className="name">{currentStudent.prenom}</p>
           <p className="name">{currentStudent.nom}</p>
           <p className="infos_livre">
-            {nbOfBooksBorrowed} livres empruntés, dont {nbOfOverdueBooks} en
-            retard
+            {nbOfBooksBorrowed > 1
+              ? `${nbOfBooksBorrowed} livres empruntés, dont ${nbOfOverdueBooks} en
+            retard`
+              : `${nbOfBooksBorrowed} livre emprunté, dont ${nbOfOverdueBooks} en
+            retard`}
           </p>
         </div>
       </section>
@@ -111,6 +114,8 @@ function Mon_eleve() {
               ISBN={book.ISBN}
               date_retour={book.date_retour}
               context="mon_eleve"
+              nombre_exemplaires={1}
+              nombre_exemplaires_disponibles={1}
             />
           </div>
         ))}
@@ -134,7 +139,7 @@ function Mon_eleve() {
         showModal={showEditModal}
         handleModalClose={handleModalClose}
         student={currentStudent}
-        onStudentUpdated={handleStudentUpdated}
+        handleStudentUpdated={handleStudentUpdated}
       />
     </div>
   );

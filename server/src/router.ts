@@ -4,6 +4,7 @@ const router = express.Router();
 
 import livreActions from "./modules/livre/livreActions";
 router.get("/api/livres", livreActions.browse);
+router.get("/api/livres_with_exemplaires", livreActions.browseWithExemplaires);
 router.get("/api/livres/:ISBN", livreActions.read);
 router.post("/api/livres", livreActions.add);
 router.put("/api/livres/:ISBN", livreActions.edit);
@@ -14,6 +15,14 @@ router.get("/api/top_books", livreActions.getTopBooks);
 import eleveActions from "./modules/eleve/eleveActions";
 router.get("/api/eleves", eleveActions.browse);
 router.get("/api/eleves/:id_eleve", eleveActions.read);
+router.get(
+  "/api/eleves_with_borrows",
+  eleveActions.browseStudentsWithBorrowsInProgress,
+);
+router.get(
+  "/api/eleves_with_borrows_information",
+  eleveActions.browseStudentsWithBorrowsInformation,
+);
 router.post("/api/eleves", eleveActions.add);
 router.put("/api/eleves/:id_eleve", eleveActions.edit);
 router.delete("/api/eleves/:id_eleve", eleveActions.destroy);
@@ -39,7 +48,6 @@ router.get("/api/emprunts", empruntActions.browse);
 router.get("/api/emprunts/:id_emprunt", empruntActions.read);
 router.post("/api/emprunts", empruntActions.add);
 router.put("/api/emprunts/:id_emprunt", empruntActions.edit);
-
 router.delete("/api/emprunts/:id_emprunt", empruntActions.destroy);
 router.get(
   "/api/students-with-loans-in-progress",
@@ -55,10 +63,15 @@ router.get(
 );
 router.get("/api/emprunts_in-progress", empruntActions.LoansInProgress);
 router.get("/api/emprunts_by_student/:id_eleve", empruntActions.LoansByStudent);
-router.post("/api/emprunts/return/:id_emprunt", empruntActions.returnBook);
+
+import retour from "./modules/retour/retourActions";
+router.post("/api/emprunts/retours", retour.returnBook);
+
 import parametreActions from "./modules/parametre/parametreActions";
-router.get("/api/parametres/loanDuration", parametreActions.read);
-router.put("/api/parametres/:id_parametre", parametreActions.edit);
+router.get("/api/parametres/loanDuration", parametreActions.readLoanDuration);
+router.put("/api/parametres/loanDuration", parametreActions.editLoanDuration);
+router.get("/api/parametres/borrowLimit", parametreActions.readBorrowLimit);
+router.put("/api/parametres/borrowLimit", parametreActions.editBorrowLimit);
 /* ************************************************************************* */
 
 export default router;

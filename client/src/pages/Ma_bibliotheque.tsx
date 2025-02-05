@@ -7,6 +7,7 @@ import "../styles/Buttons.css";
 import AddBookManually from "../components/AddBookManually";
 import Addbook from "../components/Addbook";
 import Book from "../components/Book";
+import DeleteConfirmationModale from "../components/DeleteConfirmationModale";
 import Header from "../components/Header";
 import SearchBar from "../components/Searchbar";
 
@@ -17,6 +18,8 @@ interface BookProps {
   couverture_img: string;
   ISBN: string;
   date_retour?: string;
+  nombre_exemplaires: number;
+  nombre_exemplaires_disponibles: number;
 }
 
 function Ma_bibliotheque() {
@@ -28,6 +31,9 @@ function Ma_bibliotheque() {
   const [showModal, setShowModal] = useState<boolean>(false);
   const [showModalBook, setShowModalBook] = useState<boolean>(false);
   const [editMode, setEditMode] = useState(false);
+  const [bookToDelete, setBookToDelete] = useState<BookProps | null>(null);
+  const [showDeleteConfirmationModale, setShowDeleteConfirmationModale] =
+    useState(false);
 
   /*Gère le retour à la page précédente*/
   const handleBackClick = () => {
@@ -38,7 +44,9 @@ function Ma_bibliotheque() {
   useEffect(() => {
     const fetchBooks = async () => {
       try {
-        const response = await fetch("http://localhost:3310/api/livres");
+        const response = await fetch(
+          "http://localhost:3310/api/livres_with_exemplaires",
+        );
         const data = await response.json();
         setBooks(data);
         setFilteredBooks(data);
@@ -58,7 +66,7 @@ function Ma_bibliotheque() {
     setMenuOpen(false);
   };
 
-  /*Fonction pour trier les livres*/
+  /*Fonction pour trier les livres par titre ou auteur*/
   const sortedBooks = [...filteredBooks].sort((a, b) => {
     if (sortBooks === "titre") {
       return a.titre.localeCompare(b.titre);
@@ -94,7 +102,7 @@ function Ma_bibliotheque() {
     setFilteredBooks(filtered);
   };
 
-  /*Fonction pour mettre à jour l'état des livres*/
+  /*Fonction pour mettre à jour l'état des livres après ajout*/
   const handleBookAdded = (newBook: BookProps) => {
     setBooks((prevBooks) => [...prevBooks, newBook]);
     setFilteredBooks((prevBooks) => [...prevBooks, newBook]);
@@ -106,23 +114,52 @@ function Ma_bibliotheque() {
     setMenuOpen(false);
   };
 
+  /* Fonction pour afficher la modale de confirmation */
+  const handleDeleteConfirmationModale = (book: BookProps) => {
+    setBookToDelete(book);
+    setShowDeleteConfirmationModale(true);
+  };
+
   /*Fonction pour supprimer un livre*/
   const handleDeleteBook = async (ISBN: string) => {
+    const book = books.find((book) => book.ISBN === ISBN);
+    if (book) {
+      handleDeleteConfirmationModale(book);
+    }
+  };
+
+  /* Fonction pour confirmer la suppression */
+  const handleConfirmDelete = async () => {
+    if (!bookToDelete) return;
+
     try {
-      const response = await fetch(`http://localhost:3310/api/livres/${ISBN}`, {
-        method: "DELETE",
-      });
+      const response = await fetch(
+        `http://localhost:3310/api/livres/${bookToDelete.ISBN}`,
+        {
+          method: "DELETE",
+        },
+      );
       if (response.ok) {
-        setBooks((prevBooks) => prevBooks.filter((book) => book.ISBN !== ISBN));
-        setFilteredBooks((prevBooks) =>
-          prevBooks.filter((book) => book.ISBN !== ISBN),
+        setBooks((prevBooks) =>
+          prevBooks.filter((book) => book.ISBN !== bookToDelete.ISBN),
         );
+        setFilteredBooks((prevBooks) =>
+          prevBooks.filter((book) => book.ISBN !== bookToDelete.ISBN),
+        );
+        setShowDeleteConfirmationModale(false);
+        setBookToDelete(null);
       } else {
-        console.error("Erreur lors de la suppression du livre");
+        console.error("Erreur lors de la suppression de l'élève");
       }
     } catch (error) {
-      console.error("Erreur lors de la suppression du livre:", error);
+      console.error("Erreur lors de la suppression de l'élève:", error);
     }
+  };
+
+  /* Fonction pour annuler la suppression */
+  const handleCancelDelete = () => {
+    setShowDeleteConfirmationModale(false);
+    setBookToDelete(null);
   };
 
   return (
@@ -214,6 +251,10 @@ function Ma_bibliotheque() {
               couverture_img={book.couverture_img}
               ISBN={book.ISBN}
               date_retour={book.date_retour}
+              nombre_exemplaires={book.nombre_exemplaires}
+              nombre_exemplaires_disponibles={
+                book.nombre_exemplaires_disponibles
+              }
               context="bibliotheque"
             />
             {editMode && (
@@ -227,6 +268,12 @@ function Ma_bibliotheque() {
             )}
           </div>
         ))}
+        <DeleteConfirmationModale
+          showDeleteConfirmationModale={showDeleteConfirmationModale}
+          message={`Êtes-vous sûr de vouloir supprimer ${bookToDelete?.titre} ? Une fois la suppression validée, vous ne pourrez plus revenir en arrière.`}
+          onConfirm={handleConfirmDelete}
+          onCancel={handleCancelDelete}
+        />
       </section>
       {!editMode && (
         <div className="buttons">
