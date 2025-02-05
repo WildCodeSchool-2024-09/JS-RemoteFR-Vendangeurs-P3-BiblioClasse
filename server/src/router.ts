@@ -72,6 +72,13 @@ router.get("/api/parametres/loanDuration", parametreActions.readLoanDuration);
 router.put("/api/parametres/loanDuration", parametreActions.editLoanDuration);
 router.get("/api/parametres/borrowLimit", parametreActions.readBorrowLimit);
 router.put("/api/parametres/borrowLimit", parametreActions.editBorrowLimit);
+
+import authActions from "./modules/auth/authActions";
+router.post("/api/auth/login", authActions.login);
+router.post("/api/auth/register", authActions.register);
+// router.post("/api/auth/logout", authActions.logout);
+// router.get("/api/auth/user", authActions.getUser);
+
 /* ************************************************************************* */
 
 export default router;

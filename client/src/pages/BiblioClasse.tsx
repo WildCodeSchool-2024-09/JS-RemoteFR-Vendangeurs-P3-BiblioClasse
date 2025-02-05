@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { slide as Menu } from "react-burger-menu";
 import { useNavigate } from "react-router-dom";
 import "../styles/BurgerMenu.css";
+import Cookies from "js-cookie";
 import AddBookManually from "../components/AddBookManually";
 import AddStudent from "../components/AddStudent";
 import BorrowBookModal from "../components/BorrowBookModal";
@@ -347,6 +348,12 @@ function BiblioClasse() {
     setMenuOpen(false);
   };
 
+  ////////////////*DECONNEXION*////////////////
+  const handleLogout = () => {
+    Cookies.remove("token");
+    navigate("/");
+  };
+
   if (showEmptyApp) {
     return (
       <div>
@@ -391,7 +398,11 @@ function BiblioClasse() {
         >
           <strong>Paramètres</strong>
         </div>
-        <div className="menu-item">
+        <div
+          className="menu-item"
+          onClick={handleLogout}
+          onKeyDown={handleLogout}
+        >
           <strong>Se déconnecter</strong>
         </div>
       </Menu>
