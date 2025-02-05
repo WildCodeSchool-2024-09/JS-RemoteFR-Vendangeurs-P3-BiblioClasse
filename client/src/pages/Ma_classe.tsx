@@ -7,6 +7,7 @@ import "../styles/BurgerMenu.css";
 import "../styles/Buttons.css";
 import { Link, useNavigate } from "react-router-dom";
 import AddStudent from "../components/AddStudent";
+import DeleteConfirmationModale from "../components/DeleteConfirmationModale";
 import SearchBar from "../components/Searchbar";
 
 export interface StudentProps {
@@ -25,6 +26,11 @@ function Ma_classe() {
   const [sortStudents, setSortStudents] = useState<string>("");
   const [showModal, setShowModal] = useState<boolean>(false);
   const [editMode, setEditMode] = useState(false);
+  const [studentToDelete, setStudentToDelete] = useState<StudentProps | null>(
+    null,
+  );
+  const [showDeleteConfirmationModale, setShowDeleteConfirmationModale] =
+    useState(false);
 
   /*Gère le retour à la page précédente*/
   const handleBackClick = () => {
@@ -101,39 +107,55 @@ function Ma_classe() {
     setMenuOpen(false);
   };
 
-  /*Fonction pour supprimer un livre*/
-  const handleDeleteStudent = async (
-    id_eleve: number,
-    nom: string,
-    prenom: string,
-  ) => {
-    const confirmDelete = window.confirm(
-      `Êtes-vous sûr de vouloir supprimer ${prenom} ${nom} ? Une fois la suppression validée, vous ne pourrez plus revenir en arrière.`,
-    );
+  /* Fonction pour afficher la modale de confirmation */
+  const handleDeleteConfirmationModale = (student: StudentProps) => {
+    setStudentToDelete(student);
+    setShowDeleteConfirmationModale(true);
+  };
 
-    if (!confirmDelete) {
-      return;
+  /* Fonction pour supprimer un élève */
+  const handleDeleteStudent = (id_eleve: number) => {
+    const student = students.find((student) => student.id_eleve === id_eleve);
+    if (student) {
+      handleDeleteConfirmationModale(student);
     }
+  };
+
+  const handleConfirmDelete = async () => {
+    if (!studentToDelete) return;
+
     try {
       const response = await fetch(
-        `http://localhost:3310/api/eleves/${id_eleve}`,
+        `http://localhost:3310/api/eleves/${studentToDelete.id_eleve}`,
         {
           method: "DELETE",
         },
       );
       if (response.ok) {
         setStudents((prevStudents) =>
-          prevStudents.filter((student) => student.id_eleve !== id_eleve),
+          prevStudents.filter(
+            (student) => student.id_eleve !== studentToDelete.id_eleve,
+          ),
         );
         setFilteredStudents((prevStudents) =>
-          prevStudents.filter((student) => student.id_eleve !== id_eleve),
+          prevStudents.filter(
+            (student) => student.id_eleve !== studentToDelete.id_eleve,
+          ),
         );
+        setShowDeleteConfirmationModale(false);
+        setStudentToDelete(null);
       } else {
-        console.error("Erreur lors de la suppression du livre");
+        console.error("Erreur lors de la suppression de l'élève");
       }
     } catch (error) {
-      console.error("Erreur lors de la suppression du livre:", error);
+      console.error("Erreur lors de la suppression de l'élève:", error);
     }
+  };
+
+  /* Fonction pour annuler la suppression */
+  const handleCancelDelete = () => {
+    setShowDeleteConfirmationModale(false);
+    setStudentToDelete(null);
   };
 
   return (
@@ -228,11 +250,7 @@ function Ma_classe() {
               onContextMenu={(e) => {
                 e.preventDefault();
                 if (editMode) {
-                  handleDeleteStudent(
-                    student.id_eleve,
-                    student.nom,
-                    student.prenom,
-                  );
+                  handleDeleteStudent(student.id_eleve);
                 }
               }}
             >
@@ -249,13 +267,7 @@ function Ma_classe() {
                 <button
                   type="button"
                   className="delete-button"
-                  onClick={() =>
-                    handleDeleteStudent(
-                      student.id_eleve,
-                      student.nom,
-                      student.prenom,
-                    )
-                  }
+                  onClick={() => handleDeleteStudent(student.id_eleve)}
                 >
                   &times;
                 </button>
@@ -263,6 +275,12 @@ function Ma_classe() {
             </div>
           </div>
         ))}
+        <DeleteConfirmationModale
+          showDeleteConfirmationModale={showDeleteConfirmationModale}
+          message={`Êtes-vous sûr de vouloir supprimer ${studentToDelete?.prenom} ${studentToDelete?.nom} ? Une fois la suppression validée, vous ne pourrez plus revenir en arrière.`}
+          onConfirm={handleConfirmDelete}
+          onCancel={handleCancelDelete}
+        />
       </section>
       {!editMode && (
         <div className="buttons">
