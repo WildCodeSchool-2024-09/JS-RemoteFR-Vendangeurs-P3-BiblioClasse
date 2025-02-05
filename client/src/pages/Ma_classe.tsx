@@ -121,6 +121,7 @@ function Ma_classe() {
     }
   };
 
+  /* Fonction pour confirmer la suppression */
   const handleConfirmDelete = async () => {
     if (!studentToDelete) return;
 
