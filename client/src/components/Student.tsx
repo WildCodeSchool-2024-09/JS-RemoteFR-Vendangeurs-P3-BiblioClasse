@@ -70,9 +70,7 @@ function Student({
               {prenom} {nom}
             </p>
             <p className="Return_due_date">
-              {nbOfBooksBorrowed === 0
-                ? "Aucun livre emprunté"
-                : `A rendre avant le ${formattedDateRetour}`}
+              A rendre avant le {formattedDateRetour}
             </p>
           </section>
         </>

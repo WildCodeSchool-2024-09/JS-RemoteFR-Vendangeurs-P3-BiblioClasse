@@ -1,13 +1,16 @@
 import "../styles/Mon_livre.css";
 import { useState } from "react";
 
+interface Exemplaire {
+  id_exemplaire: number;
+  id_eleve: number;
+  nom: string;
+  prenom: string;
+  date_retour: string;
+}
+
 interface AddExemplaireProps {
-  onExemplaireAdded: (exemplaire: {
-    id_exemplaire: number;
-    ISBN: string;
-    isAvailable: boolean;
-    titre: string;
-  }) => void;
+  onExemplaireAdded: (exemplaire: Exemplaire) => void;
   handleModalClose: () => void;
   ISBN: string;
 }

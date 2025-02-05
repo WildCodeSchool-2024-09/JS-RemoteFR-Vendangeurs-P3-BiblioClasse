@@ -56,7 +56,6 @@ function ReturnBookModal({
         );
         const data = await response.json();
         setStudents(data);
-        console.info("Élèves récupérés:", data);
       } catch (error) {
         console.error("Erreur lors de la récupération des élèves:", error);
       }
@@ -94,7 +93,6 @@ function ReturnBookModal({
       id_eleve: selectedStudent.id_eleve,
       date_retour_effectif: new Date().toISOString().slice(0, 10),
     };
-    console.info("Livre à retourner:", returnedBook);
 
     try {
       const response = await fetch(
@@ -134,7 +132,6 @@ function ReturnBookModal({
     setSearchText(`${student.nom} ${student.prenom}`);
     setSelectedStudentSetted(true);
     setSelectedStudent(student);
-    console.info("Valeurs de student", student);
   };
 
   return (

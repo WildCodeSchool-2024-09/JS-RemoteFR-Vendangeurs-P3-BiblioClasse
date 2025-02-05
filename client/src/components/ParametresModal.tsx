@@ -52,11 +52,6 @@ function ParametresModal({
         },
         body: JSON.stringify({ borrowLimit }),
       });
-      console.info(
-        "Paramètres mis à jour avec succès:",
-        loanDuration,
-        borrowLimit,
-      );
       handleModalClose();
     } catch (error) {
       console.error("Erreur lors de la mise à jour des paramètres :", error);

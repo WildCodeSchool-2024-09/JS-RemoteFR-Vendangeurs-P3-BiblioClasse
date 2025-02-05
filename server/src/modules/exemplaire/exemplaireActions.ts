@@ -43,6 +43,7 @@ const readBorrowedExemplaireByISBN: RequestHandler = async (req, res, next) => {
       prenom: string;
       date_retour: string;
       id_exemplaire: number;
+      id_eleve: number;
     }>;
     borrowedExemplaireByISBN =
       await exemplaireRepository.readBorrowedExemplaireByISBN(ISBN as string);

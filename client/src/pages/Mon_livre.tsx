@@ -6,6 +6,14 @@ import EditBookModal from "../components/EditBookModal";
 import Header from "../components/Header";
 import Student from "../components/Student";
 
+interface Exemplaire {
+  id_exemplaire: number;
+  id_eleve: number;
+  nom: string;
+  prenom: string;
+  date_retour: string;
+}
+
 function Mon_livre() {
   const location = useLocation();
   const { titre, auteur, livre_resume, couverture_img, ISBN } =
@@ -15,20 +23,12 @@ function Mon_livre() {
   const [showEditModal, setShowEditModal] = useState(false);
   const [showAddExemplaireModal, setShowAddExemplaireModal] = useState(false);
   const [currentBook, setCurrentBook] = useState(book);
-  const [exemplaires, setExemplaires] = useState<
-    { id_exemplaire: number; ISBN: string; isAvailable: boolean }[]
-  >([]);
   const [nbAvailableExemplaires, setNbAvailableExemplaires] = useState(0);
   const [showBorrowModal, setShowBorrowModal] = useState(false);
-  const [borrowedExemplaires, setBorrowedExemplaires] = useState<
-    {
-      id_exemplaire: number;
-      nom: string;
-      prenom: string;
-      date_retour: string;
-      id_eleve: number;
-    }[]
-  >([]);
+  const [exemplaires, setExemplaires] = useState<Exemplaire[]>([]);
+  const [borrowedExemplaires, setBorrowedExemplaires] = useState<Exemplaire[]>(
+    [],
+  );
 
   useEffect(() => {
     /*Récupération des exemplaires du livre*/
@@ -38,7 +38,6 @@ function Mon_livre() {
           `http://localhost:3310/api/exemplaires?ISBN=${ISBN}`,
         );
         const data = await response.json();
-        console.info("Exemplaires:", data);
         setExemplaires(data);
         const available = data.filter(
           (exemplaire: { isAvailable: boolean }) => exemplaire.isAvailable,
@@ -56,7 +55,6 @@ function Mon_livre() {
           `http://localhost:3310/api/exemplaires_borrowed/${ISBN}`,
         );
         const data = await response.json();
-        console.info("Livres empruntés:", data);
         setBorrowedExemplaires(data);
       } catch (error) {
         console.error(
@@ -109,11 +107,7 @@ function Mon_livre() {
   };
 
   /*Gère l'ajout d'un exemplaire*/
-  const handleExemplaireAdded = (newExemplaire: {
-    id_exemplaire: number;
-    ISBN: string;
-    isAvailable: boolean;
-  }) => {
+  const handleExemplaireAdded = (newExemplaire: Exemplaire) => {
     setExemplaires((prevExemplaires) => [...prevExemplaires, newExemplaire]);
     setNbAvailableExemplaires((prevAvailable) => prevAvailable + 1);
   };

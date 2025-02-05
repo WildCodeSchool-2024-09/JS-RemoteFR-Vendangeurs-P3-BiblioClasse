@@ -171,7 +171,6 @@ function BiblioClasse() {
         );
         const data = await response.json();
         setLoansInProgress(data);
-        console.info("Data Loans in Progress :", data);
       } catch (error) {
         console.error(
           "Erreur lors de la récupération des emprunts en cours:",
@@ -324,7 +323,6 @@ function BiblioClasse() {
   };
   /*Met à jour la disponibilité de l'exemplaire emprunté*/
   const handleBookBorrowed = (borrowedBook: BorrowedBook): void => {
-    console.info("Book borrowed:", borrowedBook);
     setExemplaires((prevExemplaires) =>
       prevExemplaires.map((exemplaire) =>
         exemplaire.id_exemplaire === borrowedBook.id_exemplaire
