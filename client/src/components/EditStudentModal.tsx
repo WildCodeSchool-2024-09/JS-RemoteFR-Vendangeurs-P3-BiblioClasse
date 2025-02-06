@@ -18,15 +18,16 @@ interface EditStudentModalProps {
   }) => void;
 }
 
-const EditStudentModal: React.FC<EditStudentModalProps> = ({
+function EditStudentModal({
   showModal,
   handleModalClose,
   student,
   handleStudentUpdated,
-}) => {
+}: EditStudentModalProps) {
   const [prenom, setPrenom] = useState(student.prenom);
   const [nom, setNom] = useState(student.nom);
 
+  /*Gère la modification de l'élève*/
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const updatedStudent = {
@@ -107,6 +108,6 @@ const EditStudentModal: React.FC<EditStudentModalProps> = ({
       </div>
     </div>
   );
-};
+}
 
 export default EditStudentModal;

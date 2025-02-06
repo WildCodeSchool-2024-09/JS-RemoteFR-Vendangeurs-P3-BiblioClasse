@@ -4,6 +4,7 @@ import "../styles/Header.css";
 function Header() {
   const location = useLocation();
 
+  /*Permet de déterminer le titre de la page en fonction de l'URL :-)*/
   const getTitle = () => {
     const path = location.pathname;
 

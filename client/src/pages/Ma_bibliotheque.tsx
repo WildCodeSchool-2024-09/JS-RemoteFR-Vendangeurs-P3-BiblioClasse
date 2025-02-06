@@ -5,11 +5,11 @@ import "../styles/Book.css";
 import "../styles/BurgerMenu.css";
 import "../styles/Buttons.css";
 import AddBookManually from "../components/AddBookManually";
-import Addbook from "../components/Addbook";
 import Book from "../components/Book";
 import DeleteConfirmationModale from "../components/DeleteConfirmationModale";
 import Header from "../components/Header";
 import SearchBar from "../components/Searchbar";
+import AddBook from "../components/AddBook";
 
 interface BookProps {
   titre: string;
@@ -285,7 +285,7 @@ function Ma_bibliotheque() {
             +
           </button>
           {/* Modale pour ajouter un livre */}
-          <Addbook
+          <AddBook
             showModal={showModal}
             handleModalClose={handleModalClose}
             handleAddBookManuallyClick={handleAddBookManuallyClick}

@@ -13,6 +13,7 @@ function Login() {
   const navigate = useNavigate();
   const { login } = useAuth();
 
+  /*Gestion de la soumission du formulaire de connexion*/
   const handleLoginSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
