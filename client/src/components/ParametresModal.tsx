@@ -19,22 +19,21 @@ function ParametresModal({
 }: ParametresProps) {
   if (!showModal) return null;
 
+  /*Gère l'incrément/décrement de la durée d'emprunt et le nombre de livres empruntables simultanément*/
   const handleIncrementLoanDuration = () => {
     setLoanDuration(loanDuration + 1);
   };
-
   const handleDecrementLoanDuration = () => {
     setLoanDuration(loanDuration > 1 ? loanDuration - 1 : 1);
   };
-
   const handleIncrementBorrowLimit = () => {
     setBorrowLimit(borrowLimit + 1);
   };
-
   const handleDecrementBorrowLimit = () => {
     setBorrowLimit(borrowLimit > 1 ? borrowLimit - 1 : 1);
   };
 
+  /*Gère l'envoi de la durée d'emprunt et de la limite du nombre de livres au back*/
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {

@@ -23,6 +23,7 @@ function Student({
 }: StudentProps) {
   const navigate = useNavigate();
 
+  /*Redirige vers la page de l'élève lors du clic dessus*/
   const handleClick = () => {
     navigate(`/eleve/${id_eleve}`, {
       state: { prenom, nom, date_retour, nbOfBooksBorrowed, id_eleve },

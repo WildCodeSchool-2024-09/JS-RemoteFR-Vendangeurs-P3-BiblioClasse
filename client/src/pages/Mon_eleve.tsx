@@ -23,18 +23,21 @@ function Mon_eleve() {
   const student = { prenom, nom, id_eleve, nbOfBooksBorrowed: "0" };
   const [showEditModal, setShowEditModal] = useState(false);
   const [currentStudent, setCurrentStudent] = useState(student);
-  const [borrowedBooks, setBorrowedBooks] = useState<BorrowedBook[]>([]);
+  const [borrowedBooksByStudentID, setBorrowedBooksByStudentID] = useState<
+    BorrowedBook[]
+  >([]);
   const [nbOfBooksBorrowed, setNbOfBooksBorrowed] = useState(0);
   const [nbOfOverdueBooks, setNbOfOverdueBooks] = useState(0);
 
+  /*Récupère les livres empruntés par l'élève*/
   useEffect(() => {
-    const fetchBorrowedBooks = async () => {
+    const fetchBorrowedBooksByStudentID = async () => {
       try {
         const response = await fetch(
           `http://localhost:3310/api/emprunts_by_student/${id_eleve}`,
         );
         const data = await response.json();
-        setBorrowedBooks(data);
+        setBorrowedBooksByStudentID(data);
         setNbOfBooksBorrowed(data.length);
         const overdueBooks = data.filter((book: BorrowedBook) => {
           if (book.date_retour) {
@@ -52,35 +55,38 @@ function Mon_eleve() {
       }
     };
 
-    fetchBorrowedBooks();
+    fetchBorrowedBooksByStudentID();
   }, [id_eleve]);
 
+  /*Gère le retour à la page précédente*/
   const handleBackClick = () => {
     navigate(-1);
   };
 
+  /*Gère l'ajout d'un emprunt*/
   const handleAddBorrowClick = () => {
     // logique pour ajouter un emprunt
     console.info("Add book borrow");
   };
 
+  /*Gère l'ouverture et la fermeture de la modale d'édition de l'élève*/
   const handleEditClick = () => {
     setShowEditModal(true);
   };
-
   const handleModalClose = () => {
     setShowEditModal(false);
   };
 
+  /*Gère la mise à jour de l'élève*/
   const handleStudentUpdated = (updatedStudent: {
     prenom: string;
     nom: string;
     nbOfBooksBorrowed: string;
     id_eleve: number;
   }) => {
-    // Mettre à jour l'état ou effectuer d'autres actions après la mise à jour du livre
     setCurrentStudent(updatedStudent);
   };
+
   return (
     <div>
       <Header />
@@ -104,7 +110,7 @@ function Mon_eleve() {
       </section>
       <section className="borrowed-books">
         <h2 className="h2-detail">Livres empruntés :</h2>
-        {borrowedBooks.map((book) => (
+        {borrowedBooksByStudentID.map((book) => (
           <div className="borrowed-book-container" key={book.id_exemplaire}>
             <Book
               titre={book.titre}

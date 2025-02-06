@@ -35,7 +35,9 @@ function ReturnBookModal({
     return null;
   }
 
-  const [students, setStudents] = useState<StudentProps[]>([]);
+  const [studentsWithBorrows, setStudentsWithBorrows] = useState<
+    StudentProps[]
+  >([]);
   const [studentId, setStudentId] = useState<number | null>(null);
   const [searchText, setSearchText] = useState<string>("");
   const [selectedStudentSetted, setSelectedStudentSetted] =
@@ -43,32 +45,36 @@ function ReturnBookModal({
   const [selectedExemplaire, setSelectedExemplaire] = useState<number | null>(
     null,
   );
-  const [borrowedBooks, setBorrowedBooks] = useState<BorrowedBookProps[]>([]);
+  const [borrowedBooksByStudentID, setBorrowedBooksByStudentID] = useState<
+    BorrowedBookProps[]
+  >([]);
   const [selectedStudent, setSelectedStudent] = useState<StudentProps | null>(
     null,
   );
 
   useEffect(() => {
-    const fetchStudents = async () => {
+    /* Récupération des élèves avec des livres empruntés */
+    const fetchStudentsWithBorrows = async () => {
       try {
         const response = await fetch(
           "http://localhost:3310/api/eleves_with_borrows",
         );
         const data = await response.json();
-        setStudents(data);
+        setStudentsWithBorrows(data);
       } catch (error) {
         console.error("Erreur lors de la récupération des élèves:", error);
       }
     };
 
-    const fetchBorrowedBooks = async () => {
+    /* Récupération des livres empruntés par l'élève sélectionné */
+    const fetchBorrowedBooksByStudentID = async () => {
       if (selectedStudentSetted && selectedStudent) {
         try {
           const response = await fetch(
             `http://localhost:3310/api/emprunts_by_student/${selectedStudent.id_eleve}`,
           );
           const data = await response.json();
-          setBorrowedBooks(data);
+          setBorrowedBooksByStudentID(data);
         } catch (error) {
           console.error(
             "Erreur lors de la récupération des livres empruntés:",
@@ -78,10 +84,11 @@ function ReturnBookModal({
       }
     };
 
-    fetchStudents();
-    fetchBorrowedBooks();
+    fetchStudentsWithBorrows();
+    fetchBorrowedBooksByStudentID();
   }, [selectedStudent, selectedStudentSetted]);
 
+  /* Gestion de la soumission du formulaire */
   const handleReturnSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!selectedStudent || !selectedExemplaire) {
@@ -120,7 +127,7 @@ function ReturnBookModal({
   };
 
   /* Filtrage des élèves */
-  const filteredStudents = students.filter((student) =>
+  const filteredStudents = studentsWithBorrows.filter((student) =>
     `${student.nom} ${student.prenom}`
       .toLowerCase()
       .includes(searchText.toLowerCase()),
@@ -194,7 +201,7 @@ function ReturnBookModal({
                   <option value="" disabled>
                     Sélectionnez un livre
                   </option>
-                  {borrowedBooks.map((book) => (
+                  {borrowedBooksByStudentID.map((book) => (
                     <option key={book.id_exemplaire} value={book.id_exemplaire}>
                       {book.titre}
                     </option>

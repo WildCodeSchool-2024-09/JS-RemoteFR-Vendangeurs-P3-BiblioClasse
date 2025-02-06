@@ -20,18 +20,19 @@ interface EditBookModalProps {
   }) => void;
 }
 
-const EditBookModal: React.FC<EditBookModalProps> = ({
+function EditBookModal({
   showModal,
   handleModalClose,
   book,
   onBookUpdated,
-}) => {
+}: EditBookModalProps) {
   const [ISBN, setISBN] = useState(book.ISBN);
   const [titre, setTitre] = useState(book.titre);
   const [auteur, setAuteur] = useState(book.auteur);
   const [livre_resume, setLivre_resume] = useState(book.livre_resume);
   const [couverture_img, setCouverture_img] = useState(book.couverture_img);
 
+  /*Mise à jour du livre*/
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const updatedBook = { ISBN, titre, auteur, livre_resume, couverture_img };
@@ -132,6 +133,6 @@ const EditBookModal: React.FC<EditBookModalProps> = ({
       </div>
     </div>
   );
-};
+}
 
 export default EditBookModal;
