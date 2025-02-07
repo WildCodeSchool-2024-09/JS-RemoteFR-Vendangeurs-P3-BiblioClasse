@@ -3,8 +3,10 @@ import { useEffect, useState } from "react";
 import { slide as Menu } from "react-burger-menu";
 import Header from "../components/Header";
 import Student from "../components/Student";
+import { useAuth } from "../context/AuthContext";
 import "../styles/BurgerMenu.css";
 import "../styles/Buttons.css";
+import Cookies from "js-cookie";
 import { Link, useNavigate } from "react-router-dom";
 import AddStudent from "../components/AddStudent";
 import DeleteConfirmationModale from "../components/DeleteConfirmationModale";
@@ -29,6 +31,7 @@ function Ma_classe() {
   const [studentToDelete, setStudentToDelete] = useState<StudentProps | null>(
     null,
   );
+  const { userId, setUserId } = useAuth();
   const [showDeleteConfirmationModale, setShowDeleteConfirmationModale] =
     useState(false);
 
@@ -39,10 +42,14 @@ function Ma_classe() {
 
   /*Récupération des élèves*/
   useEffect(() => {
+    if (!userId) {
+      return setUserId(Number(Cookies.get("user_id")));
+    }
     const fetchStudents = async () => {
+      console.info(userId);
       try {
         const response = await fetch(
-          "http://localhost:3310/api/eleves_with_borrows_information",
+          `http://localhost:3310/api/${userId}/eleves_with_borrows_information`,
         );
         const data = await response.json();
         setStudents(data);
@@ -53,7 +60,7 @@ function Ma_classe() {
     };
 
     fetchStudents();
-  }, []);
+  }, [userId, setUserId]);
 
   /*Gère l'ouverture et la fermeture du menu tiroir*/
   const handleMenuStateChange = (state: { isOpen: boolean }) => {
@@ -123,11 +130,14 @@ function Ma_classe() {
 
   /* Fonction pour confirmer la suppression */
   const handleConfirmDelete = async () => {
+    if (!userId) {
+      return setUserId(Number(Cookies.get("user_id")));
+    }
     if (!studentToDelete) return;
 
     try {
       const response = await fetch(
-        `http://localhost:3310/api/eleves/${studentToDelete.id_eleve}`,
+        `http://localhost:3310/api/${userId}/eleves/${studentToDelete.id_eleve}`,
         {
           method: "DELETE",
         },

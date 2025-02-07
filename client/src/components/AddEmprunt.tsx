@@ -1,4 +1,6 @@
+import Cookies from "js-cookie";
 import { useState } from "react";
+import { useAuth } from "../context/AuthContext";
 
 interface AddEmpruntProps {
   onEmpruntAdded: (emprunt: {
@@ -10,7 +12,8 @@ interface AddEmpruntProps {
   }) => void;
 }
 
-const AddEmprunt: React.FC<AddEmpruntProps> = ({ onEmpruntAdded }) => {
+function AddEmprunt({ onEmpruntAdded }: AddEmpruntProps) {
+  const { userId, setUserId } = useAuth();
   const [date_emprunt, setDate_emprunt] = useState("");
   const [date_retour, setDate_retour] = useState("");
   const [date_retour_effectif, setDate_retour_effectif] = useState("");
@@ -19,19 +22,25 @@ const AddEmprunt: React.FC<AddEmpruntProps> = ({ onEmpruntAdded }) => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const response = await fetch("http://localhost:3310/api/emprunts", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
+    if (!userId) {
+      return setUserId(Number(Cookies.get("user_id")));
+    }
+    const response = await fetch(
+      `http://localhost:3310/api/${userId}/emprunts`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          date_emprunt,
+          date_retour,
+          date_retour_effectif,
+          id_exemplaire,
+          id_eleve,
+        }),
       },
-      body: JSON.stringify({
-        date_emprunt,
-        date_retour,
-        date_retour_effectif,
-        id_exemplaire,
-        id_eleve,
-      }),
-    });
+    );
 
     if (response.ok) {
       const newEmprunt = await response.json();
@@ -89,6 +98,6 @@ const AddEmprunt: React.FC<AddEmpruntProps> = ({ onEmpruntAdded }) => {
       <button type="submit">Ajouter l'emprunt</button>
     </form>
   );
-};
+}
 
 export default AddEmprunt;

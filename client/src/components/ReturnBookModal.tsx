@@ -1,4 +1,6 @@
+import Cookies from "js-cookie";
 import { useEffect, useState } from "react";
+import { useAuth } from "../context/AuthContext";
 
 interface ReturnBookModalProps {
   showReturnModal: boolean;
@@ -31,6 +33,7 @@ function ReturnBookModal({
   setConfirmationReturnMessage,
   setShowConfirmationReturnModal,
 }: ReturnBookModalProps) {
+  const { userId, setUserId } = useAuth();
   if (!showReturnModal) {
     return null;
   }
@@ -49,10 +52,13 @@ function ReturnBookModal({
   );
 
   useEffect(() => {
+    if (!userId) {
+      return setUserId(Number(Cookies.get("user_id")));
+    }
     const fetchStudents = async () => {
       try {
         const response = await fetch(
-          "http://localhost:3310/api/eleves_with_borrows",
+          `http://localhost:3310/api/${userId}/eleves_with_borrows`,
         );
         const data = await response.json();
         setStudents(data);
@@ -65,7 +71,7 @@ function ReturnBookModal({
       if (selectedStudentSetted && selectedStudent) {
         try {
           const response = await fetch(
-            `http://localhost:3310/api/emprunts_by_student/${selectedStudent.id_eleve}`,
+            `http://localhost:3310/api/${userId}/emprunts_by_student/${selectedStudent.id_eleve}`,
           );
           const data = await response.json();
           setBorrowedBooks(data);
@@ -80,10 +86,13 @@ function ReturnBookModal({
 
     fetchStudents();
     fetchBorrowedBooks();
-  }, [selectedStudent, selectedStudentSetted]);
+  }, [selectedStudent, selectedStudentSetted, userId, setUserId]);
 
   const handleReturnSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!userId) {
+      return setUserId(Number(Cookies.get("user_id")));
+    }
     if (!selectedStudent || !selectedExemplaire) {
       return;
     }
@@ -96,7 +105,7 @@ function ReturnBookModal({
 
     try {
       const response = await fetch(
-        "http://localhost:3310/api/emprunts/retours",
+        `http://localhost:3310/api/${userId}/retours`,
         {
           method: "POST",
           headers: {

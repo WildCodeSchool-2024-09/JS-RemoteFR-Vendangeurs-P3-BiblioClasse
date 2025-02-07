@@ -1,8 +1,8 @@
 import { useState } from "react";
-import Header from "../components/Header";
-import "../styles/Login.css";
 import { useNavigate } from "react-router-dom";
+import Header from "../components/Header";
 import { useAuth } from "../context/AuthContext";
+import "../styles/Login.css";
 
 function Login() {
   const [email, setEmail] = useState("");
@@ -27,7 +27,8 @@ function Login() {
       if (response.ok) {
         const data = await response.json();
         setSuccess("Login successful!");
-        login(data.token);
+        console.info(data);
+        login(data.token, data.user_id);
         navigate("/accueil");
       } else {
         const data = await response.json();

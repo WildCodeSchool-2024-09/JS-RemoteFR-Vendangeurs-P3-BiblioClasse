@@ -1,5 +1,7 @@
 import { useState } from "react";
+import { useAuth } from "../context/AuthContext";
 import "../styles/EditBookModal.css";
+import Cookies from "js-cookie";
 
 interface EditBookModalProps {
   showModal: boolean;
@@ -20,12 +22,13 @@ interface EditBookModalProps {
   }) => void;
 }
 
-const EditBookModal: React.FC<EditBookModalProps> = ({
+function EditBookModal({
   showModal,
   handleModalClose,
   book,
   onBookUpdated,
-}) => {
+}: EditBookModalProps) {
+  const { userId, setUserId } = useAuth();
   const [ISBN, setISBN] = useState(book.ISBN);
   const [titre, setTitre] = useState(book.titre);
   const [auteur, setAuteur] = useState(book.auteur);
@@ -34,15 +37,21 @@ const EditBookModal: React.FC<EditBookModalProps> = ({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!userId) {
+      return setUserId(Number(Cookies.get("user_id")));
+    }
     const updatedBook = { ISBN, titre, auteur, livre_resume, couverture_img };
     try {
-      const response = await fetch(`http://localhost:3310/api/livres/${ISBN}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
+      const response = await fetch(
+        `http://localhost:3310/api/${userId}/livres/${ISBN}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(updatedBook),
         },
-        body: JSON.stringify(updatedBook),
-      });
+      );
       if (response.ok) {
         onBookUpdated(updatedBook);
         handleModalClose();
@@ -132,6 +141,6 @@ const EditBookModal: React.FC<EditBookModalProps> = ({
       </div>
     </div>
   );
-};
+}
 
 export default EditBookModal;

@@ -1,6 +1,8 @@
 import { addDays, format } from "date-fns";
 import { useEffect, useState } from "react";
+import { useAuth } from "../context/AuthContext";
 import "../styles/BorrowBookModal.css";
+import Cookies from "js-cookie";
 
 interface BorrowBookModalProps {
   showModal: boolean;
@@ -20,6 +22,28 @@ interface BorrowBookModalProps {
     date_retour: string;
   }) => void;
   loanDuration: number;
+  setAvailableExemplaires: (
+    exemplaires:
+      | {
+          id_exemplaire: number;
+          titre: string;
+          ISBN: string;
+          isAvailable: boolean;
+        }[]
+      | ((
+          prevExemplaires: {
+            id_exemplaire: number;
+            titre: string;
+            ISBN: string;
+            isAvailable: boolean;
+          }[],
+        ) => {
+          id_exemplaire: number;
+          titre: string;
+          ISBN: string;
+          isAvailable: boolean;
+        }[]),
+  ) => void;
   setErrorLoanMessage: (message: string) => void;
   errorLoanMessage: string;
   setConfirmationStudent: (message: string) => void;
@@ -39,6 +63,7 @@ function BorrowBookModal({
   handleBorrowModalClose,
   handleBookBorrowed,
   availableExemplaires,
+  setAvailableExemplaires,
   loanDuration,
   setErrorLoanMessage,
   errorLoanMessage,
@@ -47,6 +72,7 @@ function BorrowBookModal({
   setConfirmationDateRetour,
   borrowLimit,
 }: BorrowBookModalProps) {
+  const { userId, setUserId } = useAuth();
   if (!showModal) return null;
 
   const [selectedExemplaire, setSelectedExemplaire] = useState<number | null>(
@@ -76,9 +102,14 @@ function BorrowBookModal({
 
   /* Récupération des élèves */
   useEffect(() => {
+    if (!userId) {
+      return setUserId(Number(Cookies.get("user_id")));
+    }
     const fetchStudents = async () => {
       try {
-        const response = await fetch("http://localhost:3310/api/eleves");
+        const response = await fetch(
+          `http://localhost:3310/api/${userId}/eleves`,
+        );
         const data = await response.json();
         setStudents(data);
       } catch (error) {
@@ -87,12 +118,15 @@ function BorrowBookModal({
     };
 
     fetchStudents();
-  }, []);
+  }, [userId, setUserId]);
 
   /* Récupération du nb de livres empruntés par l'élève */
   const countBorrowedBooksByStudent = async (id_eleve: number) => {
+    if (!userId) {
+      return setUserId(Number(Cookies.get("user_id")));
+    }
     const response = await fetch(
-      `http://localhost:3310/api/emprunts_by_student/${id_eleve}`,
+      `http://localhost:3310/api/${userId}/emprunts_by_student/${id_eleve}`,
     );
     const borrowedBooksbySudent = await response.json();
     return borrowedBooksbySudent.length;
@@ -139,17 +173,35 @@ function BorrowBookModal({
     };
 
     try {
-      const response = await fetch("http://localhost:3310/api/emprunts", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
+      const response = await fetch(
+        `http://localhost:3310/api/${userId}/emprunts`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(borrowedBook),
         },
-        body: JSON.stringify(borrowedBook),
-      });
+      );
 
       if (response.ok) {
         const result = await response.json();
         handleBookBorrowed(result);
+        setAvailableExemplaires(
+          (
+            prevExemplaires: {
+              id_exemplaire: number;
+              titre: string;
+              ISBN: string;
+              isAvailable: boolean;
+            }[],
+          ) =>
+            prevExemplaires.map((exemplaire) =>
+              exemplaire.id_exemplaire === selectedExemplaire
+                ? { ...exemplaire, isAvailable: false } // Marquer comme non disponible
+                : exemplaire,
+            ),
+        );
         setErrorLoanMessage("");
         setErrorBorrowLimitMessage("");
         setConfirmationStudent(

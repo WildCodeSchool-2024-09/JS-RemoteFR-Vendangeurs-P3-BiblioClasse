@@ -3,6 +3,7 @@ import "../styles/BiblioClasse.css";
 import { useEffect, useState } from "react";
 import { slide as Menu } from "react-burger-menu";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 import "../styles/BurgerMenu.css";
 import Cookies from "js-cookie";
 import AddBookManually from "../components/AddBookManually";
@@ -14,29 +15,31 @@ import EmptyApp from "../components/EmptyApp";
 import ParametresModal from "../components/ParametresModal";
 import ReturnBookModal from "../components/ReturnBookModal";
 
+interface BorrowedBook {
+  id_exemplaire: number;
+  ISBN: string;
+  isAvailable: boolean;
+  id_eleve: number;
+  date_emprunt: string;
+}
+
+interface Exemplaire {
+  titre: string;
+  id_exemplaire: number;
+  isAvailable: boolean;
+  ISBN: string;
+}
+
+interface TopBooks {
+  ISBN: string;
+  couverture_img: string;
+  titre: string;
+  nb_emprunts: number;
+  auteur: string;
+}
+
 function BiblioClasse() {
-  interface BorrowedBook {
-    id_exemplaire: number;
-    ISBN: string;
-    isAvailable: boolean;
-    id_eleve: number;
-    date_emprunt: string;
-  }
-
-  interface Exemplaire {
-    titre: string;
-    id_exemplaire: number;
-    isAvailable: boolean;
-    ISBN: string;
-  }
-
-  interface TopBooks {
-    ISBN: string;
-    couverture_img: string;
-    titre: string;
-    nb_emprunts: number;
-    auteur: string;
-  }
+  const { userId, setUserId } = useAuth();
 
   const [students, setStudents] = useState<number>(0);
   const [books, setBooks] = useState<number>(0);
@@ -78,9 +81,14 @@ function BiblioClasse() {
 
   ////////////////*FETCH DATA*////////////////////
   useEffect(() => {
+    if (!userId) {
+      return setUserId(Number(Cookies.get("user_id")));
+    }
     const fetchStudents = async () => {
       try {
-        const response = await fetch("http://localhost:3310/api/eleves");
+        const response = await fetch(
+          `http://localhost:3310/api/${userId}/eleves`,
+        );
         const data = await response.json();
         setStudents(data.length);
       } catch (error) {
@@ -90,7 +98,9 @@ function BiblioClasse() {
 
     const fetchBooks = async () => {
       try {
-        const response = await fetch("http://localhost:3310/api/livres");
+        const response = await fetch(
+          `http://localhost:3310/api/${userId}/livres`,
+        );
         const data = await response.json();
         setBooks(data.length);
       } catch (error) {
@@ -100,7 +110,9 @@ function BiblioClasse() {
 
     const fetchExemplaires = async () => {
       try {
-        const response = await fetch("http://localhost:3310/api/exemplaires");
+        const response = await fetch(
+          `http://localhost:3310/api/${userId}/exemplaires`,
+        );
         const data = await response.json();
         setExemplaires(data);
       } catch (error) {
@@ -111,7 +123,7 @@ function BiblioClasse() {
     const fetchAvailableExemplaires = async () => {
       try {
         const response = await fetch(
-          "http://localhost:3310/api/exemplaires_available",
+          `http://localhost:3310/api/${userId}/exemplaires_available`,
         );
         const data = await response.json();
         setAvailableExemplaires(data);
@@ -123,7 +135,7 @@ function BiblioClasse() {
     const fetchStudentsWithLoansInProgress = async () => {
       try {
         const response = await fetch(
-          "http://localhost:3310/api/students-with-loans-in-progress",
+          `http://localhost:3310/api/${userId}/students-with-loans-in-progress`,
         );
         const data = await response.json();
         setStudentsWithLoansInProgress(data);
@@ -138,7 +150,7 @@ function BiblioClasse() {
     const fetchStudentsWithLoansDueIn7Days = async () => {
       try {
         const response = await fetch(
-          "http://localhost:3310/api/students-with-loans-due-in-7-days",
+          `http://localhost:3310/api/${userId}/students-with-loans-due-in-7-days`,
         );
         const data = await response.json();
         setStudentsWithLoansDueIn7Days(data);
@@ -153,7 +165,7 @@ function BiblioClasse() {
     const fetchStudentsWithOverdueLoans = async () => {
       try {
         const response = await fetch(
-          "http://localhost:3310/api/students-with-overdue-loans",
+          `http://localhost:3310/api/${userId}/students-with-overdue-loans`,
         );
         const data = await response.json();
         setStudentsWithOverdueLoans(data);
@@ -168,7 +180,7 @@ function BiblioClasse() {
     const fetchLoansInProgress = async () => {
       try {
         const response = await fetch(
-          "http://localhost:3310/api/emprunts_in-progress",
+          `http://localhost:3310/api/${userId}/emprunts_in-progress`,
         );
         const data = await response.json();
         setLoansInProgress(data);
@@ -180,39 +192,11 @@ function BiblioClasse() {
       }
     };
 
-    const fetchLoanDuration = async () => {
-      try {
-        const response = await fetch(
-          "http://localhost:3310/api/parametres/loanDuration",
-        );
-        const data = await response.json();
-        setLoanDuration(data);
-      } catch (error) {
-        console.error(
-          "Erreur lors de la récupération de la durée d'emprunt:",
-          error,
-        );
-      }
-    };
-
-    const fetchBorrowLimit = async () => {
-      try {
-        const response = await fetch(
-          "http://localhost:3310/api/parametres/borrowLimit",
-        );
-        const data = await response.json();
-        setBorrowLimit(data);
-      } catch (error) {
-        console.error(
-          "Erreur lors de la récupération de la limite d'emprunt:",
-          error,
-        );
-      }
-    };
-
     const fetchTopBooks = async () => {
       try {
-        const response = await fetch("http://localhost:3310/api/top_books");
+        const response = await fetch(
+          `http://localhost:3310/api/${userId}/top_books`,
+        );
         const data = await response.json();
         setTopBooks(data);
       } catch (error) {
@@ -228,10 +212,8 @@ function BiblioClasse() {
     fetchStudentsWithLoansDueIn7Days();
     fetchStudentsWithOverdueLoans();
     fetchLoansInProgress();
-    fetchLoanDuration();
     fetchTopBooks();
-    fetchBorrowLimit();
-  }, []);
+  }, [userId, setUserId]);
 
   ////////////////*MODALE VIDE*////////////////////
   /* Assure l'ouverture de la modale si books et students sont à 0 */
@@ -542,6 +524,7 @@ function BiblioClasse() {
           handleBorrowModalClose={handleBorrowModalClose}
           handleBookBorrowed={handleBookBorrowed}
           availableExemplaires={availableExemplaires}
+          setAvailableExemplaires={setAvailableExemplaires}
           loanDuration={loanDuration}
           setErrorLoanMessage={setErrorLoanMessage}
           errorLoanMessage={errorLoanMessage}

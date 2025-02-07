@@ -1,8 +1,10 @@
 import type { RequestHandler } from "express";
+import type { CustomRequest } from "../../types/express/CustomRequest";
 import empruntRepository from "../emprunt/empruntRepository";
 import exemplaireRepository from "../exemplaire/exemplaireRepository";
 
-const returnBook: RequestHandler = async (req, res, next) => {
+const returnBook: RequestHandler = async (req: CustomRequest, res, next) => {
+  const userId = Number(req.params.user_id);
   try {
     console.info("Données reçues pour retour:", req.body);
 
@@ -14,12 +16,13 @@ const returnBook: RequestHandler = async (req, res, next) => {
     }
 
     await empruntRepository.updateReturnDate(
+      date_retour_effectif,
+      userId,
       id_exemplaire,
       id_eleve,
-      date_retour_effectif,
     );
 
-    await exemplaireRepository.updateAvailability(id_exemplaire);
+    await exemplaireRepository.updateAvailability(userId, id_exemplaire);
 
     res.status(200).send("Retour confirmé");
   } catch (error) {

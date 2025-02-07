@@ -1,6 +1,8 @@
 import "../styles/AddBookManually.css";
+import Cookies from "js-cookie";
 import { useState } from "react";
 import defaultCover from "/src/assets/images/default_book_cover.png";
+import { useAuth } from "../context/AuthContext";
 
 interface AddBookManuallyProps {
   showModalBook: boolean;
@@ -23,6 +25,7 @@ function AddBookManually({
   handleModalBookClose,
   handleBookAdded,
 }: AddBookManuallyProps) {
+  const { userId, setUserId } = useAuth();
   if (showModalBook === false) return null;
 
   const [ISBN, setISBN] = useState("");
@@ -81,7 +84,10 @@ function AddBookManually({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const response = await fetch("http://localhost:3310/api/livres", {
+    if (!userId) {
+      return setUserId(Number(Cookies.get("user_id")));
+    }
+    const response = await fetch(`http://localhost:3310/api/${userId}/livres`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

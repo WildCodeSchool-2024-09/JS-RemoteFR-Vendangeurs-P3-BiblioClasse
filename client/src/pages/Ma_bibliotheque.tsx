@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
 import { slide as Menu } from "react-burger-menu";
 import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 import "../styles/Book.css";
 import "../styles/BurgerMenu.css";
 import "../styles/Buttons.css";
+import Cookies from "js-cookie";
 import AddBookManually from "../components/AddBookManually";
 import Addbook from "../components/Addbook";
 import Book from "../components/Book";
@@ -23,6 +25,7 @@ interface BookProps {
 }
 
 function Ma_bibliotheque() {
+  const { userId, setUserId } = useAuth();
   const navigate = useNavigate();
   const [books, setBooks] = useState<BookProps[]>([]);
   const [menuOpen, setMenuOpen] = useState<boolean>(false);
@@ -42,10 +45,13 @@ function Ma_bibliotheque() {
 
   /*Récupération des livres*/
   useEffect(() => {
+    if (!userId) {
+      return setUserId(Number(Cookies.get("user_id")));
+    }
     const fetchBooks = async () => {
       try {
         const response = await fetch(
-          "http://localhost:3310/api/livres_with_exemplaires",
+          `http://localhost:3310/api/${userId}/livres_with_exemplaires`,
         );
         const data = await response.json();
         setBooks(data);
@@ -56,7 +62,7 @@ function Ma_bibliotheque() {
     };
 
     fetchBooks();
-  }, []);
+  }, [userId, setUserId]);
 
   /*Gère l'ouverture et la fermeture du menu tiroir*/
   const handleMenuStateChange = (state: { isOpen: boolean }) => {
@@ -130,11 +136,14 @@ function Ma_bibliotheque() {
 
   /* Fonction pour confirmer la suppression */
   const handleConfirmDelete = async () => {
+    if (!userId) {
+      return setUserId(Number(Cookies.get("user_id")));
+    }
     if (!bookToDelete) return;
 
     try {
       const response = await fetch(
-        `http://localhost:3310/api/livres/${bookToDelete.ISBN}`,
+        `http://localhost:3310/api/${userId}/livres/${bookToDelete.ISBN}`,
         {
           method: "DELETE",
         },

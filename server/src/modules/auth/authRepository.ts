@@ -12,10 +12,11 @@ class authRepository {
   }
 
   async create(nom: string, prenom: string, email: string, password: string) {
-    await databaseClient.query(
+    const [result] = await databaseClient.query<Result>(
       "INSERT INTO user (nom, prenom, email, password) VALUES (?, ?, ?, ?)",
       [nom, prenom, email, password],
     );
+    return result.insertId;
   }
 }
 

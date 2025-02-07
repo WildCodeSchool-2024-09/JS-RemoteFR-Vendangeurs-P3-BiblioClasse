@@ -1,5 +1,7 @@
 import "../styles/Mon_livre.css";
+import Cookies from "js-cookie";
 import { useState } from "react";
+import { useAuth } from "../context/AuthContext";
 
 interface Exemplaire {
   id_exemplaire: number;
@@ -20,19 +22,26 @@ function AddExemplaire({
   onExemplaireAdded,
   handleModalClose,
 }: AddExemplaireProps) {
+  const { userId, setUserId } = useAuth();
   const isAvailable = true;
   const [quantity, setQuantity] = useState(1);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!userId) {
+      return setUserId(Number(Cookies.get("user_id")));
+    }
     for (let i = 0; i < quantity; i++) {
-      const response = await fetch("http://localhost:3310/api/exemplaires", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
+      const response = await fetch(
+        `http://localhost:3310/api/${userId}/exemplaires`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ ISBN, isAvailable }),
         },
-        body: JSON.stringify({ ISBN, isAvailable }),
-      });
+      );
 
       if (response.ok) {
         const newExemplaire = await response.json();
