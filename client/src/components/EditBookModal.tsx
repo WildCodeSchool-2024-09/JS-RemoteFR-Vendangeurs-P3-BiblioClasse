@@ -35,6 +35,7 @@ function EditBookModal({
   const [livre_resume, setLivre_resume] = useState(book.livre_resume);
   const [couverture_img, setCouverture_img] = useState(book.couverture_img);
 
+  /*Mise à jour du livre*/
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!userId) {

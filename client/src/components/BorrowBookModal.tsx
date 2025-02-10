@@ -50,9 +50,10 @@ interface BorrowBookModalProps {
   setConfirmationBook: (message: string) => void;
   setConfirmationDateRetour: (message: string) => void;
   borrowLimit: number;
+  students: StudentProps[];
 }
 
-interface StudenProps {
+interface StudentProps {
   id_eleve: number;
   nom: string;
   prenom: string;
@@ -79,7 +80,7 @@ function BorrowBookModal({
     null,
   );
   const [studentId, setStudentId] = useState<number | null>(null);
-  const [students, setStudents] = useState<StudenProps[]>([]);
+  const [students, setStudents] = useState<StudentProps[]>([]);
   const [searchText, setSearchText] = useState<string>("");
   const [selectedStudentSetted, setSelectedStudentSetted] =
     useState<boolean>(false);
@@ -132,28 +133,29 @@ function BorrowBookModal({
     return borrowedBooksbySudent.length;
   };
 
-  /* Fonction pour créer un emprunt */
+  ///////////*Fonction de gestion de l'emprunt *///////////
   const handleBorrowSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    /* Vérification de la sélection d'un élève et d'un exemplaire */
     if (!studentId || !selectedExemplaire) {
       setErrorLoanMessage("Veuillez sélectionner un élève et un exemplaire.");
       return;
     }
-
+    /* Récupération de l'élève et du livre sélectionnés */
     const selectedStudent = students.find(
       (student) => student.id_eleve === studentId,
     );
     const book = availableExemplaires.find(
       (exemplaire) => exemplaire.id_exemplaire === selectedExemplaire,
     );
-
+    /* Vérification de l'existence de l'élève et du livre */
     if (!selectedStudent || !book) {
       setErrorLoanMessage(
         "Erreur lors de la sélection de l'élève ou du livre.",
       );
       return;
     }
-
+    /* Vérification du nombre de livres empruntés par l'élève */
     const borrowedBooksCount = await countBorrowedBooksByStudent(studentId);
     if (borrowedBooksCount >= borrowLimit) {
       setShowAllForm(false);
@@ -162,7 +164,7 @@ function BorrowBookModal({
       );
       return;
     }
-
+    /* Création de l'emprunt (enfin)*/
     const borrowedBook = {
       id_exemplaire: selectedExemplaire,
       ISBN: book.ISBN,
@@ -229,7 +231,7 @@ function BorrowBookModal({
   );
 
   /* Gestion de la sélection d'un élève */
-  const handleStudentClick = (student: StudenProps) => {
+  const handleStudentClick = (student: StudentProps) => {
     setStudentId(student.id_eleve);
     setSearchText(`${student.nom} ${student.prenom}`);
     setSelectedStudentSetted(true);

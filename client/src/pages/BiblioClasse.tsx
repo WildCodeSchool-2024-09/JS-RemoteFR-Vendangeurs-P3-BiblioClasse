@@ -41,7 +41,14 @@ interface TopBooks {
 function BiblioClasse() {
   const { userId, setUserId } = useAuth();
 
-  const [students, setStudents] = useState<number>(0);
+  interface StudentProps {
+    id_eleve: number;
+    nom: string;
+    prenom: string;
+  }
+
+  const [students, setStudents] = useState<StudentProps[]>([]);
+  const [nbOfStudents, setNbOfStudents] = useState<number>(0);
   const [books, setBooks] = useState<number>(0);
   const [exemplaires, setExemplaires] = useState<Exemplaire[]>([]);
   const [availableExemplaires, setAvailableExemplaires] = useState<
@@ -90,7 +97,8 @@ function BiblioClasse() {
           `http://localhost:3310/api/${userId}/eleves`,
         );
         const data = await response.json();
-        setStudents(data.length);
+        setStudents(data);
+        setNbOfStudents(data.length);
       } catch (error) {
         console.error("Erreur lors de la récupération des élèves:", error);
       }
@@ -218,12 +226,12 @@ function BiblioClasse() {
   ////////////////*MODALE VIDE*////////////////////
   /* Assure l'ouverture de la modale si books et students sont à 0 */
   useEffect(() => {
-    if (books === 0 && students === 0) {
+    if (books === 0 && nbOfStudents === 0) {
       setShowEmptyApp(true);
     } else {
       setShowEmptyApp(false);
     }
-  }, [books, students]);
+  }, [books, nbOfStudents]);
 
   ////////////////*NAVIGATION*////////////////////
   /*Assure la navigation*/
@@ -245,8 +253,8 @@ function BiblioClasse() {
     });
   };
 
-  ////////////////*MENU BURGER*////////////////////
-  /*Assure l'ouverture du menu burger*/
+  ////////////////*MENU TIROIR*////////////////////
+  /*Assure l'ouverture du menu tiroir*/
   const handleMenuStateChange = (state: { isOpen: boolean }) => {
     setMenuOpen(state.isOpen);
   };
@@ -278,9 +286,9 @@ function BiblioClasse() {
   };
   /*Assure l'incrément du nombre d'élèves*/
   const handleStudentAdded = () => {
-    setStudents((prevStudents) => prevStudents + 1);
+    setNbOfStudents((prevNbOfStudents) => prevNbOfStudents + 1);
     setShowAddStudentModal(false);
-    if (students > 0) setShowEmptyApp(false);
+    if (nbOfStudents > 0) setShowEmptyApp(false);
   };
 
   ////////////////*GESTION DES RETOURS*////////////////
@@ -390,9 +398,9 @@ function BiblioClasse() {
       </Menu>
       <section className="section-eleves">
         <p className="intro">
-          {students > 1
-            ? `J'ai ${students} élèves enregistrés :`
-            : `J'ai ${students} élève enregistré :`}
+          {nbOfStudents > 1
+            ? `J'ai ${nbOfStudents} élèves enregistrés :`
+            : `J'ai ${nbOfStudents} élève enregistré :`}
         </p>
         <section className="statistiques-liste">
           <div className="stats-item">
@@ -532,6 +540,7 @@ function BiblioClasse() {
           setConfirmationBook={setConfirmationBook}
           setConfirmationDateRetour={setConfirmationDateRetour}
           borrowLimit={borrowLimit}
+          students={students}
         />
       )}
       {showParametresModal && (

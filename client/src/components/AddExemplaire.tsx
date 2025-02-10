@@ -26,6 +26,7 @@ function AddExemplaire({
   const isAvailable = true;
   const [quantity, setQuantity] = useState(1);
 
+  /*Ajout d'un exemplaire*/
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!userId) {
@@ -54,10 +55,10 @@ function AddExemplaire({
     handleModalClose();
   };
 
+  /*Gestion de la quantité d'exemplaires à ajouter*/
   const handleIncrement = () => {
     setQuantity((prevQuantity) => prevQuantity + 1);
   };
-
   const handleDecrement = () => {
     setQuantity((prevQuantity) => (prevQuantity > 1 ? prevQuantity - 1 : 1));
   };

@@ -9,15 +9,18 @@ function SearchBar({ onSearch }: SearchBarProps) {
   const [isVisible, setIsVisible] = useState(false);
   const [searchTitle, setSearchTitle] = useState("");
 
+  /*Gère l'affichage du champ de recherche*/
   const handleSearchButtonClick = () => {
     setIsVisible(!isVisible);
   };
 
+  /*Gère la recherche*/
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTitle(event.target.value);
     onSearch(event.target.value);
   };
 
+  /*Détermine le placeholder en fonction de la page*/
   const getPlaceholder = () => {
     const path = location.pathname;
     switch (path) {

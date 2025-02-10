@@ -1,17 +1,17 @@
 import { useEffect, useState } from "react";
 import { slide as Menu } from "react-burger-menu";
 import { Link, useNavigate } from "react-router-dom";
-import { useAuth } from "../context/AuthContext";
-import "../styles/Book.css";
-import "../styles/BurgerMenu.css";
-import "../styles/Buttons.css";
-import Cookies from "js-cookie";
+import AddBook from "../components/AddBook";
 import AddBookManually from "../components/AddBookManually";
-import Addbook from "../components/Addbook";
 import Book from "../components/Book";
 import DeleteConfirmationModale from "../components/DeleteConfirmationModale";
 import Header from "../components/Header";
 import SearchBar from "../components/Searchbar";
+import "../styles/Book.css";
+import "../styles/BurgerMenu.css";
+import "../styles/Buttons.css";
+import Cookies from "js-cookie";
+import { useAuth } from "../context/AuthContext";
 
 interface BookProps {
   titre: string;
@@ -294,7 +294,7 @@ function Ma_bibliotheque() {
             +
           </button>
           {/* Modale pour ajouter un livre */}
-          <Addbook
+          <AddBook
             showModal={showModal}
             handleModalClose={handleModalClose}
             handleAddBookManuallyClick={handleAddBookManuallyClick}

@@ -21,6 +21,7 @@ function AddStudent({
   const [nom, setNom] = useState("");
   const [prenom, setPrenom] = useState("");
 
+  /*Ajout d'un élève*/
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!userId) {
@@ -37,9 +38,9 @@ function AddStudent({
       const newStudent: StudentProps = {
         nom,
         prenom,
-        id_eleve: 0, // or any default value
-        date_retour: "", // or any default value
-        nbOfBooksBorrowed: 0, // or any default value
+        id_eleve: 0,
+        date_retour: "",
+        nbOfBooksBorrowed: 0,
       };
       handleStudentAdded(newStudent);
       setNom("");

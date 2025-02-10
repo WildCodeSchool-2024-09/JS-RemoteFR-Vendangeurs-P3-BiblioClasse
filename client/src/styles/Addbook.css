@@ -10,7 +10,7 @@
   cursor: pointer;
   color: var(--primary-color);
 }
-.Addbook {
+.AddBook {
   position: fixed;
   top: 50%;
   left: 50%;

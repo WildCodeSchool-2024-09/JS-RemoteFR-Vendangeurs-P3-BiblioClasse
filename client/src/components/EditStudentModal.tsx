@@ -30,6 +30,7 @@ function EditStudentModal({
   const [prenom, setPrenom] = useState(student.prenom);
   const [nom, setNom] = useState(student.nom);
 
+  /*Gère la modification de l'élève*/
   const handleSubmit = async (e: React.FormEvent) => {
     if (!userId) {
       return setUserId(Number(Cookies.get("user_id")));
