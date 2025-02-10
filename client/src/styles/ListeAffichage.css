@@ -1,6 +1,7 @@
 .Ma_bibliotheque,
 .Ma_classe {
-  margin-top: 5px;
+  margin-top: 10px;
+  margin-bottom: 10px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;

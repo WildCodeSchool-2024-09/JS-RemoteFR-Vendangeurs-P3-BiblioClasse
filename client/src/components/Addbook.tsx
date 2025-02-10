@@ -4,20 +4,16 @@ interface AddBookProps {
   showModal: boolean;
   handleModalClose: () => void;
   handleAddBookManuallyClick: () => void;
+  handleAddBookScanClick: () => void;
 }
 
 function AddBook({
   showModal,
   handleModalClose,
   handleAddBookManuallyClick,
+  handleAddBookScanClick,
 }: AddBookProps) {
   if (showModal === false) return null;
-
-  /*Gère le scan du livre peut-être-un-jour*/
-  const handleScan = () => {
-    console.info("scan");
-    handleModalClose();
-  };
 
   return (
     <div
@@ -43,7 +39,7 @@ function AddBook({
           <button
             type="button"
             className="button-modal-left"
-            onClick={handleScan}
+            onClick={handleAddBookScanClick}
           >
             Scanner
           </button>

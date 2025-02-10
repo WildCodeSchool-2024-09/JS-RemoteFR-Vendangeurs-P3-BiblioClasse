@@ -6,13 +6,14 @@ import "../styles/Book.css";
 import "../styles/BurgerMenu.css";
 import "../styles/Buttons.css";
 
+import Cookies from "js-cookie";
 import AddBook from "../components/AddBook";
 import AddBookManually from "../components/AddBookManually";
+import AddBookScan from "../components/AddBookScan";
 import Book from "../components/Book";
 import DeleteConfirmationModale from "../components/DeleteConfirmationModale";
 import Header from "../components/Header";
 import SearchBar from "../components/Searchbar";
-import Cookies from "js-cookie";
 import { useAuth } from "../context/AuthContext";
 
 interface BookProps {
@@ -39,6 +40,7 @@ function Ma_bibliotheque() {
   const [bookToDelete, setBookToDelete] = useState<BookProps | null>(null);
   const [showDeleteConfirmationModale, setShowDeleteConfirmationModale] =
     useState(false);
+  const [showModalScan, setShowModalScan] = useState(false);
 
   /*Gère le retour à la page précédente*/
   const handleBackClick = () => {
@@ -93,12 +95,19 @@ function Ma_bibliotheque() {
     setShowModal(false);
   };
 
-  /* Gère l'ouverture et la fermeture de la modale 2 */
+  /* Gère l'ouverture et la fermeture de la modale d'ajout manuel de livre */
   const handleAddBookManuallyClick = () => {
     setShowModalBook(true);
     setShowModal(false);
   };
   const handleModalBookClose = () => setShowModalBook(false);
+
+  /*Gère l'ouverture et la fermeture de la modale de scan de livre*/
+  const handleAddBookScanClick = () => {
+    setShowModalScan(true);
+    setShowModal(false);
+  };
+  const handleModalScanClose = () => setShowModalScan(false);
 
   /*Fonction pour rechercher un livre*/
   const handleSearchClick = (searchTerm: string) => {
@@ -300,11 +309,18 @@ function Ma_bibliotheque() {
             showModal={showModal}
             handleModalClose={handleModalClose}
             handleAddBookManuallyClick={handleAddBookManuallyClick}
+            handleAddBookScanClick={handleAddBookScanClick}
           />
           {/* Modale pour ajouter un livre manuellement */}
           <AddBookManually
             showModalBook={showModalBook}
             handleModalBookClose={handleModalBookClose}
+            handleBookAdded={handleBookAdded}
+          />
+          {/* Modale pour scanner un livre */}
+          <AddBookScan
+            showModalScan={showModalScan}
+            handleModalScanClose={handleModalScanClose}
             handleBookAdded={handleBookAdded}
           />
           <button
