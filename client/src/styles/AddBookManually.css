@@ -7,7 +7,7 @@
   cursor: pointer;
   color: var(--primary-color);
 }
-.AddbookManually {
+.AddBookManually {
   position: relative;
   z-index: 1000;
   border-radius: 13px;

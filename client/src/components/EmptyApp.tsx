@@ -1,4 +1,4 @@
-import "../styles/Addbook.css";
+import "../styles/AddBook.css";
 
 interface EmptyAppProps {
   onAddBookClick: () => void;
@@ -14,7 +14,7 @@ function EmptyApp({
   return (
     <div className="overlay" onClick={onClose} onKeyDown={onClose}>
       <div
-        className="Addbook"
+        className="AddBook"
         onClick={(e) => e.stopPropagation()}
         onKeyDown={(e) => e.stopPropagation()}
       >

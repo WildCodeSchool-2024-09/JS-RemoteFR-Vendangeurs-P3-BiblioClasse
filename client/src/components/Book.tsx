@@ -28,6 +28,7 @@ function Book({
 }: BookProps) {
   const navigate = useNavigate();
 
+  /*Redirige vers la page du livre*/
   const handleClick = () => {
     navigate(`/livre/${ISBN}`, {
       state: { titre, auteur, livre_resume, couverture_img, ISBN, date_retour },
@@ -124,39 +125,5 @@ function Book({
     </>
   );
 }
-
-// return (
-//   <div
-//     className={`Book ${className}`}
-//     onClick={handleClick}
-//     onKeyUp={handleClick}
-//   >
-//     <figure className="Image_livre_container">
-//       <img src={couverture_img} alt={titre} />
-//     </figure>
-//     {context === "bibliotheque" && (
-//       <section className="Infos_livre">
-//         <p className="Titre">{titre}</p>
-//         <p className="Auteur">{auteur}</p>
-//         <p className="Dispo">
-//           {nombre_exemplaires_disponibles > 1
-//             ? `${nombre_exemplaires_disponibles} exemplaires disponibles sur ${nombre_exemplaires}`
-//             : `${nombre_exemplaires_disponibles} exemplaire disponible sur ${nombre_exemplaires}`}
-//         </p>
-//       </section>
-//     )}
-//     {context === "mon_eleve" && (
-//       <section className="Infos_livre">
-//         <p className="Titre">{titre}</p>
-//         <p className="Auteur">
-//           {date_retour
-//             ? `A rendre avant le : ${formattedDateRetour}`
-//             : "Pas de date de retour"}
-//         </p>
-//       </section>
-//     )}
-//   </div>
-// );
-// }
 
 export default Book;

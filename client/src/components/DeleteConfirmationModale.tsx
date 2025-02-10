@@ -7,12 +7,12 @@ interface DeleteConfirmationModaleProps {
   onCancel: () => void;
 }
 
-const DeleteConfirmationModale = ({
+function DeleteConfirmationModale({
   showDeleteConfirmationModale,
   message,
   onConfirm,
   onCancel,
-}: DeleteConfirmationModaleProps) => {
+}: DeleteConfirmationModaleProps) {
   if (!showDeleteConfirmationModale) {
     return null;
   }
@@ -42,6 +42,6 @@ const DeleteConfirmationModale = ({
       </div>
     </div>
   );
-};
+}
 
 export default DeleteConfirmationModale;

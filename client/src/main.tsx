@@ -3,6 +3,8 @@ import { createRoot } from "react-dom/client";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 
 import App from "./App";
+import PrivateRoute from "./components/PrivateRoute";
+import { AuthProvider } from "./context/AuthContext";
 import BiblioClasse from "./pages/BiblioClasse";
 // import Register from "./pages/Register";
 import Login from "./pages/Login";
@@ -14,16 +16,20 @@ import Register from "./pages/Register";
 
 const router = createBrowserRouter([
   {
-    path: "/",
     element: <App />,
     children: [
       { path: "/", element: <Login /> },
       { path: "/register", element: <Register /> },
-      { path: "/accueil", element: <BiblioClasse /> },
-      { path: "/bibliotheque", element: <Ma_bibliotheque /> },
-      { path: "/classe", element: <Ma_classe /> },
-      { path: "/eleve/:id", element: <Mon_eleve /> },
-      { path: "/livre/:ISBN", element: <Mon_livre /> },
+      {
+        element: <PrivateRoute />,
+        children: [
+          { path: "/accueil", element: <BiblioClasse /> },
+          { path: "/bibliotheque", element: <Ma_bibliotheque /> },
+          { path: "/classe", element: <Ma_classe /> },
+          { path: "/eleve/:id", element: <Mon_eleve /> },
+          { path: "/livre/:ISBN", element: <Mon_livre /> },
+        ],
+      },
     ],
   },
 ]);
@@ -35,6 +41,8 @@ if (rootElement == null) {
 
 createRoot(rootElement).render(
   <StrictMode>
-    <RouterProvider router={router} />
+    <AuthProvider>
+      <RouterProvider router={router} />
+    </AuthProvider>
   </StrictMode>,
 );

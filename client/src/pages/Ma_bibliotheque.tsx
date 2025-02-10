@@ -10,6 +10,7 @@ import Book from "../components/Book";
 import DeleteConfirmationModale from "../components/DeleteConfirmationModale";
 import Header from "../components/Header";
 import SearchBar from "../components/Searchbar";
+import AddBook from "../components/AddBook";
 
 interface BookProps {
   titre: string;

@@ -31,11 +31,13 @@ function AddBookManually({
   const [livre_resume, setLivre_resume] = useState("");
   const [couverture_img, setCouverture_img] = useState("");
 
+  /*Permet de nettoyer automatiquemnt l'ISBN en retirant les caractères spéciaux*/
   const handleISBNChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const cleanedISBN = e.target.value.replace(/[^a-zA-Z0-9]/g, "");
     setISBN(cleanedISBN);
   };
 
+  /*Permet de récupérer les informations du livre via l'API Google Books puis Open Library si c'est incomplet*/
   const handleFetchBookInfo = async () => {
     try {
       const response = await fetch(
@@ -79,6 +81,7 @@ function AddBookManually({
     }
   };
 
+  /*Permet d'ajouter le livre*/
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const response = await fetch("http://localhost:3310/api/livres", {
@@ -119,7 +122,7 @@ function AddBookManually({
       onKeyDown={handleModalBookClose}
     >
       <div
-        className="AddbookManually"
+        className="AddBookManually"
         onClick={(e) => e.stopPropagation()}
         onKeyDown={(e) => e.stopPropagation()}
       >
