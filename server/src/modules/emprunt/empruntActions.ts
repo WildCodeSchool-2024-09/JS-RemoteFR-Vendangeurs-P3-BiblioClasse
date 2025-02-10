@@ -52,12 +52,6 @@ const addBookBorrow: RequestHandler = async (
   const userId = Number(req.params.user_id);
   try {
     const { id_exemplaire, id_eleve, date_emprunt, date_retour } = req.body;
-
-    console.info("Received request to create emprunt:", {
-      id_exemplaire,
-      id_eleve,
-    });
-
     const exemplaire = await exemplaireRepository.read(userId, id_exemplaire);
     if (!exemplaire.isAvailable) {
       res.status(400).json({ error: "Exemplaire non disponible" });
@@ -73,7 +67,6 @@ const addBookBorrow: RequestHandler = async (
       userId,
     };
     const insertId = await empruntRepository.create(userId, newEmprunt);
-    console.info("Emprunt created with ID:", insertId);
 
     await exemplaireRepository.update(
       {
@@ -83,7 +76,6 @@ const addBookBorrow: RequestHandler = async (
       userId,
       id_exemplaire,
     );
-    console.info("Exemplaire updated to not available:", id_exemplaire);
 
     res.status(201).json({ id_emprunt: insertId, ...newEmprunt });
   } catch (err) {

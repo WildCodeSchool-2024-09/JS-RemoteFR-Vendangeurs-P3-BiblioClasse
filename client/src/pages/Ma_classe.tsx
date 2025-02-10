@@ -46,7 +46,6 @@ function Ma_classe() {
       return setUserId(Number(Cookies.get("user_id")));
     }
     const fetchStudents = async () => {
-      console.info(userId);
       try {
         const response = await fetch(
           `http://localhost:3310/api/${userId}/eleves_with_borrows_information`,

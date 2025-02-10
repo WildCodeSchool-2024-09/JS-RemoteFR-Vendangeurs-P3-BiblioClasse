@@ -33,7 +33,6 @@ class livreRepository {
       ],
     );
 
-    console.info("Insert result:", result);
     if (result && "insertId" in result) {
       return result.insertId;
     }

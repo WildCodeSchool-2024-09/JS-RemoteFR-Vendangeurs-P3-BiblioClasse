@@ -6,8 +6,6 @@ import exemplaireRepository from "../exemplaire/exemplaireRepository";
 const returnBook: RequestHandler = async (req: CustomRequest, res, next) => {
   const userId = Number(req.params.user_id);
   try {
-    console.info("Données reçues pour retour:", req.body);
-
     const { id_exemplaire, id_eleve, date_retour_effectif } = req.body;
 
     if (!id_exemplaire || !id_eleve || !date_retour_effectif) {

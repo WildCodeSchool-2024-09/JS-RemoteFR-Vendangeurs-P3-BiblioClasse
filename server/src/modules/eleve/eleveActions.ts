@@ -72,7 +72,6 @@ const add: RequestHandler = async (req: CustomRequest, res, next) => {
   const userId = Number(req.params.user_id);
   try {
     const { nom, prenom } = req.body;
-    console.info("Requête reçue:", req.body);
 
     if (!nom || !prenom || !userId) {
       res.status(400).json({ message: "Missing required fields" });

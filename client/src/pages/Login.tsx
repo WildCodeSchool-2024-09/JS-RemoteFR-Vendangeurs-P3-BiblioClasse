@@ -17,7 +17,6 @@ function Login() {
   const handleLoginSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      console.info("dé&but de connexion");
       const response = await fetch("http://localhost:3310/api/auth/login", {
         method: "POST",
         headers: {
@@ -28,7 +27,6 @@ function Login() {
       if (response.ok) {
         const data = await response.json();
         setSuccess("Login successful!");
-        console.info(data);
         login(data.token, data.user_id);
         navigate("/accueil");
       } else {

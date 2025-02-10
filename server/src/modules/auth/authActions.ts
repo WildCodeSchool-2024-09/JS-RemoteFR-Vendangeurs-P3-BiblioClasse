@@ -6,7 +6,6 @@ import parametreRepository from "../parametre/parametreRepository";
 import authRepository from "./authRepository";
 
 const JWT_SECRET = process.env.JWT_SECRET;
-console.info("JWT_SECRET:", process.env.JWT_SECRET);
 
 const login: RequestHandler = async (req, res, next) => {
   try {
@@ -36,9 +35,7 @@ const login: RequestHandler = async (req, res, next) => {
       expiresIn: 86400, // correspond à 24h
     });
 
-    console.info("Login successful, token generated");
     res.status(200).json({ token, user_id: user.id });
-    console.info(user.id);
     return;
   } catch (err) {
     console.error("Error during login:", err);
@@ -59,7 +56,6 @@ const register: RequestHandler = async (req, res, next) => {
       email,
       hashedPassword,
     );
-    console.info("User ID created:", newUserId);
 
     if (!newUserId) {
       res
@@ -73,10 +69,8 @@ const register: RequestHandler = async (req, res, next) => {
       [newUserId],
     );
     // Loguer la réponse pour mieux comprendre la structure
-    console.info("userExistsResult:", rows);
     // Si l'utilisateur existe, insérer les paramètres par défaut
     await parametreRepository.insertDefaultParametre(newUserId, 7, 5);
-    console.info("Default parameters inserted for user:", newUserId);
 
     // Send status without returning it
     res.sendStatus(201);
