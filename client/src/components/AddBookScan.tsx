@@ -51,18 +51,17 @@ function AddBookScan({
         const stream = await navigator.mediaDevices.getUserMedia({
           video: true,
         });
-        console.info("✅ Camera activée");
 
-        // ⚠️ Vérifier si une vidéo est déjà en cours avant d'affecter un nouveau flux
+        /* vérifie si la caméra est déjà utilisée */
         if (videoRef.current && !videoRef.current.srcObject) {
           videoRef.current.srcObject = stream;
         }
       } catch (error) {
-        console.error("❌ Erreur accès caméra:", error);
+        console.error("Erreur accès caméra:", error);
       }
     };
 
-    // Instancier le scanner
+    /* Initialisation du scanner */
     const codeReader = new BrowserMultiFormatReader();
     codeReader.reset();
 
@@ -74,7 +73,7 @@ function AddBookScan({
         async (result, err) => {
           if (result) {
             const cleanedISBN = result.getText().replace(/[^0-9Xx-]/g, "");
-            console.info("📖 ISBN scanné:", cleanedISBN);
+            console.info("ISBN scanné:", cleanedISBN);
             setScannedISBN(cleanedISBN);
 
             // Appel API pour récupérer les infos du livre
@@ -90,7 +89,7 @@ function AddBookScan({
             }
           }
           if (err && !(err instanceof NotFoundException)) {
-            console.error("🚨 Erreur de scan :", err);
+            console.error("Erreur de scan :", err);
           }
         },
       );
