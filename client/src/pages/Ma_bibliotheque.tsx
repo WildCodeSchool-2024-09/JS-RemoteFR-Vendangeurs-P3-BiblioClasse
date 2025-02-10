@@ -4,8 +4,8 @@ import { Link, useNavigate } from "react-router-dom";
 import "../styles/Book.css";
 import "../styles/BurgerMenu.css";
 import "../styles/Buttons.css";
+import AddBook from "../components/AddBook";
 import AddBookManually from "../components/AddBookManually";
-import Addbook from "../components/Addbook";
 import Book from "../components/Book";
 import DeleteConfirmationModale from "../components/DeleteConfirmationModale";
 import Header from "../components/Header";
@@ -285,7 +285,7 @@ function Ma_bibliotheque() {
             +
           </button>
           {/* Modale pour ajouter un livre */}
-          <Addbook
+          <AddBook
             showModal={showModal}
             handleModalClose={handleModalClose}
             handleAddBookManuallyClick={handleAddBookManuallyClick}

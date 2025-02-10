@@ -1,16 +1,16 @@
 import "../styles/Addbook.css";
 
-interface AddbookProps {
+interface AddBookProps {
   showModal: boolean;
   handleModalClose: () => void;
   handleAddBookManuallyClick: () => void;
 }
 
-function Addbook({
+function AddBook({
   showModal,
   handleModalClose,
   handleAddBookManuallyClick,
-}: AddbookProps) {
+}: AddBookProps) {
   if (showModal === false) return null;
 
   /*Gère le scan du livre*/
@@ -60,4 +60,4 @@ function Addbook({
   );
 }
 
-export default Addbook;
+export default AddBook;
