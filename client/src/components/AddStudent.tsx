@@ -1,5 +1,7 @@
 import "../styles/AddStudent.css";
+import Cookies from "js-cookie";
 import { useState } from "react";
+import { useAuth } from "../context/AuthContext";
 import type { StudentProps } from "../pages/Ma_classe";
 
 interface AddStudentProps {
@@ -13,6 +15,7 @@ function AddStudent({
   handleModalClose,
   handleStudentAdded,
 }: AddStudentProps) {
+  const { userId, setUserId } = useAuth();
   if (showModal === false) return null;
 
   const [nom, setNom] = useState("");
@@ -21,7 +24,10 @@ function AddStudent({
   /*Ajout d'un élève*/
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const response = await fetch("http://localhost:3310/api/eleves", {
+    if (!userId) {
+      return setUserId(Number(Cookies.get("user_id")));
+    }
+    const response = await fetch(`http://localhost:3310/api/${userId}/eleves`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

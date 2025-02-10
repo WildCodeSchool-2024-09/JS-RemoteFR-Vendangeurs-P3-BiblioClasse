@@ -1,7 +1,9 @@
 import type { RequestHandler } from "express";
+import type { CustomRequest } from "../../types/express/CustomRequest";
 import exemplaireRepository from "./exemplaireRepository";
 
-const browse: RequestHandler = async (req, res, next) => {
+const browse: RequestHandler = async (req: CustomRequest, res, next) => {
+  const userId = Number(req.params.user_id);
   try {
     const { ISBN } = req.query;
     let exemplaires: Array<{
@@ -10,9 +12,12 @@ const browse: RequestHandler = async (req, res, next) => {
       isAvailable: boolean;
     }>;
     if (ISBN) {
-      exemplaires = await exemplaireRepository.readAllByISBN(ISBN as string);
+      exemplaires = await exemplaireRepository.readAllByISBN(
+        userId,
+        ISBN as string,
+      );
     } else {
-      exemplaires = await exemplaireRepository.readAll();
+      exemplaires = await exemplaireRepository.readAll(userId);
     }
     res.json(exemplaires);
   } catch (err) {
@@ -20,9 +25,11 @@ const browse: RequestHandler = async (req, res, next) => {
   }
 };
 
-const read: RequestHandler = async (req, res, next) => {
+const read: RequestHandler = async (req: CustomRequest, res, next) => {
+  const userId = Number(req.params.user_id);
   try {
     const exemplaire = await exemplaireRepository.read(
+      userId,
       Number(req.params.id_exemplaire),
     );
     if (exemplaire == null) {
@@ -35,7 +42,12 @@ const read: RequestHandler = async (req, res, next) => {
   }
 };
 
-const readBorrowedExemplaireByISBN: RequestHandler = async (req, res, next) => {
+const readBorrowedExemplaireByISBN: RequestHandler = async (
+  req: CustomRequest,
+  res,
+  next,
+) => {
+  const userId = Number(req.params.user_id);
   try {
     const { ISBN } = req.params;
     let borrowedExemplaireByISBN: Array<{
@@ -46,7 +58,10 @@ const readBorrowedExemplaireByISBN: RequestHandler = async (req, res, next) => {
       id_eleve: number;
     }>;
     borrowedExemplaireByISBN =
-      await exemplaireRepository.readBorrowedExemplaireByISBN(ISBN as string);
+      await exemplaireRepository.readBorrowedExemplaireByISBN(
+        userId,
+        ISBN as string,
+      );
     if (borrowedExemplaireByISBN == null) {
       res.sendStatus(404);
     } else {
@@ -57,9 +72,15 @@ const readBorrowedExemplaireByISBN: RequestHandler = async (req, res, next) => {
   }
 };
 
-const readAvailableExemplaire: RequestHandler = async (req, res, next) => {
+const readAvailableExemplaire: RequestHandler = async (
+  req: CustomRequest,
+  res,
+  next,
+) => {
+  const userId = Number(req.params.user_id);
   try {
-    const exemplaire = await exemplaireRepository.readAvailableExemplaire();
+    const exemplaire =
+      await exemplaireRepository.readAvailableExemplaire(userId);
     if (exemplaire == null) {
       res.sendStatus(404);
     } else {
@@ -70,24 +91,27 @@ const readAvailableExemplaire: RequestHandler = async (req, res, next) => {
   }
 };
 
-const add: RequestHandler = async (req, res, next) => {
+const add: RequestHandler = async (req: CustomRequest, res, next) => {
+  const userId = Number(req.params.user_id);
   try {
     const newExemplaire = {
       ISBN: req.body.ISBN,
       isAvailable: req.body.isAvailable ?? true,
     };
-    const insertId = await exemplaireRepository.create(newExemplaire);
+    const insertId = await exemplaireRepository.create(userId, newExemplaire);
     res.status(201).json({ insertId });
   } catch (err) {
     next(err);
   }
 };
 
-const edit: RequestHandler = async (req, res, next) => {
+const edit: RequestHandler = async (req: CustomRequest, res, next) => {
+  const userId = Number(req.params.user_id);
   try {
     const updatedExemplaire = await exemplaireRepository.update(
-      Number(req.params.id_exemplaire),
       req.body,
+      userId,
+      Number(req.params.id_exemplaire),
     );
     res.json(updatedExemplaire);
   } catch (err) {
@@ -95,9 +119,10 @@ const edit: RequestHandler = async (req, res, next) => {
   }
 };
 
-const destroy: RequestHandler = async (req, res, next) => {
+const destroy: RequestHandler = async (req: CustomRequest, res, next) => {
+  const userId = Number(req.params.user_id);
   try {
-    await exemplaireRepository.delete(Number(req.params.id_exemplaire));
+    await exemplaireRepository.delete(userId, Number(req.params.id_exemplaire));
     res.status(204).end();
   } catch (err) {
     next(err);

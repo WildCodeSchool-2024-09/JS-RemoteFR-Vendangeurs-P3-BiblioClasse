@@ -1,8 +1,10 @@
 import "../styles/Mon_eleve.css";
+import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import Header from "../components/Header";
+import { useAuth } from "../context/AuthContext";
 import "../styles/Buttons.css";
-import { useEffect, useState } from "react";
+import Cookies from "js-cookie";
 import Book from "../components/Book";
 import EditStudentModal from "../components/EditStudentModal";
 
@@ -17,6 +19,7 @@ interface BorrowedBook {
 }
 
 function Mon_eleve() {
+  const { userId, setUserId } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
   const { prenom, nom, id_eleve } = location.state;
@@ -31,10 +34,13 @@ function Mon_eleve() {
 
   /*Récupère les livres empruntés par l'élève*/
   useEffect(() => {
+    if (!userId) {
+      return setUserId(Number(Cookies.get("user_id")));
+    }
     const fetchBorrowedBooksByStudentID = async () => {
       try {
         const response = await fetch(
-          `http://localhost:3310/api/emprunts_by_student/${id_eleve}`,
+          `http://localhost:3310/api/${userId}/emprunts_by_student/${id_eleve}`,
         );
         const data = await response.json();
         setBorrowedBooksByStudentID(data);
@@ -56,7 +62,7 @@ function Mon_eleve() {
     };
 
     fetchBorrowedBooksByStudentID();
-  }, [id_eleve]);
+  }, [userId, id_eleve, setUserId]);
 
   /*Gère le retour à la page précédente*/
   const handleBackClick = () => {

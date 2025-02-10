@@ -1,16 +1,6 @@
 import type { NextFunction, Request, Response } from "express";
+import type { CustomRequest } from "../../types/express/CustomRequest";
 
-interface CustomRequest extends Request {
-  user?: {
-    id: string;
-    nom: string;
-    prenom: string;
-    email: string;
-    password: string;
-    created_at: string;
-    updated_at: string;
-  };
-}
 import jwt from "jsonwebtoken";
 
 const JWT_SECRET = process.env.JWT_SECRET;

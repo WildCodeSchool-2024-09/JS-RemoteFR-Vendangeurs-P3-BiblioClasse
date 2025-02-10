@@ -1,10 +1,12 @@
 import "../styles/Mon_livre.css";
+import Cookies from "js-cookie";
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import AddExemplaire from "../components/AddExemplaire";
 import EditBookModal from "../components/EditBookModal";
 import Header from "../components/Header";
 import Student from "../components/Student";
+import { useAuth } from "../context/AuthContext";
 
 interface Exemplaire {
   id_exemplaire: number;
@@ -15,6 +17,7 @@ interface Exemplaire {
 }
 
 function Mon_livre() {
+  const { userId, setUserId } = useAuth();
   const location = useLocation();
   const { titre, auteur, livre_resume, couverture_img, ISBN } =
     location.state || {};
@@ -33,10 +36,13 @@ function Mon_livre() {
 
   useEffect(() => {
     /*Récupération des exemplaires du livre*/
+    if (!userId) {
+      return setUserId(Number(Cookies.get("user_id")));
+    }
     const fetchExemplairesByISBN = async () => {
       try {
         const response = await fetch(
-          `http://localhost:3310/api/exemplaires?ISBN=${ISBN}`,
+          `http://localhost:3310/api/${userId}/exemplaires?ISBN=${ISBN}`,
         );
         const data = await response.json();
         setExemplairesByISBN(data);
@@ -53,7 +59,7 @@ function Mon_livre() {
     const fetchBorrowedExemplairesByISBN = async () => {
       try {
         const response = await fetch(
-          `http://localhost:3310/api/exemplaires_borrowed/${ISBN}`,
+          `http://localhost:3310/api/${userId}/exemplaires_borrowed/${ISBN}`,
         );
         const data = await response.json();
         setBorrowedExemplairesByISBN(data);
@@ -67,7 +73,7 @@ function Mon_livre() {
 
     fetchExemplairesByISBN();
     fetchBorrowedExemplairesByISBN();
-  }, [ISBN]);
+  }, [userId, ISBN, setUserId]);
 
   /*Gère le retour à la page précédente*/
   const handleBackClick = () => {

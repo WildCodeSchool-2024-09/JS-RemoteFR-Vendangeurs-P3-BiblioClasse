@@ -1,20 +1,25 @@
-import { format } from "date-fns";
 import type { RequestHandler } from "express";
+import type { CustomRequest } from "../../types/express/CustomRequest";
 import exemplaireRepository from "../exemplaire/exemplaireRepository";
 import empruntRepository from "./empruntRepository";
 
-const browse: RequestHandler = async (req, res, next) => {
+const browse: RequestHandler = async (req: CustomRequest, res, next) => {
+  const userId = Number(req.params.user_id);
   try {
-    const emprunts = await empruntRepository.readAll();
+    const emprunts = await empruntRepository.readAll(userId);
     res.json(emprunts);
   } catch (err) {
     next(err);
   }
 };
 
-const read: RequestHandler = async (req, res, next) => {
+const read: RequestHandler = async (req: CustomRequest, res, next) => {
+  const userId = Number(req.params.user_id);
   try {
-    const emprunt = await empruntRepository.read(Number(req.params.id_emprunt));
+    const emprunt = await empruntRepository.read(
+      userId,
+      Number(req.params.id_emprunt),
+    );
     if (emprunt == null) {
       res.sendStatus(404);
     } else {
@@ -25,9 +30,11 @@ const read: RequestHandler = async (req, res, next) => {
   }
 };
 
-const edit: RequestHandler = async (req, res, next) => {
+const edit: RequestHandler = async (req: CustomRequest, res, next) => {
+  const userId = Number(req.params.user_id);
   try {
     const updatedEmprunt = await empruntRepository.update(
+      userId,
       Number(req.params.id_emprunt),
       req.body,
     );
@@ -37,7 +44,12 @@ const edit: RequestHandler = async (req, res, next) => {
   }
 };
 
-const add: RequestHandler = async (req, res, next): Promise<void> => {
+const addBookBorrow: RequestHandler = async (
+  req: CustomRequest,
+  res,
+  next,
+): Promise<void> => {
+  const userId = Number(req.params.user_id);
   try {
     const { id_exemplaire, id_eleve, date_emprunt, date_retour } = req.body;
 
@@ -46,7 +58,7 @@ const add: RequestHandler = async (req, res, next): Promise<void> => {
       id_eleve,
     });
 
-    const exemplaire = await exemplaireRepository.read(id_exemplaire);
+    const exemplaire = await exemplaireRepository.read(userId, id_exemplaire);
     if (!exemplaire.isAvailable) {
       res.status(400).json({ error: "Exemplaire non disponible" });
       return;
@@ -58,14 +70,19 @@ const add: RequestHandler = async (req, res, next): Promise<void> => {
       date_emprunt,
       date_retour,
       date_retour_effectif: null,
+      userId,
     };
-    const insertId = await empruntRepository.create(newEmprunt);
+    const insertId = await empruntRepository.create(userId, newEmprunt);
     console.info("Emprunt created with ID:", insertId);
 
-    await exemplaireRepository.update(id_exemplaire, {
-      ISBN: exemplaire.ISBN,
-      isAvailable: false,
-    });
+    await exemplaireRepository.update(
+      {
+        ISBN: exemplaire.ISBN,
+        isAvailable: false,
+      },
+      userId,
+      id_exemplaire,
+    );
     console.info("Exemplaire updated to not available:", id_exemplaire);
 
     res.status(201).json({ id_emprunt: insertId, ...newEmprunt });
@@ -75,9 +92,10 @@ const add: RequestHandler = async (req, res, next): Promise<void> => {
   }
 };
 
-const destroy: RequestHandler = async (req, res, next) => {
+const destroy: RequestHandler = async (req: CustomRequest, res, next) => {
+  const userId = Number(req.params.user_id);
   try {
-    await empruntRepository.delete(Number(req.params.id_emprunt));
+    await empruntRepository.delete(Number(req.params.id_emprunt), userId);
     res.status(204).end();
   } catch (err) {
     next(err);
@@ -85,12 +103,14 @@ const destroy: RequestHandler = async (req, res, next) => {
 };
 
 const countStudentsWithLoansInProgress: RequestHandler = async (
-  req,
+  req: CustomRequest,
   res,
   next,
 ) => {
+  const userId = Number(req.params.user_id);
   try {
-    const counts = await empruntRepository.countStudentsWithLoansInProgress();
+    const counts =
+      await empruntRepository.countStudentsWithLoansInProgress(userId);
     res.json(counts);
   } catch (error) {
     console.error("Erreur lors de la récupération des emprunts:", error);
@@ -100,12 +120,14 @@ const countStudentsWithLoansInProgress: RequestHandler = async (
   }
 };
 const countStudentsWithLoansDueSoon: RequestHandler = async (
-  req,
+  req: CustomRequest,
   res,
   next,
 ) => {
+  const userId = Number(req.params.user_id);
   try {
-    const counts = await empruntRepository.countStudentsWithLoansDueSoon();
+    const counts =
+      await empruntRepository.countStudentsWithLoansDueSoon(userId);
     res.json(counts);
   } catch (error) {
     console.error("Erreur lors de la récupération des emprunts:", error);
@@ -115,12 +137,14 @@ const countStudentsWithLoansDueSoon: RequestHandler = async (
   }
 };
 const countStudentsWithOverdueLoans: RequestHandler = async (
-  req,
+  req: CustomRequest,
   res,
   next,
 ) => {
+  const userId = Number(req.params.user_id);
   try {
-    const counts = await empruntRepository.countStudentsWithOverdueLoans();
+    const counts =
+      await empruntRepository.countStudentsWithOverdueLoans(userId);
     res.json(counts);
   } catch (error) {
     console.error("Erreur lors de la récupération des emprunts:", error);
@@ -130,9 +154,14 @@ const countStudentsWithOverdueLoans: RequestHandler = async (
   }
 };
 
-const LoansInProgress: RequestHandler = async (req, res, next) => {
+const LoansInProgress: RequestHandler = async (
+  req: CustomRequest,
+  res,
+  next,
+) => {
+  const userId = Number(req.params.user_id);
   try {
-    const counts = await empruntRepository.LoansInProgress();
+    const counts = await empruntRepository.LoansInProgress(userId);
     res.json(counts);
   } catch (error) {
     console.error("Erreur lors de la récupération des emprunts:", error);
@@ -142,10 +171,16 @@ const LoansInProgress: RequestHandler = async (req, res, next) => {
   }
 };
 
-const LoansByStudent: RequestHandler = async (req, res, next) => {
+const LoansByStudent: RequestHandler = async (
+  req: CustomRequest,
+  res,
+  next,
+) => {
+  const userId = Number(req.params.user_id);
   try {
     const { id_eleve } = req.params;
     const emprunts = await empruntRepository.getEmpruntsByEleve(
+      userId,
       Number(id_eleve),
     );
     res.json(emprunts);
@@ -160,7 +195,7 @@ const LoansByStudent: RequestHandler = async (req, res, next) => {
 export default {
   browse,
   read,
-  add,
+  addBookBorrow,
   edit,
   destroy,
   countStudentsWithLoansInProgress,

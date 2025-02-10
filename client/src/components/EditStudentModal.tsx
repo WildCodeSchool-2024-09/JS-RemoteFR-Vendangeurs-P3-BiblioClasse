@@ -1,5 +1,7 @@
 import { useState } from "react";
+import { useAuth } from "../context/AuthContext";
 import "../styles/EditStudentModal.css";
+import Cookies from "js-cookie";
 
 interface EditStudentModalProps {
   showModal: boolean;
@@ -24,11 +26,15 @@ function EditStudentModal({
   student,
   handleStudentUpdated,
 }: EditStudentModalProps) {
+  const { userId, setUserId } = useAuth();
   const [prenom, setPrenom] = useState(student.prenom);
   const [nom, setNom] = useState(student.nom);
 
   /*Gère la modification de l'élève*/
   const handleSubmit = async (e: React.FormEvent) => {
+    if (!userId) {
+      return setUserId(Number(Cookies.get("user_id")));
+    }
     e.preventDefault();
     const updatedStudent = {
       prenom,
@@ -38,7 +44,7 @@ function EditStudentModal({
     };
     try {
       const response = await fetch(
-        `http://localhost:3310/api/eleves/${student.id_eleve}`,
+        `http://localhost:3310/api/${userId}/eleves/${student.id_eleve}`,
         {
           method: "PUT",
           headers: {

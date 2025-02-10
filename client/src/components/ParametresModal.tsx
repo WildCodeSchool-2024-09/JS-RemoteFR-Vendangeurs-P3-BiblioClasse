@@ -1,4 +1,6 @@
 import "../styles/ParametresModal.css";
+import Cookies from "js-cookie";
+import { useAuth } from "../context/AuthContext";
 
 interface ParametresProps {
   loanDuration: number;
@@ -17,6 +19,7 @@ function ParametresModal({
   borrowLimit,
   setBorrowLimit,
 }: ParametresProps) {
+  const { userId, setUserId } = useAuth();
   if (!showModal) return null;
 
   /*Gère l'incrément/décrement de la durée d'emprunt et le nombre de livres empruntables simultanément*/
@@ -36,21 +39,30 @@ function ParametresModal({
   /*Gère l'envoi de la durée d'emprunt et de la limite du nombre de livres au back*/
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!userId) {
+      return setUserId(Number(Cookies.get("user_id")));
+    }
     try {
-      await fetch("http://localhost:3310/api/parametres/loanDuration", {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
+      await fetch(
+        `http://localhost:3310/api/${userId}/parametres/loanDuration`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ loanDuration }),
         },
-        body: JSON.stringify({ loanDuration }),
-      });
-      await fetch("http://localhost:3310/api/parametres/borrowLimit", {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
+      );
+      await fetch(
+        `http://localhost:3310/api/${userId}/parametres/borrowLimit`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ borrowLimit }),
         },
-        body: JSON.stringify({ borrowLimit }),
-      });
+      );
       handleModalClose();
     } catch (error) {
       console.error("Erreur lors de la mise à jour des paramètres :", error);

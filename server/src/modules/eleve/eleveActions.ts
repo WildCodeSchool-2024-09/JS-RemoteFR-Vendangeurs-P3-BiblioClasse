@@ -1,12 +1,13 @@
 import type { RequestHandler } from "express";
-
+import type { CustomRequest } from "../../types/express/CustomRequest";
 import eleveRepository from "./eleveRepository";
 
 // The B of BREAD - Browse (Read All) operation
-const browse: RequestHandler = async (req, res, next) => {
+const browse: RequestHandler = async (req: CustomRequest, res, next) => {
+  const userId = Number(req.params.user_id);
   try {
     // Fetch all items
-    const eleves = await eleveRepository.readAll();
+    const eleves = await eleveRepository.readAll(userId);
 
     // Respond with the items in JSON format
     res.json(eleves);
@@ -17,12 +18,14 @@ const browse: RequestHandler = async (req, res, next) => {
 };
 
 const browseStudentsWithBorrowsInProgress: RequestHandler = async (
-  req,
+  req: CustomRequest,
   res,
   next,
 ) => {
+  const userId = Number(req.params.user_id);
   try {
-    const eleves = await eleveRepository.readAllStudentsWithBorrowsInProgress();
+    const eleves =
+      await eleveRepository.readAllStudentsWithBorrowsInProgress(userId);
     res.json(eleves);
   } catch (err) {
     next(err);
@@ -30,13 +33,14 @@ const browseStudentsWithBorrowsInProgress: RequestHandler = async (
 };
 
 const browseStudentsWithBorrowsInformation: RequestHandler = async (
-  req,
+  req: CustomRequest,
   res,
   next,
 ) => {
+  const userId = Number(req.params.user_id);
   try {
     const eleves =
-      await eleveRepository.readAllStudentsWithBorrowsInformation();
+      await eleveRepository.readAllStudentsWithBorrowsInformation(userId);
     res.json(eleves);
   } catch (err) {
     next(err);
@@ -44,10 +48,11 @@ const browseStudentsWithBorrowsInformation: RequestHandler = async (
 };
 
 // The R of BREAD - Read operation
-const read: RequestHandler = async (req, res, next) => {
+const read: RequestHandler = async (req: CustomRequest, res, next) => {
+  const userId = Number(req.params.user_id);
   try {
     // Fetch a specific item based on the provided ID
-    const eleve = await eleveRepository.read(req.params.id_eleve);
+    const eleve = await eleveRepository.read(userId, req.params.id_eleve);
 
     // If the item is not found, respond with HTTP 404 (Not Found)
     // Otherwise, respond with the item in JSON format
@@ -63,18 +68,23 @@ const read: RequestHandler = async (req, res, next) => {
 };
 
 // The A of BREAD - Add (Create) operation
-const add: RequestHandler = async (req, res, next) => {
+const add: RequestHandler = async (req: CustomRequest, res, next) => {
+  const userId = Number(req.params.user_id);
   try {
-    // Extract the item data from the request body
+    const { nom, prenom } = req.body;
     console.info("Requête reçue:", req.body);
 
-    const newEleve = {
-      nom: req.body.nom,
-      prenom: req.body.prenom,
-    };
+    if (!nom || !prenom || !userId) {
+      res.status(400).json({ message: "Missing required fields" });
+    }
 
     // Create the item
-    const insertId = await eleveRepository.create(newEleve);
+    const newEleve = { nom, prenom };
+    const insertId = await eleveRepository.create(
+      userId,
+      newEleve.nom,
+      newEleve.prenom,
+    );
 
     // Respond with HTTP 201 (Created) and the ID of the newly inserted item
     res.status(201).json({ insertId });
@@ -85,9 +95,11 @@ const add: RequestHandler = async (req, res, next) => {
 };
 
 // The E of BREAD - Edit operation
-const edit: RequestHandler = async (req, res, next) => {
+const edit: RequestHandler = async (req: CustomRequest, res, next) => {
+  const userId = Number(req.params.user_id);
   try {
     const updatedEleve = await eleveRepository.update(
+      userId,
       req.params.id_eleve,
       req.body,
     );
@@ -98,9 +110,10 @@ const edit: RequestHandler = async (req, res, next) => {
 };
 
 // The D of BREAD - Delete operation
-const destroy: RequestHandler = async (req, res, next) => {
+const destroy: RequestHandler = async (req: CustomRequest, res, next) => {
+  const userId = Number(req.params.user_id);
   try {
-    await eleveRepository.delete(req.params.id_eleve);
+    await eleveRepository.delete(userId, req.params.id_eleve);
     res.status(204).end();
   } catch (err) {
     next(err);
@@ -108,10 +121,11 @@ const destroy: RequestHandler = async (req, res, next) => {
 };
 
 //The S of breadS - Search operation
-const search: RequestHandler = async (req, res, next) => {
+const search: RequestHandler = async (req: CustomRequest, res, next) => {
+  const userId = Number(req.params.user_id);
   try {
     const searchTerm = req.query.q as string;
-    const eleves = await eleveRepository.search(searchTerm);
+    const eleves = await eleveRepository.search(userId, searchTerm);
     res.status(200).json(eleves);
   } catch (err) {
     next(err);
