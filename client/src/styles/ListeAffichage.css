@@ -9,3 +9,8 @@
   height: 100%;
   gap: 10px;
 }
+
+.Ma_bibliotheque.edit-mode,
+.Ma_classe.edit-mode {
+  margin-top: 95px;
+}

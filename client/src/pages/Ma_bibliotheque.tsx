@@ -268,7 +268,7 @@ function Ma_bibliotheque() {
           <strong>Se déconnecter</strong>
         </div>
       </Menu>
-      <section className="Ma_bibliotheque">
+      <section className={`Ma_bibliotheque ${editMode ? "edit-mode" : ""}`}>
         {sortedBooks.map((book) => (
           <div
             key={book.ISBN}
