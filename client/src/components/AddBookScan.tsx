@@ -99,7 +99,7 @@ function AddBookScan({
     setTimeout(startCamera, 500); // Attendre 500ms avant de démarrer la caméra pour laisser le temps d'initialiser
 
     return () => {
-      console.info("📴 Arrêt et nettoyage de la caméra...");
+      console.info("Arrêt et nettoyage de la caméra...");
       codeReader.reset();
       // Arrêter la caméra proprement
       if (
@@ -218,7 +218,7 @@ function AddBookScan({
       onKeyDown={handleModalScanClose}
     >
       <div
-        className="AddBookManually"
+        className="AddBookScan"
         onClick={(e) => e.stopPropagation()}
         onKeyDown={(e) => e.stopPropagation()}
       >
@@ -230,11 +230,11 @@ function AddBookScan({
         >
           &times;
         </button>
-        <h2 className="h2modalAddBookManually">Ajouter le livre</h2>
+        <h2 className="h2modalAddBookScan">Ajouter le livre</h2>
         {!bookInfo && (
           <>
             <h3 className="isbn-section">Scanner le code barre du livre</h3>
-            <video ref={videoRef} width="100%">
+            <video className="video" ref={videoRef}>
               <track kind="captions" />
             </video>
           </>

@@ -79,6 +79,10 @@
   padding: 10px;
   font-size: 1rem;
   font-weight: bold;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 2000;
 }
 
 .exit-delete-mode-button {
