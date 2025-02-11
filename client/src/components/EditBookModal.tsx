@@ -7,14 +7,14 @@ interface EditBookModalProps {
   showModal: boolean;
   handleModalClose: () => void;
   book: {
-    ISBN: string;
+    ISBN13: string;
     titre: string;
     auteur: string;
     livre_resume: string;
     couverture_img: string;
   };
   onBookUpdated: (updatedBook: {
-    ISBN: string;
+    ISBN13: string;
     titre: string;
     auteur: string;
     livre_resume: string;
@@ -29,7 +29,7 @@ function EditBookModal({
   onBookUpdated,
 }: EditBookModalProps) {
   const { userId, setUserId } = useAuth();
-  const [ISBN, setISBN] = useState(book.ISBN);
+  const [ISBN13, setISBN13] = useState(book.ISBN13);
   const [titre, setTitre] = useState(book.titre);
   const [auteur, setAuteur] = useState(book.auteur);
   const [livre_resume, setLivre_resume] = useState(book.livre_resume);
@@ -41,10 +41,10 @@ function EditBookModal({
     if (!userId) {
       return setUserId(Number(Cookies.get("user_id")));
     }
-    const updatedBook = { ISBN, titre, auteur, livre_resume, couverture_img };
+    const updatedBook = { ISBN13, titre, auteur, livre_resume, couverture_img };
     try {
       const response = await fetch(
-        `http://localhost:3310/api/${userId}/livres/${ISBN}`,
+        `http://localhost:3310/api/${userId}/livres/${ISBN13}`,
         {
           method: "PUT",
           headers: {
@@ -88,12 +88,12 @@ function EditBookModal({
         <h2 className="h2modal">Modifier le livre</h2>
         <form onSubmit={handleSubmit} className="form-modal">
           <label className="label-bookModal">
-            <p className="p-edit-book">ISBN :</p>
+            <p className="p-edit-book">ISBN13 :</p>
             <input
               className="input-bookModal"
               type="text"
-              value={ISBN}
-              onChange={(e) => setISBN(e.target.value)}
+              value={ISBN13}
+              onChange={(e) => setISBN13(e.target.value)}
               required
             />
           </label>

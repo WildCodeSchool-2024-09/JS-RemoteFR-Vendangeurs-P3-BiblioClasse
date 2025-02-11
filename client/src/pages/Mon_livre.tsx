@@ -19,50 +19,51 @@ interface Exemplaire {
 function Mon_livre() {
   const { userId, setUserId } = useAuth();
   const location = useLocation();
-  const { titre, auteur, livre_resume, couverture_img, ISBN } =
+  const { titre, auteur, livre_resume, couverture_img, ISBN13 } =
     location.state || {};
   const navigate = useNavigate();
-  const book = { titre, auteur, livre_resume, couverture_img, ISBN };
+  const book = { titre, auteur, livre_resume, couverture_img, ISBN13 };
   const [showEditModal, setShowEditModal] = useState(false);
   const [showAddExemplaireModal, setShowAddExemplaireModal] = useState(false);
   const [currentBook, setCurrentBook] = useState(book);
-  const [nbAvailableExemplairesByISBN, setNbAvailableExemplairesByISBN] =
+  const [nbAvailableExemplairesByISBN13, setNbAvailableExemplairesByISBN13] =
     useState(0);
   const [showBorrowModal, setShowBorrowModal] = useState(false);
-  const [exemplairesByISBN, setExemplairesByISBN] = useState<Exemplaire[]>([]);
-  const [borrowedExemplairesByISBN, setBorrowedExemplairesByISBN] = useState<
-    Exemplaire[]
-  >([]);
+  const [exemplairesByISBN13, setExemplairesByISBN13] = useState<Exemplaire[]>(
+    [],
+  );
+  const [borrowedExemplairesByISBN13, setBorrowedExemplairesByISBN13] =
+    useState<Exemplaire[]>([]);
 
   useEffect(() => {
     /*Récupération des exemplaires du livre*/
     if (!userId) {
       return setUserId(Number(Cookies.get("user_id")));
     }
-    const fetchExemplairesByISBN = async () => {
+    const fetchExemplairesByISBN13 = async () => {
       try {
         const response = await fetch(
-          `http://localhost:3310/api/${userId}/exemplaires?ISBN=${ISBN}`,
+          `http://localhost:3310/api/${userId}/exemplaires?ISBN13=${ISBN13}`,
         );
         const data = await response.json();
-        setExemplairesByISBN(data);
+        setExemplairesByISBN13(data);
         const available = data.filter(
           (exemplaire: { isAvailable: boolean }) => exemplaire.isAvailable,
         ).length;
-        setNbAvailableExemplairesByISBN(available);
+        setNbAvailableExemplairesByISBN13(available);
       } catch (error) {
         console.error("Erreur lors de la récupération des exemplaires:", error);
       }
     };
 
     /*Récupération des exemplaires empruntés du livre*/
-    const fetchBorrowedExemplairesByISBN = async () => {
+    const fetchBorrowedExemplairesByISBN13 = async () => {
       try {
         const response = await fetch(
-          `http://localhost:3310/api/${userId}/exemplaires_borrowed/${ISBN}`,
+          `http://localhost:3310/api/${userId}/exemplaires_borrowed/${ISBN13}`,
         );
         const data = await response.json();
-        setBorrowedExemplairesByISBN(data);
+        setBorrowedExemplairesByISBN13(data);
       } catch (error) {
         console.error(
           "Erreur lors de la récupération des exemplaires empruntés:",
@@ -71,9 +72,9 @@ function Mon_livre() {
       }
     };
 
-    fetchExemplairesByISBN();
-    fetchBorrowedExemplairesByISBN();
-  }, [userId, ISBN, setUserId]);
+    fetchExemplairesByISBN13();
+    fetchBorrowedExemplairesByISBN13();
+  }, [userId, ISBN13, setUserId]);
 
   /*Gère le retour à la page précédente*/
   const handleBackClick = () => {
@@ -96,7 +97,7 @@ function Mon_livre() {
 
   /*Gère la mise à jour du livre*/
   const handleBookUpdated = (updatedBook: {
-    ISBN: string;
+    ISBN13: string;
     titre: string;
     auteur: string;
     livre_resume: string;
@@ -115,11 +116,11 @@ function Mon_livre() {
 
   /*Gère l'ajout d'un exemplaire*/
   const handleExemplaireAdded = (newExemplaire: Exemplaire) => {
-    setExemplairesByISBN((prevExemplaires) => [
+    setExemplairesByISBN13((prevExemplaires) => [
       ...prevExemplaires,
       newExemplaire,
     ]);
-    setNbAvailableExemplairesByISBN((prevAvailable) => prevAvailable + 1);
+    setNbAvailableExemplairesByISBN13((prevAvailable) => prevAvailable + 1);
   };
 
   return (
@@ -144,19 +145,19 @@ function Mon_livre() {
         </div>
         <div className="infos_livre">
           <p className="exemplaire">
-            {nbAvailableExemplairesByISBN > 1
-              ? `${nbAvailableExemplairesByISBN} exemplaires disponibles sur ${exemplairesByISBN.length}`
-              : `${nbAvailableExemplairesByISBN} exemplaire disponible sur ${exemplairesByISBN.length}`}
+            {nbAvailableExemplairesByISBN13 > 1
+              ? `${nbAvailableExemplairesByISBN13} exemplaires disponibles sur ${exemplairesByISBN13.length}`
+              : `${nbAvailableExemplairesByISBN13} exemplaire disponible sur ${exemplairesByISBN13.length}`}
           </p>
           <p className="titre">{currentBook.titre}</p>
           <p className="auteur">De : {currentBook.auteur}</p>
-          <p className="isbn">ISBN: {currentBook.ISBN}</p>
+          <p className="isbn">ISBN: {currentBook.ISBN13}</p>
           <p className="resume">{currentBook.livre_resume}</p>
         </div>
       </section>
       <h2 className="h2-detail">Exemplaires empruntés par :</h2>
       <ul>
-        {borrowedExemplairesByISBN.map((exemplaire) => (
+        {borrowedExemplairesByISBN13.map((exemplaire) => (
           <div
             className="borrowed-book-container"
             key={exemplaire.id_exemplaire}
@@ -168,7 +169,7 @@ function Mon_livre() {
               prenom={exemplaire.prenom}
               date_retour={exemplaire.date_retour}
               nbOfBooksBorrowed={
-                borrowedExemplairesByISBN.filter(
+                borrowedExemplairesByISBN13.filter(
                   (e) => e.id_eleve === exemplaire.id_eleve,
                 ).length
               }
@@ -200,7 +201,7 @@ function Mon_livre() {
       />
       {showAddExemplaireModal && (
         <AddExemplaire
-          ISBN={currentBook.ISBN}
+          ISBN13={currentBook.ISBN13}
           onExemplaireAdded={handleExemplaireAdded}
           handleModalClose={handleAddExemplaireModalClose}
         />

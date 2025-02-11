@@ -9,13 +9,13 @@ interface BorrowBookModalProps {
   availableExemplaires: {
     id_exemplaire: number;
     titre: string;
-    ISBN: string;
+    ISBN13: string;
     isAvailable: boolean;
   }[];
   handleBorrowModalClose: () => void;
   handleBookBorrowed: (borrowedBook: {
     id_exemplaire: number;
-    ISBN: string;
+    ISBN13: string;
     isAvailable: boolean;
     id_eleve: number;
     date_emprunt: string;
@@ -27,20 +27,20 @@ interface BorrowBookModalProps {
       | {
           id_exemplaire: number;
           titre: string;
-          ISBN: string;
+          ISBN13: string;
           isAvailable: boolean;
         }[]
       | ((
           prevExemplaires: {
             id_exemplaire: number;
             titre: string;
-            ISBN: string;
+            ISBN13: string;
             isAvailable: boolean;
           }[],
         ) => {
           id_exemplaire: number;
           titre: string;
-          ISBN: string;
+          ISBN13: string;
           isAvailable: boolean;
         }[]),
   ) => void;
@@ -167,7 +167,7 @@ function BorrowBookModal({
     /* Création de l'emprunt (enfin)*/
     const borrowedBook = {
       id_exemplaire: selectedExemplaire,
-      ISBN: book.ISBN,
+      ISBN13: book.ISBN13,
       isAvailable: false,
       id_eleve: studentId,
       date_emprunt: dateEmprunt,
@@ -194,7 +194,7 @@ function BorrowBookModal({
             prevExemplaires: {
               id_exemplaire: number;
               titre: string;
-              ISBN: string;
+              ISBN13: string;
               isAvailable: boolean;
             }[],
           ) =>

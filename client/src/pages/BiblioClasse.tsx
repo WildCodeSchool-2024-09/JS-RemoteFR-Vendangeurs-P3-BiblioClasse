@@ -17,7 +17,7 @@ import ReturnBookModal from "../components/ReturnBookModal";
 
 interface BorrowedBook {
   id_exemplaire: number;
-  ISBN: string;
+  ISBN13: string;
   isAvailable: boolean;
   id_eleve: number;
   date_emprunt: string;
@@ -27,11 +27,11 @@ interface Exemplaire {
   titre: string;
   id_exemplaire: number;
   isAvailable: boolean;
-  ISBN: string;
+  ISBN13: string;
 }
 
 interface TopBooks {
-  ISBN: string;
+  ISBN13: string;
   couverture_img: string;
   titre: string;
   nb_emprunts: number;
@@ -243,13 +243,13 @@ function BiblioClasse() {
     navigate("/classe");
   };
   const handleClick = (
-    ISBN: string,
+    ISBN13: string,
     titre: string,
     couverture_img: string,
     auteur: string,
   ) => {
-    navigate(`/livre/${ISBN}`, {
-      state: { titre, couverture_img, ISBN, auteur },
+    navigate(`/livre/${ISBN13}`, {
+      state: { titre, couverture_img, ISBN13, auteur },
     });
   };
 
@@ -467,7 +467,7 @@ function BiblioClasse() {
               className="book-card"
               onClick={() =>
                 handleClick(
-                  topBook.ISBN,
+                  topBook.ISBN13,
                   topBook.titre,
                   topBook.couverture_img,
                   topBook.auteur,
@@ -475,7 +475,7 @@ function BiblioClasse() {
               }
               onKeyDown={() =>
                 handleClick(
-                  topBook.ISBN,
+                  topBook.ISBN13,
                   topBook.titre,
                   topBook.couverture_img,
                   topBook.auteur,

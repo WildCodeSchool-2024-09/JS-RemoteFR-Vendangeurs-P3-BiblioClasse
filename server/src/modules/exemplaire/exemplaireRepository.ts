@@ -3,11 +3,11 @@ import type { Result, Rows } from "../../../database/client";
 
 type Exemplaire = {
   id_exemplaire?: number;
-  ISBN: string;
+  ISBN13: string;
   isAvailable: boolean;
 };
 
-type borrowedExemplaireByISBN = {
+type borrowedExemplaireByISBN13 = {
   nom: string;
   prenom: string;
   date_retour: string;
@@ -19,10 +19,10 @@ class ExemplaireRepository {
   async create(userId: number, exemplaire: Exemplaire) {
     const [result] = await databaseClient.query<Result>(
       `
-    INSERT INTO exemplaire (ISBN, isAvailable, user_id) 
+    INSERT INTO exemplaire (ISBN13, isAvailable, user_id) 
     VALUES (?, ?, ?)
   `,
-      [exemplaire.ISBN, exemplaire.isAvailable, userId],
+      [exemplaire.ISBN13, exemplaire.isAvailable, userId],
     );
     return result.insertId;
   }
@@ -50,17 +50,17 @@ class ExemplaireRepository {
     );
     return rows as Exemplaire[];
   }
-  async readAllByISBN(
+  async readAllByISBN13(
     userId: number,
-    ISBN: string,
+    ISBN13: string,
   ): Promise<Array<Exemplaire>> {
     const [rows] = await databaseClient.query<Rows>(
       `
     SELECT * 
     FROM exemplaire 
-    WHERE user_id = ? AND ISBN = ?
+    WHERE user_id = ? AND ISBN13 = ?
   `,
-      [userId, ISBN],
+      [userId, ISBN13],
     );
     return rows as Exemplaire[];
   }
@@ -76,7 +76,7 @@ class ExemplaireRepository {
     JOIN 
       livre AS l 
     ON 
-      e.ISBN = l.ISBN 
+      e.ISBN13 = l.ISBN13 
     WHERE 
       e.user_id = ? 
       AND e.isAvailable = true 
@@ -88,10 +88,10 @@ class ExemplaireRepository {
     return rows as Exemplaire[];
   }
 
-  async readBorrowedExemplaireByISBN(
+  async readBorrowedExemplaireByISBN13(
     userId: number,
-    ISBN: string,
-  ): Promise<Array<borrowedExemplaireByISBN>> {
+    ISBN13: string,
+  ): Promise<Array<borrowedExemplaireByISBN13>> {
     const [rows] = await databaseClient.query<Rows>(
       `
     SELECT 
@@ -112,7 +112,7 @@ class ExemplaireRepository {
       em.id_exemplaire = ex.id_exemplaire 
     WHERE 
       em.user_id = ? 
-      AND ex.ISBN = ? 
+      AND ex.ISBN13 = ? 
       AND ex.isAvailable = 0 
       AND em.date_retour_effectif IS NULL 
     ORDER BY 
@@ -120,19 +120,19 @@ class ExemplaireRepository {
       el.nom, 
       el.prenom
   `,
-      [userId, ISBN],
+      [userId, ISBN13],
     );
-    return rows as borrowedExemplaireByISBN[];
+    return rows as borrowedExemplaireByISBN13[];
   }
 
   async update(exemplaire: Exemplaire, userId: number, id_exemplaire: number) {
     await databaseClient.query(
       `
     UPDATE exemplaire 
-    SET ISBN = ?, isAvailable = ? 
+    SET ISBN13 = ?, isAvailable = ? 
     WHERE user_id = ? AND id_exemplaire = ?
   `,
-      [exemplaire.ISBN, exemplaire.isAvailable, userId, id_exemplaire],
+      [exemplaire.ISBN13, exemplaire.isAvailable, userId, id_exemplaire],
     );
     return this.read(userId, id_exemplaire);
   }

@@ -14,11 +14,11 @@ interface Exemplaire {
 interface AddExemplaireProps {
   onExemplaireAdded: (exemplaire: Exemplaire) => void;
   handleModalClose: () => void;
-  ISBN: string;
+  ISBN13: string;
 }
 
 function AddExemplaire({
-  ISBN,
+  ISBN13,
   onExemplaireAdded,
   handleModalClose,
 }: AddExemplaireProps) {
@@ -40,7 +40,7 @@ function AddExemplaire({
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ ISBN, isAvailable }),
+          body: JSON.stringify({ ISBN13, isAvailable }),
         },
       );
 

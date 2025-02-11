@@ -162,14 +162,14 @@ class EmpruntRepository {
       l.auteur, 
       l.livre_resume, 
       l.couverture_img, 
-      l.ISBN, 
+      l.ISBN13, 
       e.date_retour 
     FROM 
       emprunt e 
     JOIN 
       exemplaire ex ON e.id_exemplaire = ex.id_exemplaire 
     JOIN 
-      livre l ON ex.ISBN = l.ISBN 
+      livre l ON ex.ISBN13 = l.ISBN13 
     WHERE 
       e.user_id = ? 
       AND e.id_eleve = ? 
