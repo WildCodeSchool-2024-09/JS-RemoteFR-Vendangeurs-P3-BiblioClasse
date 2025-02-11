@@ -14,7 +14,8 @@ interface BorrowedBook {
   auteur: string;
   livre_resume: string;
   couverture_img: string;
-  ISBN: string;
+  ISBN10: string;
+  ISBN13: string;
   date_retour: string;
 }
 
@@ -123,7 +124,8 @@ function Mon_eleve() {
               auteur={book.auteur}
               livre_resume={book.livre_resume}
               couverture_img={book.couverture_img}
-              ISBN={book.ISBN}
+              ISBN13={book.ISBN13}
+              ISBN10={book.ISBN10}
               date_retour={book.date_retour}
               context="mon_eleve"
               nombre_exemplaires={1}

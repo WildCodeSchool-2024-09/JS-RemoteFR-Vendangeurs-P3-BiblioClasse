@@ -16,7 +16,8 @@ interface BookProps {
   auteur: string;
   livre_resume: string;
   couverture_img: string;
-  ISBN: string;
+  ISBN10: string;
+  ISBN13: string;
   date_retour?: string;
   nombre_exemplaires: number;
   nombre_exemplaires_disponibles: number;
@@ -31,7 +32,9 @@ function AddBookScan({
   if (!showModalScan) return null;
 
   const videoRef = useRef<HTMLVideoElement>(null);
-  const [scannedISBN, setScannedISBN] = useState<string>("");
+  const [ISBN, setISBN] = useState<string>("");
+  const [ISBN13, setISBN13] = useState("");
+  const [ISBN10, setISBN10] = useState("");
   const [bookInfo, setBookInfo] = useState<BookProps | null>(null);
   const [titre, setTitre] = useState("");
   const [auteur, setAuteur] = useState("");
@@ -74,7 +77,7 @@ function AddBookScan({
           if (result) {
             const cleanedISBN = result.getText().replace(/[^0-9Xx-]/g, "");
             console.info("ISBN scanné:", cleanedISBN);
-            setScannedISBN(cleanedISBN);
+            setISBN(cleanedISBN);
 
             // Appel API pour récupérer les infos du livre
             const book = await fetchBookInfo(cleanedISBN);
@@ -84,6 +87,8 @@ function AddBookScan({
               setAuteur(book.auteur);
               setLivre_resume(book.livre_resume);
               setCouverture_img(book.couverture_img);
+              setISBN10(book.ISBN10);
+              setISBN13(book.ISBN13);
 
               codeReader.reset();
             }
@@ -123,10 +128,10 @@ function AddBookScan({
   }, [showModalScan]);
 
   /* Fonction pour récupérer les infos du livre */
-  const fetchBookInfo = async (isbn: string) => {
+  const fetchBookInfo = async (ISBN: string) => {
     try {
       const response = await fetch(
-        `https://www.googleapis.com/books/v1/volumes?q=isbn:${isbn}`,
+        `https://www.googleapis.com/books/v1/volumes?q=isbn:${ISBN}`,
       );
       const data = await response.json();
       if (data.items && data.items.length > 0) {
@@ -136,7 +141,14 @@ function AddBookScan({
           auteur: book.authors ? book.authors.join(", ") : "Auteur inconnu",
           livre_resume: book.description || "Résumé non disponible",
           couverture_img: book.imageLinks?.thumbnail || defaultCover,
-          ISBN: isbn,
+          ISBN10:
+            book.industryIdentifiers?.find(
+              (id: { type: string }) => id.type === "ISBN_10",
+            )?.identifier || "",
+          ISBN13:
+            book.industryIdentifiers?.find(
+              (id: { type: string }) => id.type === "ISBN_13",
+            )?.identifier || "",
           nombre_exemplaires: 1,
           nombre_exemplaires_disponibles: 1,
         };
@@ -148,10 +160,10 @@ function AddBookScan({
 
       // Tentative avec Open Library
       const openLibraryResponse = await fetch(
-        `https://openlibrary.org/api/books?bibkeys=ISBN:${isbn}&format=json&jscmd=data`,
+        `https://openlibrary.org/api/books?bibkeys=ISBN:${ISBN13}&format=json&jscmd=data`,
       );
       const openLibraryData = await openLibraryResponse.json();
-      const bookKey = `ISBN:${isbn}`;
+      const bookKey = `ISBN:${ISBN13}`;
 
       if (openLibraryData[bookKey]) {
         const book = openLibraryData[bookKey];
@@ -164,7 +176,14 @@ function AddBookScan({
             : "Auteur inconnu",
           livre_resume: book.notes || "Résumé non disponible",
           couverture_img: book.cover?.medium || defaultCover,
-          ISBN: isbn,
+          ISBN10:
+            book.industryIdentifiers?.find(
+              (id: { type: string }) => id.type === "isbn_10",
+            )?.identifier || "",
+          ISBN13:
+            book.industryIdentifiers?.find(
+              (id: { type: string }) => id.type === "isbn_13",
+            )?.identifier || "",
           nombre_exemplaires: 1,
           nombre_exemplaires_disponibles: 1,
         };
@@ -186,11 +205,12 @@ function AddBookScan({
     }
 
     const newBook = {
-      ISBN: scannedISBN,
       titre,
       auteur,
       livre_resume,
       couverture_img,
+      ISBN10,
+      ISBN13,
       nombre_exemplaires: 1,
       nombre_exemplaires_disponibles: 1,
     };
@@ -258,6 +278,16 @@ function AddBookScan({
                 className="input-ISBN"
                 value={auteur}
                 onChange={(e) => setAuteur(e.target.value)}
+                required
+                placeholder="Auteur"
+              />
+            </label>
+            <label className="label-ISBN">
+              <input
+                type="text"
+                className="input-ISBN"
+                value={ISBN}
+                onChange={(e) => setISBN(e.target.value)}
                 required
                 placeholder="Auteur"
               />

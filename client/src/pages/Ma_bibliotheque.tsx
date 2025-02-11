@@ -21,7 +21,8 @@ interface BookProps {
   auteur: string;
   livre_resume: string;
   couverture_img: string;
-  ISBN: string;
+  ISBN10: string;
+  ISBN13: string;
   date_retour?: string;
   nombre_exemplaires: number;
   nombre_exemplaires_disponibles: number;
@@ -154,8 +155,8 @@ function Ma_bibliotheque() {
   };
 
   /*Fonction pour supprimer un livre*/
-  const handleDeleteBook = async (ISBN: string) => {
-    const book = books.find((book) => book.ISBN === ISBN);
+  const handleDeleteBook = async (ISBN13: string) => {
+    const book = books.find((book) => book.ISBN13 === ISBN13);
     if (book) {
       handleDeleteConfirmationModale(book);
     }
@@ -170,17 +171,17 @@ function Ma_bibliotheque() {
 
     try {
       const response = await fetch(
-        `http://localhost:3310/api/${userId}/livres/${bookToDelete.ISBN}`,
+        `http://localhost:3310/api/${userId}/livres/${bookToDelete.ISBN13}`,
         {
           method: "DELETE",
         },
       );
       if (response.ok) {
         setBooks((prevBooks) =>
-          prevBooks.filter((book) => book.ISBN !== bookToDelete.ISBN),
+          prevBooks.filter((book) => book.ISBN13 !== bookToDelete.ISBN13),
         );
         setFilteredBooks((prevBooks) =>
-          prevBooks.filter((book) => book.ISBN !== bookToDelete.ISBN),
+          prevBooks.filter((book) => book.ISBN13 !== bookToDelete.ISBN13),
         );
         setShowDeleteConfirmationModale(false);
         setBookToDelete(null);
@@ -271,12 +272,12 @@ function Ma_bibliotheque() {
       <section className={`Ma_bibliotheque ${editMode ? "edit-mode" : ""}`}>
         {sortedBooks.map((book) => (
           <div
-            key={book.ISBN}
+            key={book.ISBN13}
             className={`book-container ${editMode ? "delete-mode" : ""}`}
             onContextMenu={(e) => {
               e.preventDefault();
               if (editMode) {
-                handleDeleteBook(book.ISBN);
+                handleDeleteBook(book.ISBN13);
               }
             }}
           >
@@ -285,7 +286,8 @@ function Ma_bibliotheque() {
               auteur={book.auteur}
               livre_resume={book.livre_resume}
               couverture_img={book.couverture_img}
-              ISBN={book.ISBN}
+              ISBN13={book.ISBN13}
+              ISBN10={book.ISBN10}
               date_retour={book.date_retour}
               nombre_exemplaires={book.nombre_exemplaires}
               nombre_exemplaires_disponibles={
@@ -297,7 +299,7 @@ function Ma_bibliotheque() {
               <button
                 type="button"
                 className="delete-button"
-                onClick={() => handleDeleteBook(book.ISBN)}
+                onClick={() => handleDeleteBook(book.ISBN13)}
               >
                 &times;
               </button>

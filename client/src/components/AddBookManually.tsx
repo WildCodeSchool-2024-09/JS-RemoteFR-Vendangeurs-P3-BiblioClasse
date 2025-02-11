@@ -14,7 +14,8 @@ interface BookProps {
   auteur: string;
   livre_resume: string;
   couverture_img: string;
-  ISBN: string;
+  ISBN10: string;
+  ISBN13: string;
   date_retour?: string;
   nombre_exemplaires: number;
   nombre_exemplaires_disponibles: number;
@@ -29,30 +30,44 @@ function AddBookManually({
   if (showModalBook === false) return null;
 
   const [ISBN, setISBN] = useState("");
+  const [ISBN13, setISBN13] = useState("");
+  const [ISBN10, setISBN10] = useState("");
   const [titre, setTitre] = useState("");
   const [auteur, setAuteur] = useState("");
   const [livre_resume, setLivre_resume] = useState("");
   const [couverture_img, setCouverture_img] = useState("");
+  const [bookInfoFetched, setBookInfoFetched] = useState(false);
 
   /*Permet de nettoyer automatiquemnt l'ISBN en retirant les caractères spéciaux*/
   const handleISBNChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const cleanedISBN = e.target.value.replace(/[^a-zA-Z0-9]/g, "");
     setISBN(cleanedISBN);
+    console.info("cleanedISBN:", cleanedISBN);
   };
 
   /*Permet de récupérer les informations du livre via l'API Google Books puis Open Library si c'est incomplet*/
   const handleFetchBookInfo = async () => {
     try {
+      console.info("ISBN:", ISBN);
       const response = await fetch(
         `https://www.googleapis.com/books/v1/volumes?q=isbn:${ISBN}`,
       );
       const data = await response.json();
       if (data.items && data.items.length > 0) {
         const book = data.items[0].volumeInfo;
+        for (const isbn of book.industryIdentifiers) {
+          if (isbn.type === "ISBN_13") {
+            setISBN13(isbn.identifier);
+          }
+          if (isbn.type === "ISBN_10") {
+            setISBN10(isbn.identifier);
+          }
+        }
         setTitre(book.title);
         setAuteur(book.authors.join(", "));
         setLivre_resume(book.description);
         setCouverture_img(book.imageLinks?.thumbnail || defaultCover);
+        setBookInfoFetched(true);
       } else {
         console.error("Aucun livre trouvé pour cet ISBN sur Google Books API");
         const openLibraryResponse = await fetch(
@@ -62,6 +77,14 @@ function AddBookManually({
         const bookKey = `ISBN:${ISBN}`;
         if (openLibraryData[bookKey]) {
           const book = openLibraryData[bookKey];
+          for (const isbn of book.industryIdentifiers) {
+            if (isbn.type === "isbn_13") {
+              setISBN13(isbn.identifier);
+            }
+            if (isbn.type === "isbn_10") {
+              setISBN10(isbn.identifier);
+            }
+          }
           setTitre(book.title);
           setAuteur(
             book.authors
@@ -70,6 +93,7 @@ function AddBookManually({
           );
           setLivre_resume(book.notes || "Pas de résumé disponible.");
           setCouverture_img(book.cover?.medium || defaultCover);
+          setBookInfoFetched(true);
         } else {
           console.error(
             "Aucun livre trouvé pour cet ISBN sur Open Library API",
@@ -81,6 +105,7 @@ function AddBookManually({
         "Erreur lors de la récupération des informations du livre:",
         error,
       );
+      setBookInfoFetched(false);
     }
   };
 
@@ -96,18 +121,20 @@ function AddBookManually({
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        ISBN,
         titre,
         auteur,
         livre_resume,
         couverture_img,
+        ISBN10,
+        ISBN13,
       }),
     });
     const responseData = await response.json();
     console.info("API response:", responseData);
     if (response.ok) {
       handleBookAdded({
-        ISBN,
+        ISBN10,
+        ISBN13,
         titre,
         auteur,
         livre_resume,
@@ -159,50 +186,52 @@ function AddBookManually({
             Rechercher
           </button>
         </form>
-        <form onSubmit={handleSubmit} className="form-modal-ISBN">
-          <label className="label-ISBN">
-            <input
-              className="input-ISBN"
-              type="text"
-              placeholder="Titre"
-              value={titre}
-              onChange={(e) => setTitre(e.target.value)}
-              required
-            />
-          </label>
-          <label className="label-ISBN">
-            <input
-              className="input-ISBN"
-              placeholder="Auteur"
-              type="text"
-              value={auteur}
-              onChange={(e) => setAuteur(e.target.value)}
-              required
-            />
-          </label>
-          <label className="label-ISBN">
-            <textarea
-              className="input-ISBN"
-              placeholder="Résumé"
-              value={livre_resume}
-              onChange={(e) => setLivre_resume(e.target.value)}
-              required
-            />
-          </label>
-          <label className="label-ISBN">
-            <input
-              className="input-ISBN"
-              placeholder="URL de la couverture"
-              type="text"
-              value={couverture_img}
-              onChange={(e) => setCouverture_img(e.target.value)}
-              required
-            />
-          </label>
-          <button type="submit" className="add-book-submitbutton">
-            Ajouter le livre
-          </button>
-        </form>
+        {bookInfoFetched && (
+          <form onSubmit={handleSubmit} className="form-modal-ISBN">
+            <label className="label-ISBN">
+              <input
+                className="input-ISBN"
+                type="text"
+                placeholder="Titre"
+                value={titre}
+                onChange={(e) => setTitre(e.target.value)}
+                required
+              />
+            </label>
+            <label className="label-ISBN">
+              <input
+                className="input-ISBN"
+                placeholder="Auteur"
+                type="text"
+                value={auteur}
+                onChange={(e) => setAuteur(e.target.value)}
+                required
+              />
+            </label>
+            <label className="label-ISBN">
+              <textarea
+                className="input-ISBN"
+                placeholder="Résumé"
+                value={livre_resume}
+                onChange={(e) => setLivre_resume(e.target.value)}
+                required
+              />
+            </label>
+            <label className="label-ISBN">
+              <input
+                className="input-ISBN"
+                placeholder="URL de la couverture"
+                type="text"
+                value={couverture_img}
+                onChange={(e) => setCouverture_img(e.target.value)}
+                required
+              />
+            </label>
+            <button type="submit" className="add-book-submitbutton">
+              Ajouter le livre
+            </button>
+          </form>
+        )}
       </div>
     </div>
   );
