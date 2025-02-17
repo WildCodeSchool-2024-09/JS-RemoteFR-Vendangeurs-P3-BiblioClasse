@@ -244,12 +244,6 @@ function Ma_classe() {
             <strong>Accueil</strong>
           </Link>
         </div>
-        <div className="menu-item">
-          <strong>Paramètres</strong>
-        </div>
-        <div className="menu-item">
-          <strong>Se déconnecter</strong>
-        </div>
       </Menu>
       <section className={`Ma_classe ${editMode ? "edit-mode" : ""}`}>
         {sortedStudents.map((student) => (

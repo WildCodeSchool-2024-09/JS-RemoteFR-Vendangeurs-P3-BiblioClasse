@@ -108,24 +108,10 @@ function Ma_bibliotheque() {
     setShowModalScan(true);
     setShowModal(false);
   };
-  // /* Arrête la caméra*/
-  // const stopCamera = useCallback(() => {
-  //   if (videoRef.current && videoRef.current.srcObject instanceof MediaStream) {
-  //     for (const track of videoRef.current.srcObject.getTracks()) {
-  //       track.stop();
-  //     }
-  //     videoRef.current.srcObject = null;
-  //   }
-  // }, []);
-
-  // useEffect(() => {
-  //   if (!showModalScan) {
-  //     stopCamera();
-  //   }
-  // }, [showModalScan, stopCamera]);
 
   const handleModalScanClose = () => {
     setShowModalScan(false);
+    window.location.reload();
   };
 
   /*Fonction pour rechercher un livre*/
@@ -263,12 +249,6 @@ function Ma_bibliotheque() {
           <Link to="/accueil" onClick={closeMenu}>
             <strong>Accueil</strong>
           </Link>
-        </div>
-        <div className="menu-item">
-          <strong>Paramètres</strong>
-        </div>
-        <div className="menu-item">
-          <strong>Se déconnecter</strong>
         </div>
       </Menu>
       <section className={`Ma_bibliotheque ${editMode ? "edit-mode" : ""}`}>

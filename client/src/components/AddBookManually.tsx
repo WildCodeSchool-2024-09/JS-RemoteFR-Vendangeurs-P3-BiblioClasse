@@ -37,6 +37,7 @@ function AddBookManually({
   const [livre_resume, setLivre_resume] = useState("");
   const [couverture_img, setCouverture_img] = useState("");
   const [bookInfoFetched, setBookInfoFetched] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   /*Permet de nettoyer automatiquemnt l'ISBN en retirant les caractères spéciaux*/
   const handleISBNChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -47,6 +48,7 @@ function AddBookManually({
 
   /*Permet de récupérer les informations du livre via l'API Google Books puis Open Library si c'est incomplet*/
   const handleFetchBookInfo = async () => {
+    setLoading(true);
     try {
       console.info("ISBN:", ISBN);
       const response = await fetch(
@@ -106,6 +108,8 @@ function AddBookManually({
         error,
       );
       setBookInfoFetched(false);
+    } finally {
+      setLoading(false); // Stop loading
     }
   };
 
@@ -182,8 +186,9 @@ function AddBookManually({
             type="button"
             onClick={handleFetchBookInfo}
             className="button"
+            disabled={loading}
           >
-            Rechercher
+            {loading ? "Chargement..." : "Rechercher"}
           </button>
         </form>
         {bookInfoFetched && (
