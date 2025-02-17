@@ -8,7 +8,8 @@ interface BookProps {
   auteur: string;
   livre_resume: string;
   couverture_img: string;
-  ISBN: string;
+  ISBN13: string;
+  ISBN10: string;
   date_retour?: string;
   nombre_exemplaires: number;
   nombre_exemplaires_disponibles: number;
@@ -20,7 +21,8 @@ function Book({
   couverture_img,
   auteur,
   livre_resume,
-  ISBN,
+  ISBN13,
+  ISBN10,
   date_retour,
   context,
   nombre_exemplaires,
@@ -30,8 +32,16 @@ function Book({
 
   /*Redirige vers la page du livre*/
   const handleClick = () => {
-    navigate(`/livre/${ISBN}`, {
-      state: { titre, auteur, livre_resume, couverture_img, ISBN, date_retour },
+    navigate(`/livre/${ISBN13}`, {
+      state: {
+        titre,
+        auteur,
+        livre_resume,
+        couverture_img,
+        ISBN13,
+        ISBN10,
+        date_retour,
+      },
     });
   };
 

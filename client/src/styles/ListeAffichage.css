@@ -1,10 +1,16 @@
 .Ma_bibliotheque,
 .Ma_classe {
-  margin-top: 5px;
+  margin-top: 10px;
+  margin-bottom: 10px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   align-items: center;
   height: 100%;
   gap: 10px;
+}
+
+.Ma_bibliotheque.edit-mode,
+.Ma_classe.edit-mode {
+  margin-top: 95px;
 }

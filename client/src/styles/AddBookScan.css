@@ -7,7 +7,7 @@
   cursor: pointer;
   color: var(--primary-color);
 }
-.AddBookManually {
+.AddBookScan {
   position: relative;
   z-index: 1000;
   border-radius: 13px;
@@ -19,7 +19,7 @@
   flex-direction: column;
   justify-content: flex-start;
 }
-.h2modalAddBookManually {
+.h2modalAddBookScan {
   color: var(--primary-color);
   text-align: center;
   font-family: "Poppins", sans-serif;
@@ -27,6 +27,12 @@
   font-style: normal;
   font-weight: 700;
   margin: 20px 0 20px 0;
+}
+.video {
+  width: auto;
+  /* height: 200px; */
+  border-radius: 13px;
+  margin: 15px;
 }
 .form-modal-ISBN {
   display: flex;

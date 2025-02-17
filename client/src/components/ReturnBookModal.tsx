@@ -18,7 +18,7 @@ interface StudentProps {
 
 interface BorrowedBookProps {
   id_exemplaire: number;
-  ISBN: string;
+  ISBN13: string;
   isAvailable: boolean;
   id_eleve: number;
   date_emprunt: string;

@@ -8,10 +8,10 @@ router.get(
   "/api/:user_id/livres_with_exemplaires",
   livreActions.browseWithExemplaires,
 );
-router.get("/api/:user_id/livres/:ISBN", livreActions.read);
+router.get("/api/:user_id/livres/:ISBN13", livreActions.read);
 router.post("/api/:user_id/livres", livreActions.add);
-router.put("/api/:user_id/livres/:ISBN", livreActions.edit);
-router.delete("/api/:user_id/livres/:ISBN", livreActions.destroy);
+router.put("/api/:user_id/livres/:ISBN13", livreActions.edit);
+router.delete("/api/:user_id/livres/:ISBN13", livreActions.destroy);
 router.get("/api/:user_id/livres/search", livreActions.search);
 router.get("/api/:user_id/top_books", livreActions.getTopBooks);
 
@@ -45,8 +45,8 @@ router.get(
   exemplaireActions.readAvailableExemplaire,
 );
 router.get(
-  "/api/:user_id/exemplaires_borrowed/:ISBN",
-  exemplaireActions.readBorrowedExemplaireByISBN,
+  "/api/:user_id/exemplaires_borrowed/:ISBN13",
+  exemplaireActions.readBorrowedExemplaireByISBN13,
 );
 
 import empruntActions from "./modules/emprunt/empruntActions";

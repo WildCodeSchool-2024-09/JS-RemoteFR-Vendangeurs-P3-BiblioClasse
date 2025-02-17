@@ -5,16 +5,16 @@ import exemplaireRepository from "./exemplaireRepository";
 const browse: RequestHandler = async (req: CustomRequest, res, next) => {
   const userId = Number(req.params.user_id);
   try {
-    const { ISBN } = req.query;
+    const { ISBN13 } = req.query;
     let exemplaires: Array<{
       id_exemplaire?: number;
-      ISBN: string;
+      ISBN13: string;
       isAvailable: boolean;
     }>;
-    if (ISBN) {
-      exemplaires = await exemplaireRepository.readAllByISBN(
+    if (ISBN13) {
+      exemplaires = await exemplaireRepository.readAllByISBN13(
         userId,
-        ISBN as string,
+        ISBN13 as string,
       );
     } else {
       exemplaires = await exemplaireRepository.readAll(userId);
@@ -42,30 +42,30 @@ const read: RequestHandler = async (req: CustomRequest, res, next) => {
   }
 };
 
-const readBorrowedExemplaireByISBN: RequestHandler = async (
+const readBorrowedExemplaireByISBN13: RequestHandler = async (
   req: CustomRequest,
   res,
   next,
 ) => {
   const userId = Number(req.params.user_id);
   try {
-    const { ISBN } = req.params;
-    let borrowedExemplaireByISBN: Array<{
+    const { ISBN13 } = req.params;
+    let borrowedExemplaireByISBN13: Array<{
       nom: string;
       prenom: string;
       date_retour: string;
       id_exemplaire: number;
       id_eleve: number;
     }>;
-    borrowedExemplaireByISBN =
-      await exemplaireRepository.readBorrowedExemplaireByISBN(
+    borrowedExemplaireByISBN13 =
+      await exemplaireRepository.readBorrowedExemplaireByISBN13(
         userId,
-        ISBN as string,
+        ISBN13 as string,
       );
-    if (borrowedExemplaireByISBN == null) {
+    if (borrowedExemplaireByISBN13 == null) {
       res.sendStatus(404);
     } else {
-      res.json(borrowedExemplaireByISBN);
+      res.json(borrowedExemplaireByISBN13);
     }
   } catch (err) {
     next(err);
@@ -95,7 +95,7 @@ const add: RequestHandler = async (req: CustomRequest, res, next) => {
   const userId = Number(req.params.user_id);
   try {
     const newExemplaire = {
-      ISBN: req.body.ISBN,
+      ISBN13: req.body.ISBN13,
       isAvailable: req.body.isAvailable ?? true,
     };
     const insertId = await exemplaireRepository.create(userId, newExemplaire);
@@ -132,7 +132,7 @@ const destroy: RequestHandler = async (req: CustomRequest, res, next) => {
 export default {
   browse,
   read,
-  readBorrowedExemplaireByISBN,
+  readBorrowedExemplaireByISBN13,
   add,
   edit,
   destroy,

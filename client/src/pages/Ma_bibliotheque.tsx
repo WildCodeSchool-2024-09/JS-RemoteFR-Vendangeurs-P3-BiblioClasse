@@ -6,13 +6,14 @@ import "../styles/Book.css";
 import "../styles/BurgerMenu.css";
 import "../styles/Buttons.css";
 
+import Cookies from "js-cookie";
 import AddBook from "../components/AddBook";
 import AddBookManually from "../components/AddBookManually";
+import AddBookScan from "../components/AddBookScan";
 import Book from "../components/Book";
 import DeleteConfirmationModale from "../components/DeleteConfirmationModale";
 import Header from "../components/Header";
 import SearchBar from "../components/Searchbar";
-import Cookies from "js-cookie";
 import { useAuth } from "../context/AuthContext";
 
 interface BookProps {
@@ -20,7 +21,8 @@ interface BookProps {
   auteur: string;
   livre_resume: string;
   couverture_img: string;
-  ISBN: string;
+  ISBN10: string;
+  ISBN13: string;
   date_retour?: string;
   nombre_exemplaires: number;
   nombre_exemplaires_disponibles: number;
@@ -39,6 +41,7 @@ function Ma_bibliotheque() {
   const [bookToDelete, setBookToDelete] = useState<BookProps | null>(null);
   const [showDeleteConfirmationModale, setShowDeleteConfirmationModale] =
     useState(false);
+  const [showModalScan, setShowModalScan] = useState(false);
 
   /*Gère le retour à la page précédente*/
   const handleBackClick = () => {
@@ -93,12 +96,37 @@ function Ma_bibliotheque() {
     setShowModal(false);
   };
 
-  /* Gère l'ouverture et la fermeture de la modale 2 */
+  /* Gère l'ouverture et la fermeture de la modale d'ajout manuel de livre */
   const handleAddBookManuallyClick = () => {
     setShowModalBook(true);
     setShowModal(false);
   };
   const handleModalBookClose = () => setShowModalBook(false);
+
+  /*Gère l'ouverture et la fermeture de la modale de scan de livre*/
+  const handleAddBookScanClick = () => {
+    setShowModalScan(true);
+    setShowModal(false);
+  };
+  // /* Arrête la caméra*/
+  // const stopCamera = useCallback(() => {
+  //   if (videoRef.current && videoRef.current.srcObject instanceof MediaStream) {
+  //     for (const track of videoRef.current.srcObject.getTracks()) {
+  //       track.stop();
+  //     }
+  //     videoRef.current.srcObject = null;
+  //   }
+  // }, []);
+
+  // useEffect(() => {
+  //   if (!showModalScan) {
+  //     stopCamera();
+  //   }
+  // }, [showModalScan, stopCamera]);
+
+  const handleModalScanClose = () => {
+    setShowModalScan(false);
+  };
 
   /*Fonction pour rechercher un livre*/
   const handleSearchClick = (searchTerm: string) => {
@@ -129,8 +157,8 @@ function Ma_bibliotheque() {
   };
 
   /*Fonction pour supprimer un livre*/
-  const handleDeleteBook = async (ISBN: string) => {
-    const book = books.find((book) => book.ISBN === ISBN);
+  const handleDeleteBook = async (ISBN13: string) => {
+    const book = books.find((book) => book.ISBN13 === ISBN13);
     if (book) {
       handleDeleteConfirmationModale(book);
     }
@@ -145,17 +173,17 @@ function Ma_bibliotheque() {
 
     try {
       const response = await fetch(
-        `http://localhost:3310/api/${userId}/livres/${bookToDelete.ISBN}`,
+        `http://localhost:3310/api/${userId}/livres/${bookToDelete.ISBN13}`,
         {
           method: "DELETE",
         },
       );
       if (response.ok) {
         setBooks((prevBooks) =>
-          prevBooks.filter((book) => book.ISBN !== bookToDelete.ISBN),
+          prevBooks.filter((book) => book.ISBN13 !== bookToDelete.ISBN13),
         );
         setFilteredBooks((prevBooks) =>
-          prevBooks.filter((book) => book.ISBN !== bookToDelete.ISBN),
+          prevBooks.filter((book) => book.ISBN13 !== bookToDelete.ISBN13),
         );
         setShowDeleteConfirmationModale(false);
         setBookToDelete(null);
@@ -243,15 +271,15 @@ function Ma_bibliotheque() {
           <strong>Se déconnecter</strong>
         </div>
       </Menu>
-      <section className="Ma_bibliotheque">
+      <section className={`Ma_bibliotheque ${editMode ? "edit-mode" : ""}`}>
         {sortedBooks.map((book) => (
           <div
-            key={book.ISBN}
+            key={book.ISBN13}
             className={`book-container ${editMode ? "delete-mode" : ""}`}
             onContextMenu={(e) => {
               e.preventDefault();
               if (editMode) {
-                handleDeleteBook(book.ISBN);
+                handleDeleteBook(book.ISBN13);
               }
             }}
           >
@@ -260,7 +288,8 @@ function Ma_bibliotheque() {
               auteur={book.auteur}
               livre_resume={book.livre_resume}
               couverture_img={book.couverture_img}
-              ISBN={book.ISBN}
+              ISBN13={book.ISBN13}
+              ISBN10={book.ISBN10}
               date_retour={book.date_retour}
               nombre_exemplaires={book.nombre_exemplaires}
               nombre_exemplaires_disponibles={
@@ -272,7 +301,7 @@ function Ma_bibliotheque() {
               <button
                 type="button"
                 className="delete-button"
-                onClick={() => handleDeleteBook(book.ISBN)}
+                onClick={() => handleDeleteBook(book.ISBN13)}
               >
                 &times;
               </button>
@@ -300,11 +329,18 @@ function Ma_bibliotheque() {
             showModal={showModal}
             handleModalClose={handleModalClose}
             handleAddBookManuallyClick={handleAddBookManuallyClick}
+            handleAddBookScanClick={handleAddBookScanClick}
           />
           {/* Modale pour ajouter un livre manuellement */}
           <AddBookManually
             showModalBook={showModalBook}
             handleModalBookClose={handleModalBookClose}
+            handleBookAdded={handleBookAdded}
+          />
+          {/* Modale pour scanner un livre */}
+          <AddBookScan
+            showModalScan={showModalScan}
+            handleModalScanClose={handleModalScanClose}
             handleBookAdded={handleBookAdded}
           />
           <button

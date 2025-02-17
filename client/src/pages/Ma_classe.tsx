@@ -1,9 +1,9 @@
-import "../styles/ListeAffichage.css";
 import { useEffect, useState } from "react";
 import { slide as Menu } from "react-burger-menu";
 import Header from "../components/Header";
 import Student from "../components/Student";
 import { useAuth } from "../context/AuthContext";
+import "../styles/ListeAffichage.css";
 import "../styles/BurgerMenu.css";
 import "../styles/Buttons.css";
 import Cookies from "js-cookie";
@@ -251,7 +251,7 @@ function Ma_classe() {
           <strong>Se déconnecter</strong>
         </div>
       </Menu>
-      <section className="Ma_classe">
+      <section className={`Ma_classe ${editMode ? "edit-mode" : ""}`}>
         {sortedStudents.map((student) => (
           <div key={student.id_eleve}>
             <div

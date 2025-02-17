@@ -27,7 +27,7 @@ const router = createBrowserRouter([
           { path: "/bibliotheque", element: <Ma_bibliotheque /> },
           { path: "/classe", element: <Ma_classe /> },
           { path: "/eleve/:id", element: <Mon_eleve /> },
-          { path: "/livre/:ISBN", element: <Mon_livre /> },
+          { path: "/livre/:ISBN13", element: <Mon_livre /> },
         ],
       },
     ],

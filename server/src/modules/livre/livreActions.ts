@@ -31,7 +31,7 @@ const browseWithExemplaires: RequestHandler = async (
 const read: RequestHandler = async (req: CustomRequest, res, next) => {
   const userId = Number(req.params.user_id);
   try {
-    const livre = await livreRepository.read(userId, req.params.ISBN);
+    const livre = await livreRepository.read(userId, req.params.ISBN13);
     if (livre == null) {
       res.sendStatus(404);
     } else {
@@ -57,7 +57,7 @@ const edit: RequestHandler = async (req: CustomRequest, res, next) => {
   try {
     const updatedLivre = await livreRepository.update(
       userId,
-      req.params.ISBN,
+      req.params.ISBN13,
       req.body,
     );
     res.json(updatedLivre);
@@ -69,12 +69,27 @@ const edit: RequestHandler = async (req: CustomRequest, res, next) => {
 const add: RequestHandler = async (req: CustomRequest, res, next) => {
   const userId = Number(req.params.user_id);
   try {
-    const { ISBN, titre, auteur, couverture_img, livre_resume } = req.body;
+    const {
+      ISBN13,
+      ISBN10,
+      titre,
+      auteur,
+      couverture_img,
+      livre_resume,
+      user_id,
+    } = req.body;
 
-    const newLivre = { ISBN, titre, auteur, couverture_img, livre_resume };
+    const newLivre = {
+      ISBN13,
+      ISBN10,
+      titre,
+      auteur,
+      couverture_img,
+      livre_resume,
+    };
     const livreId = await livreRepository.create(userId, newLivre);
 
-    const newExemplaire = { ISBN, isAvailable: true };
+    const newExemplaire = { ISBN13, isAvailable: true };
     const exemplaireId = await exemplaireRepository.create(
       userId,
       newExemplaire,
@@ -94,7 +109,7 @@ const add: RequestHandler = async (req: CustomRequest, res, next) => {
 const destroy: RequestHandler = async (req: CustomRequest, res, next) => {
   const userId = Number(req.params.user_id);
   try {
-    await livreRepository.delete(userId, req.params.ISBN);
+    await livreRepository.delete(userId, req.params.ISBN13);
     res.status(204).end();
   } catch (err) {
     next(err);

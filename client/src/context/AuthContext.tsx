@@ -1,5 +1,5 @@
 import Cookies from "js-cookie";
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import type { ReactNode } from "react";
 
 interface AuthContextType {
@@ -17,17 +17,27 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     !!Cookies.get("token"),
   );
   const [userId, setUserId] = useState<number | null>(null);
+
+  // Récupérer user_id au chargement
+  useEffect(() => {
+    const savedUserId = Cookies.get("user_id");
+    if (savedUserId) {
+      setUserId(Number(savedUserId));
+    }
+  }, []);
+
   const login = (token: string, user_id: number) => {
-    setUserId(user_id);
     Cookies.set("token", token, { expires: 1 });
     Cookies.set("user_id", user_id.toString());
     setIsAuthenticated(true);
+    setUserId(user_id);
   };
 
   const logout = () => {
     Cookies.remove("token");
-    setIsAuthenticated(false);
     Cookies.remove("user_id");
+    setIsAuthenticated(false);
+    setUserId(null);
   };
 
   return (

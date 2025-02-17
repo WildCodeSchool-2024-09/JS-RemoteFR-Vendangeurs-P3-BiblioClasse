@@ -70,7 +70,7 @@ const addBookBorrow: RequestHandler = async (
 
     await exemplaireRepository.update(
       {
-        ISBN: exemplaire.ISBN,
+        ISBN13: exemplaire.ISBN13,
         isAvailable: false,
       },
       userId,

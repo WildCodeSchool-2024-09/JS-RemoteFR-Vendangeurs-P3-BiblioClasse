@@ -79,6 +79,11 @@
   padding: 10px;
   font-size: 1rem;
   font-weight: bold;
+  position: fixed;
+  top: 70px;
+  left: 0;
+  z-index: 2000;
+  width: 100%;
 }
 
 .exit-delete-mode-button {
@@ -92,6 +97,7 @@
   font-weight: bold;
   border-radius: 5px;
 }
+
 /* //////Affichage conditionnelle en fonction de la date de retour////// */
 .BookColor.green {
   background-color: var(--quaternary-color);
