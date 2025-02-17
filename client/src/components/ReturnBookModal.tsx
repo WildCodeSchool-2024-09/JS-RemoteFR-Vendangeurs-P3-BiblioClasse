@@ -8,6 +8,7 @@ interface ReturnBookModalProps {
   setShowReturnModal: (show: boolean) => void;
   setConfirmationReturnMessage: (message: string) => void;
   setShowConfirmationReturnModal: (show: boolean) => void;
+  updateLoanStats: () => void;
 }
 
 interface StudentProps {
@@ -29,6 +30,7 @@ interface BorrowedBookProps {
 function ReturnBookModal({
   showReturnModal,
   handleReturnModalClose,
+  updateLoanStats,
   setShowReturnModal,
   setConfirmationReturnMessage,
   setShowConfirmationReturnModal,
@@ -127,6 +129,7 @@ function ReturnBookModal({
         setShowConfirmationReturnModal(true);
         setShowReturnModal(false);
         handleReturnModalClose();
+        updateLoanStats();
       } else {
         console.error("Erreur lors de la confirmation du retour");
       }

@@ -54,7 +54,7 @@ function BiblioClasse() {
   const [availableExemplaires, setAvailableExemplaires] = useState<
     Exemplaire[]
   >([]);
-  const [loansInProgress, setLoansInProgress] = useState<number>(0);
+  const [loansInProgress, setLoansInProgress] = useState<BorrowedBook[]>([]);
   const [studentsWithLoansInProgress, setStudentsWithLoansInProgress] =
     useState<number>(0);
   const [studentsWithLoansDueIn7Days, setStudentsWithLoansDueIn7Days] =
@@ -321,14 +321,56 @@ function BiblioClasse() {
           : exemplaire,
       ),
     );
-    setLoansInProgress(
-      (prevLoansInProgress) => Number(prevLoansInProgress) + 1,
-    );
+    setLoansInProgress((prevLoansInProgress) => [
+      ...prevLoansInProgress,
+      borrowedBook,
+    ]);
     setShowBorrowModal(false);
     setShowConfirmationLoanModal(true);
     setTimeout(() => {
       setShowConfirmationLoanModal(false);
     }, 5000);
+  };
+
+  const updateLoanStats = async () => {
+    try {
+      // Récupérer toutes les statistiques nécessaires
+      const [
+        studentsInProgressResponse,
+        studentsDueIn7DaysResponse,
+        overdueLoansResponse,
+        loansInProgressResponse,
+        availableExemplairesResponse,
+      ] = await Promise.all([
+        fetch(
+          `http://localhost:3310/api/${userId}/students-with-loans-in-progress`,
+        ),
+        fetch(
+          `http://localhost:3310/api/${userId}/students-with-loans-due-in-7-days`,
+        ),
+        fetch(
+          `http://localhost:3310/api/${userId}/students-with-overdue-loans`,
+        ),
+        fetch(`http://localhost:3310/api/${userId}/emprunts_in-progress`),
+        fetch(`http://localhost:3310/api/${userId}/exemplaires_available`),
+      ]);
+
+      // Attendre les réponses
+      const studentsInProgress = await studentsInProgressResponse.json();
+      const studentsDueIn7Days = await studentsDueIn7DaysResponse.json();
+      const overdueLoans = await overdueLoansResponse.json();
+      const loansInProgress = await loansInProgressResponse.json();
+      const availableExemplaires = await availableExemplairesResponse.json();
+
+      // Mettre à jour les états avec les données récupérées
+      setStudentsWithLoansInProgress(studentsInProgress);
+      setStudentsWithLoansDueIn7Days(studentsDueIn7Days);
+      setStudentsWithOverdueLoans(overdueLoans);
+      setLoansInProgress(loansInProgress);
+      setAvailableExemplaires(availableExemplaires);
+    } catch (error) {
+      console.error("Erreur lors de la mise à jour des statistiques:", error);
+    }
   };
 
   ////////////////*PARAMETRES*////////////////
@@ -455,9 +497,9 @@ function BiblioClasse() {
           </span>
         </p>
         <p className="p-emprunt">
-          {loansInProgress > 1
-            ? `${loansInProgress} sont actuellement empruntés.`
-            : `${loansInProgress} est actuellement emprunté.`}
+          {loansInProgress.length > 1
+            ? `${loansInProgress.length} sont actuellement empruntés.`
+            : `${loansInProgress.length} est actuellement emprunté.`}
         </p>
         <p className="p-emprunt">Les 3 livres les plus empruntés sont :</p>
         <div className="top-books">
@@ -524,6 +566,7 @@ function BiblioClasse() {
           setShowReturnModal={setShowReturnModal}
           setConfirmationReturnMessage={setConfirmationReturnMessage}
           setShowConfirmationReturnModal={setShowConfirmationReturnModal}
+          updateLoanStats={updateLoanStats}
         />
       )}
       {showBorrowModal && (
@@ -541,6 +584,7 @@ function BiblioClasse() {
           setConfirmationDateRetour={setConfirmationDateRetour}
           borrowLimit={borrowLimit}
           students={students}
+          updateLoanStats={updateLoanStats}
         />
       )}
       {showParametresModal && (

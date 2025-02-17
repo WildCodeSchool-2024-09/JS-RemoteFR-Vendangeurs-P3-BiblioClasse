@@ -51,6 +51,7 @@ interface BorrowBookModalProps {
   setConfirmationDateRetour: (message: string) => void;
   borrowLimit: number;
   students: StudentProps[];
+  updateLoanStats: () => void;
 }
 
 interface StudentProps {
@@ -72,6 +73,7 @@ function BorrowBookModal({
   setConfirmationBook,
   setConfirmationDateRetour,
   borrowLimit,
+  updateLoanStats,
 }: BorrowBookModalProps) {
   const { userId, setUserId } = useAuth();
   if (!showModal) return null;
@@ -189,6 +191,7 @@ function BorrowBookModal({
       if (response.ok) {
         const result = await response.json();
         handleBookBorrowed(result);
+        updateLoanStats();
         setAvailableExemplaires(
           (
             prevExemplaires: {
