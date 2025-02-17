@@ -43,11 +43,7 @@ function AddBookScan({
 
   /* Gère le scan et récupère l'ISBN du livre scanné */
   useEffect(() => {
-    if (!showModalScan) {
-      return;
-    }
-
-    /* Lance la caméra à l'ouverture de la modale*/
+    /* Lance la caméra*/
     const startCamera = async () => {
       try {
         // vérifie l'accès à la caméra
@@ -63,6 +59,24 @@ function AddBookScan({
         console.error("Erreur accès caméra:", error);
       }
     };
+    /* Arrête la caméra*/
+    const stopCamera = () => {
+      console.info("coucou StopCaméra");
+      console.info("Arrêt et nettoyage de la caméra...");
+      codeReader.reset();
+      if (
+        videoRef.current &&
+        videoRef.current.srcObject instanceof MediaStream
+      ) {
+        const stream = videoRef.current.srcObject as MediaStream;
+        for (const track of stream.getTracks()) {
+          track.stop(); // Coupe la caméra proprement
+        }
+        videoRef.current.srcObject = null;
+      }
+    };
+
+    startCamera();
 
     /* Initialisation du scanner */
     const codeReader = new BrowserMultiFormatReader();
@@ -90,7 +104,7 @@ function AddBookScan({
               setISBN10(book.ISBN10);
               setISBN13(book.ISBN13);
 
-              codeReader.reset();
+              stopCamera();
             }
           }
           if (err && !(err instanceof NotFoundException)) {
@@ -99,33 +113,8 @@ function AddBookScan({
         },
       );
     }
-
-    // Commencer la caméra après un léger délai
-    setTimeout(startCamera, 500); // Attendre 500ms avant de démarrer la caméra pour laisser le temps d'initialiser
-
-    return () => {
-      console.info("Arrêt et nettoyage de la caméra...");
-      codeReader.reset();
-      // Arrêter la caméra proprement
-      if (
-        videoRef.current &&
-        videoRef.current.srcObject instanceof MediaStream
-      ) {
-        const stream = videoRef.current.srcObject as MediaStream;
-        for (const track of stream.getTracks()) {
-          track.stop(); // Coupe la caméra proprement
-        }
-        videoRef.current.srcObject = null;
-      }
-    };
-  }, [showModalScan]); // Ne se déclenche que lorsque la modale s'ouvre ou se ferme
-
-  useEffect(() => {
-    if (!showModalScan) {
-      const codeReader = new BrowserMultiFormatReader();
-      codeReader.reset();
-    }
-  }, [showModalScan]);
+    stopCamera();
+  }, []);
 
   /* Fonction pour récupérer les infos du livre */
   const fetchBookInfo = async (ISBN: string) => {

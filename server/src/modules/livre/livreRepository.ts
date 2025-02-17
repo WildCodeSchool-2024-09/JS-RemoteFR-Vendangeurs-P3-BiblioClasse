@@ -22,16 +22,16 @@ class livreRepository {
   // The C of CRUD - Create operation
   async create(userId: number, livre: Livre) {
     const [result] = await databaseClient.query(
-      `INSERT INTO livre (user_id, ISBN13, ISBN10, titre, auteur, couverture_img, livre_resume) 
-       VALUES (?, ?, ?, ?, ?, ?)`,
+      `INSERT INTO livre (ISBN13, ISBN10, titre, auteur, couverture_img, livre_resume, user_id) 
+       VALUES (?, ?, ?, ?, ?, ?, ?)`,
       [
-        userId,
         livre.ISBN13,
         livre.ISBN10,
         livre.titre,
         livre.auteur,
         livre.couverture_img,
         livre.livre_resume,
+        userId,
       ],
     );
 

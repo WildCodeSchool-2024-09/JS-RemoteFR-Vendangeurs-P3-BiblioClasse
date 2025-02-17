@@ -65,8 +65,8 @@ function AddBookManually({
         }
         setTitre(book.title);
         setAuteur(book.authors.join(", "));
-        setLivre_resume(book.description);
         setCouverture_img(book.imageLinks?.thumbnail || defaultCover);
+        setLivre_resume(book.description);
         setBookInfoFetched(true);
       } else {
         console.error("Aucun livre trouvé pour cet ISBN sur Google Books API");
@@ -91,8 +91,8 @@ function AddBookManually({
               .map((author: { name: string }) => author.name)
               .join(", "),
           );
-          setLivre_resume(book.notes || "Pas de résumé disponible.");
           setCouverture_img(book.cover?.medium || defaultCover);
+          setLivre_resume(book.notes || "Pas de résumé disponible.");
           setBookInfoFetched(true);
         } else {
           console.error(
@@ -121,24 +121,24 @@ function AddBookManually({
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
+        ISBN13,
+        ISBN10,
         titre,
         auteur,
-        livre_resume,
         couverture_img,
-        ISBN10,
-        ISBN13,
+        livre_resume,
       }),
     });
     const responseData = await response.json();
     console.info("API response:", responseData);
     if (response.ok) {
       handleBookAdded({
-        ISBN10,
         ISBN13,
+        ISBN10,
         titre,
         auteur,
-        livre_resume,
         couverture_img,
+        livre_resume,
         nombre_exemplaires: 1,
         nombre_exemplaires_disponibles: 1,
       });

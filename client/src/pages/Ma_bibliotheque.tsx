@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { slide as Menu } from "react-burger-menu";
 import { Link, useNavigate } from "react-router-dom";
 
@@ -42,7 +42,6 @@ function Ma_bibliotheque() {
   const [showDeleteConfirmationModale, setShowDeleteConfirmationModale] =
     useState(false);
   const [showModalScan, setShowModalScan] = useState(false);
-  const videoRef = useRef<HTMLVideoElement>(null);
 
   /*Gère le retour à la page précédente*/
   const handleBackClick = () => {
@@ -109,21 +108,24 @@ function Ma_bibliotheque() {
     setShowModalScan(true);
     setShowModal(false);
   };
+  // /* Arrête la caméra*/
+  // const stopCamera = useCallback(() => {
+  //   if (videoRef.current && videoRef.current.srcObject instanceof MediaStream) {
+  //     for (const track of videoRef.current.srcObject.getTracks()) {
+  //       track.stop();
+  //     }
+  //     videoRef.current.srcObject = null;
+  //   }
+  // }, []);
 
-  const stopCamera = () => {
-    console.info("Arrêt et nettoyage de la caméra...");
-    if (videoRef.current && videoRef.current.srcObject instanceof MediaStream) {
-      const stream = videoRef.current.srcObject as MediaStream;
-      for (const track of stream.getTracks()) {
-        track.stop(); // Arrête la caméra proprement
-      }
-      videoRef.current.srcObject = null; // Déconnecte le flux vidéo
-    }
-  };
+  // useEffect(() => {
+  //   if (!showModalScan) {
+  //     stopCamera();
+  //   }
+  // }, [showModalScan, stopCamera]);
 
   const handleModalScanClose = () => {
     setShowModalScan(false);
-    stopCamera();
   };
 
   /*Fonction pour rechercher un livre*/

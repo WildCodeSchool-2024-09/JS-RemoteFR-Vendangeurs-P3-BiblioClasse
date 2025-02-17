@@ -69,8 +69,15 @@ const edit: RequestHandler = async (req: CustomRequest, res, next) => {
 const add: RequestHandler = async (req: CustomRequest, res, next) => {
   const userId = Number(req.params.user_id);
   try {
-    const { ISBN13, ISBN10, titre, auteur, couverture_img, livre_resume } =
-      req.body;
+    const {
+      ISBN13,
+      ISBN10,
+      titre,
+      auteur,
+      couverture_img,
+      livre_resume,
+      user_id,
+    } = req.body;
 
     const newLivre = {
       ISBN13,
