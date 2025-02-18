@@ -34,6 +34,11 @@ function Mon_livre() {
   );
   const [borrowedExemplairesByISBN13, setBorrowedExemplairesByISBN13] =
     useState<Exemplaire[]>([]);
+  const [isExpanded, setIsExpanded] = useState(false);
+
+  const toggleReadMore = () => {
+    setIsExpanded(!isExpanded);
+  };
 
   useEffect(() => {
     /*Récupération des exemplaires du livre*/
@@ -152,32 +157,38 @@ function Mon_livre() {
           <p className="titre">{currentBook.titre}</p>
           <p className="auteur">De : {currentBook.auteur}</p>
           <p className="isbn">ISBN: {currentBook.ISBN13}</p>
-          <p className="resume">{currentBook.livre_resume}</p>
         </div>
       </section>
+      <div className={`resume-container ${isExpanded ? "expanded" : ""}`}>
+        <p className="resume">{currentBook.livre_resume}</p>
+      </div>
+      <button type="button" className="read-more-btn" onClick={toggleReadMore}>
+        {isExpanded ? "Lire moins" : "Lire la suite"}
+      </button>
       <h2 className="h2-detail">Exemplaires empruntés par :</h2>
-      <ul>
-        {borrowedExemplairesByISBN13.map((exemplaire) => (
-          <div
-            className="borrowed-book-container"
-            key={exemplaire.id_exemplaire}
-          >
-            <Student
-              context="mon_livre"
-              id_eleve={exemplaire.id_eleve}
-              nom={exemplaire.nom}
-              prenom={exemplaire.prenom}
-              date_retour={exemplaire.date_retour}
-              nbOfBooksBorrowed={
-                borrowedExemplairesByISBN13.filter(
-                  (e) => e.id_eleve === exemplaire.id_eleve,
-                ).length
-              }
-            />
-          </div>
-        ))}
-      </ul>
-
+      <section className="exemplaires-empruntes">
+        <ul>
+          {borrowedExemplairesByISBN13.map((exemplaire) => (
+            <div
+              className="borrowed-book-container"
+              key={exemplaire.id_exemplaire}
+            >
+              <Student
+                context="mon_livre"
+                id_eleve={exemplaire.id_eleve}
+                nom={exemplaire.nom}
+                prenom={exemplaire.prenom}
+                date_retour={exemplaire.date_retour}
+                nbOfBooksBorrowed={
+                  borrowedExemplairesByISBN13.filter(
+                    (e) => e.id_eleve === exemplaire.id_eleve,
+                  ).length
+                }
+              />
+            </div>
+          ))}
+        </ul>
+      </section>
       <div className="buttons">
         <button type="button" className="edit_button" onClick={handleEditClick}>
           <img src="/src/assets/images/edit-btn.png" alt="stylo" />
