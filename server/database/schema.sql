@@ -1,21 +1,59 @@
-create table user (
-  id int unsigned primary key auto_increment not null,
-  email varchar(255) not null unique,
-  password varchar(255) not null
+CREATE TABLE user (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    nom VARCHAR(255) NOT NULL,
+    prenom VARCHAR(255) NOT NULL,
+    email VARCHAR(255) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
-create table item (
-  id int unsigned primary key auto_increment not null,
-  title varchar(255) not null,
-  user_id int unsigned not null,
-  foreign key(user_id) references user(id)
+CREATE TABLE parametre (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  loanDuration INT,
+  borrowLimit INT,
+  user_id INT NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES user(id) ON DELETE CASCADE
 );
 
-insert into user(id, email, password)
-values
-  (1, "jdoe@mail.com", "123456");
+CREATE TABLE livre (
+    ISBN13 VARCHAR(255) PRIMARY KEY,
+    ISBN10 VARCHAR(255) NOT NULL,
+    titre VARCHAR(255) NOT NULL,
+    auteur VARCHAR(255) NOT NULL,
+    couverture_img VARCHAR(255),
+    livre_resume TEXT NOT NULL,
+    user_id INT NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES user(id) ON DELETE CASCADE
+);
 
-insert into item(id, title, user_id)
-values
-  (1, "Stuff", 1),
-  (2, "Doodads", 1);
+CREATE TABLE exemplaire (
+    id_exemplaire INT PRIMARY KEY AUTO_INCREMENT,
+    ISBN13 VARCHAR(255) NOT NULL,
+    isAvailable BOOLEAN DEFAULT TRUE, 
+    user_id INT NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES user(id) ON DELETE CASCADE,
+    FOREIGN KEY (ISBN13) REFERENCES livre(ISBN13) ON DELETE CASCADE
+);
+
+CREATE TABLE eleve (
+    id_eleve INT PRIMARY KEY AUTO_INCREMENT,
+    nom VARCHAR(255) NOT NULL,
+    prenom VARCHAR(255) NOT NULL,
+    user_id INT NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES user(id) ON DELETE CASCADE
+);
+
+CREATE TABLE emprunt (
+    id_emprunt INT PRIMARY KEY AUTO_INCREMENT,
+    date_emprunt TIMESTAMP NOT NULL,
+    date_retour DATE,
+    date_retour_effectif DATE,
+    id_exemplaire INT NOT NULL,
+    id_eleve INT NOT NULL,
+    user_id INT NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES user(id) ON DELETE CASCADE    ,
+    FOREIGN KEY (id_exemplaire) REFERENCES exemplaire(id_exemplaire) ON DELETE CASCADE,
+    FOREIGN KEY (id_eleve) REFERENCES eleve(id_eleve) ON DELETE CASCADE
+);
+

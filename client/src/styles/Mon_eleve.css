@@ -1,0 +1,42 @@
+.Mon_eleve {
+  display: flex;
+  flex-direction: row;
+  align-items: left;
+  margin: 10px;
+}
+.QRCode_container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100px;
+  height: 100px;
+  overflow: hidden;
+  margin-right: 10px;
+}
+.QRCode_container img {
+  width: 100%;
+  height: 100%;
+}
+
+.infos_livre {
+  font-size: 11px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+}
+.infos_eleve {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: left;
+}
+.name {
+  font-family: "Poppins", sans-serif;
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+}
+.borrowed-book-container {
+  margin-bottom: 10px;
+}

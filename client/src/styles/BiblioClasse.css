@@ -1,0 +1,147 @@
+.section-eleves,
+.section-livres {
+  margin: 15px 20px 0px 20px;
+}
+.intro {
+  color: #000;
+  font-family: "Poppins", sans-serif;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+  margin-bottom: 7px;
+}
+.statistiques-liste {
+  list-style-type: none;
+  padding: 0;
+  display: grid;
+  grid-template-columns: 1fr 6fr;
+  grid-auto-rows: 40px;
+  gap: 10px;
+  justify-content: center;
+  align-items: center;
+}
+.stats-item {
+  display: contents;
+}
+.stats-item .badge {
+  grid-column: 1;
+}
+.stats-item p {
+  grid-column: 2;
+}
+.badge {
+  display: inline-block;
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+  text-align: center;
+  line-height: 30px;
+  color: #333333;
+  font-weight: bold;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.badge-green {
+  background-color: var(--quaternary-color);
+}
+
+.badge-orange {
+  background-color: var(--tertiary-color);
+  width: 35px;
+  height: 35px;
+}
+
+.badge-red {
+  background-color: var(--secondary-color);
+}
+.texte-stat-item {
+  display: flex;
+  justify-content: left;
+  align-items: center;
+}
+.button-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 7px;
+}
+
+.button {
+  font-family: "Pacifico", sans-serif;
+  font-size: 18px;
+  font-weight: 400;
+  display: flex;
+  width: 60%;
+  height: 40px;
+  text-align: center;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--primary-color);
+  color: #fff;
+  border: none;
+  border-radius: 13px;
+  cursor: pointer;
+  margin-bottom: 10px;
+}
+
+.p-emprunt {
+  margin-bottom: 10px;
+  margin-top: 10px;
+}
+
+.top-books {
+  display: flex;
+  justify-content: space-between;
+  margin: 0 20px;
+  gap: 10px;
+}
+
+.book-card {
+  text-align: center;
+}
+
+.book-image {
+  width: 80px;
+  height: 80px;
+  border-radius: 5px;
+  object-fit: cover;
+}
+
+.loan-actions {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  margin-top: 20px;
+  position: fixed;
+  bottom: 0;
+}
+
+.action-button-emprunt {
+  border-radius: 0px 0px 0px 13px;
+  margin-right: 1px;
+}
+.action-button-retour {
+  border-radius: 0px 0 13px 0px;
+}
+.action-button-emprunt,
+.action-button-retour {
+  margin-top: auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10px;
+  width: 49%;
+  height: 65px;
+  color: #fcfcfc;
+  background-color: var(--primary-color);
+  border: none;
+  cursor: pointer;
+  text-align: center;
+  font-family: "Poppins", sans-serif;
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+}
