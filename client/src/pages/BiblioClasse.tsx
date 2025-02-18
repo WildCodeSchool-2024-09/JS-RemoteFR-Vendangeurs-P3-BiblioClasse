@@ -98,7 +98,7 @@ function BiblioClasse() {
         );
         const data = await response.json();
         setStudents(data);
-        setNbOfStudents(data.length);
+        setNbOfStudents(data ? data.length : 0);
       } catch (error) {
         console.error("Erreur lors de la récupération des élèves:", error);
       }
@@ -110,7 +110,7 @@ function BiblioClasse() {
           `http://localhost:3310/api/${userId}/livres`,
         );
         const data = await response.json();
-        setBooks(data.length);
+        setBooks(data ? data.length : 0);
       } catch (error) {
         console.error("Erreur lors de la récupération des livres:", error);
       }
@@ -484,9 +484,9 @@ function BiblioClasse() {
       <section className="section-livres">
         <p className="intro">
           <span>
-            {exemplaires.length > 1
+            {exemplaires && exemplaires.length > 1
               ? `J'ai ${exemplaires.length} livres enregistrés, `
-              : `J'ai ${exemplaires.length} livre enregistré, `}
+              : `J'ai ${exemplaires ? exemplaires.length : 0} livre enregistré, `}
           </span>
           <span>
             {books > 1
@@ -497,9 +497,9 @@ function BiblioClasse() {
           </span>
         </p>
         <p className="p-emprunt">
-          {loansInProgress.length > 1
+          {loansInProgress && loansInProgress.length > 1
             ? `${loansInProgress.length} sont actuellement empruntés.`
-            : `${loansInProgress.length} est actuellement emprunté.`}
+            : `${loansInProgress ? loansInProgress.length : 0} est actuellement emprunté.`}
         </p>
         <p className="p-emprunt">Les 3 livres les plus empruntés sont :</p>
         <div className="top-books">
