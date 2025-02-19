@@ -1,7 +1,7 @@
 import type { RequestHandler } from "express";
-import type { CustomRequest } from "../../types/express/CustomRequest";
-import empruntRepository from "../emprunt/empruntRepository";
-import exemplaireRepository from "../exemplaire/exemplaireRepository";
+import empruntRepository from "../repositories/empruntRepository";
+import exemplaireRepository from "../repositories/exemplaireRepository";
+import type { CustomRequest } from "../types/express/CustomRequest";
 
 const returnBook: RequestHandler = async (req: CustomRequest, res, next) => {
   const userId = Number(req.params.user_id);

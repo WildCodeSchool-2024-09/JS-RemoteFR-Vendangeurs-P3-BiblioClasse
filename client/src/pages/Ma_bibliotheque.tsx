@@ -56,7 +56,7 @@ function Ma_bibliotheque() {
     const fetchBooks = async () => {
       try {
         const response = await fetch(
-          `http://localhost:3310/api/${userId}/livres_with_exemplaires`,
+          `${import.meta.env.VITE_API_URL}/api/${userId}/livres_with_exemplaires`,
         );
         const data = await response.json();
         setBooks(data);
@@ -159,7 +159,7 @@ function Ma_bibliotheque() {
 
     try {
       const response = await fetch(
-        `http://localhost:3310/api/${userId}/livres/${bookToDelete.ISBN13}`,
+        `${import.meta.env.VITE_API_URL}/api/${userId}/livres/${bookToDelete.ISBN13}`,
         {
           method: "DELETE",
         },

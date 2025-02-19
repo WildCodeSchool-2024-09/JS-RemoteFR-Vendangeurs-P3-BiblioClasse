@@ -111,7 +111,7 @@ function BorrowBookModal({
     const fetchStudents = async () => {
       try {
         const response = await fetch(
-          `http://localhost:3310/api/${userId}/eleves`,
+          `${import.meta.env.VITE_API_URL}/api/${userId}/eleves`,
         );
         const data = await response.json();
         setStudents(data);
@@ -129,7 +129,7 @@ function BorrowBookModal({
       return setUserId(Number(Cookies.get("user_id")));
     }
     const response = await fetch(
-      `http://localhost:3310/api/${userId}/emprunts_by_student/${id_eleve}`,
+      `${import.meta.env.VITE_API_URL}/api/${userId}/emprunts_by_student/${id_eleve}`,
     );
     const borrowedBooksbySudent = await response.json();
     return borrowedBooksbySudent.length;
@@ -178,7 +178,7 @@ function BorrowBookModal({
 
     try {
       const response = await fetch(
-        `http://localhost:3310/api/${userId}/emprunts`,
+        `${import.meta.env.VITE_API_URL}/api/${userId}/emprunts`,
         {
           method: "POST",
           headers: {

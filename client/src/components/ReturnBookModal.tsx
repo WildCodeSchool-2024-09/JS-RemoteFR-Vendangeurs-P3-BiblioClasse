@@ -65,7 +65,7 @@ function ReturnBookModal({
     const fetchStudentsWithBorrows = async () => {
       try {
         const response = await fetch(
-          `http://localhost:3310/api/${userId}/eleves_with_borrows`,
+          `${import.meta.env.VITE_API_URL}/api/${userId}/eleves_with_borrows`,
         );
         const data = await response.json();
         setStudentsWithBorrows(data);
@@ -79,7 +79,7 @@ function ReturnBookModal({
       if (selectedStudentSetted && selectedStudent) {
         try {
           const response = await fetch(
-            `http://localhost:3310/api/${userId}/emprunts_by_student/${selectedStudent.id_eleve}`,
+            `${import.meta.env.VITE_API_URL}/api/${userId}/emprunts_by_student/${selectedStudent.id_eleve}`,
           );
           const data = await response.json();
           setBorrowedBooksByStudentID(data);
@@ -114,7 +114,7 @@ function ReturnBookModal({
 
     try {
       const response = await fetch(
-        `http://localhost:3310/api/${userId}/retours`,
+        `${import.meta.env.VITE_API_URL}/api/${userId}/retours`,
         {
           method: "POST",
           headers: {

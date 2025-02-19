@@ -94,7 +94,7 @@ function BiblioClasse() {
     const fetchStudents = async () => {
       try {
         const response = await fetch(
-          `http://localhost:3310/api/${userId}/eleves`,
+          `${import.meta.env.VITE_API_URL}/api/${userId}/eleves`,
         );
         const data = await response.json();
         setStudents(data);
@@ -107,7 +107,7 @@ function BiblioClasse() {
     const fetchBooks = async () => {
       try {
         const response = await fetch(
-          `http://localhost:3310/api/${userId}/livres`,
+          `${import.meta.env.VITE_API_URL}/api/${userId}/livres`,
         );
         const data = await response.json();
         setBooks(data ? data.length : 0);
@@ -119,7 +119,7 @@ function BiblioClasse() {
     const fetchExemplaires = async () => {
       try {
         const response = await fetch(
-          `http://localhost:3310/api/${userId}/exemplaires`,
+          `${import.meta.env.VITE_API_URL}/api/${userId}/exemplaires`,
         );
         const data = await response.json();
         setExemplaires(data);
@@ -131,7 +131,7 @@ function BiblioClasse() {
     const fetchAvailableExemplaires = async () => {
       try {
         const response = await fetch(
-          `http://localhost:3310/api/${userId}/exemplaires_available`,
+          `${import.meta.env.VITE_API_URL}/api/${userId}/exemplaires_available`,
         );
         const data = await response.json();
         setAvailableExemplaires(data);
@@ -143,7 +143,7 @@ function BiblioClasse() {
     const fetchStudentsWithLoansInProgress = async () => {
       try {
         const response = await fetch(
-          `http://localhost:3310/api/${userId}/students-with-loans-in-progress`,
+          `${import.meta.env.VITE_API_URL}/api/${userId}/students-with-loans-in-progress`,
         );
         const data = await response.json();
         setStudentsWithLoansInProgress(data);
@@ -158,7 +158,7 @@ function BiblioClasse() {
     const fetchStudentsWithLoansDueIn7Days = async () => {
       try {
         const response = await fetch(
-          `http://localhost:3310/api/${userId}/students-with-loans-due-in-7-days`,
+          `${import.meta.env.VITE_API_URL}/api/${userId}/students-with-loans-due-in-7-days`,
         );
         const data = await response.json();
         setStudentsWithLoansDueIn7Days(data);
@@ -173,7 +173,7 @@ function BiblioClasse() {
     const fetchStudentsWithOverdueLoans = async () => {
       try {
         const response = await fetch(
-          `http://localhost:3310/api/${userId}/students-with-overdue-loans`,
+          `${import.meta.env.VITE_API_URL}/api/${userId}/students-with-overdue-loans`,
         );
         const data = await response.json();
         setStudentsWithOverdueLoans(data);
@@ -188,7 +188,7 @@ function BiblioClasse() {
     const fetchLoansInProgress = async () => {
       try {
         const response = await fetch(
-          `http://localhost:3310/api/${userId}/emprunts_in-progress`,
+          `${import.meta.env.VITE_API_URL}/api/${userId}/emprunts_in-progress`,
         );
         const data = await response.json();
         setLoansInProgress(data);
@@ -203,7 +203,7 @@ function BiblioClasse() {
     const fetchTopBooks = async () => {
       try {
         const response = await fetch(
-          `http://localhost:3310/api/${userId}/top_books`,
+          `${import.meta.env.VITE_API_URL}/api/${userId}/top_books`,
         );
         const data = await response.json();
         setTopBooks(data);
@@ -343,16 +343,20 @@ function BiblioClasse() {
         availableExemplairesResponse,
       ] = await Promise.all([
         fetch(
-          `http://localhost:3310/api/${userId}/students-with-loans-in-progress`,
+          `${import.meta.env.VITE_API_URL}/api/${userId}/students-with-loans-in-progress`,
         ),
         fetch(
-          `http://localhost:3310/api/${userId}/students-with-loans-due-in-7-days`,
+          `${import.meta.env.VITE_API_URL}/api/${userId}/students-with-loans-due-in-7-days`,
         ),
         fetch(
-          `http://localhost:3310/api/${userId}/students-with-overdue-loans`,
+          `${import.meta.env.VITE_API_URL}/api/${userId}/students-with-overdue-loans`,
         ),
-        fetch(`http://localhost:3310/api/${userId}/emprunts_in-progress`),
-        fetch(`http://localhost:3310/api/${userId}/exemplaires_available`),
+        fetch(
+          `${import.meta.env.VITE_API_URL}/api/${userId}/emprunts_in-progress`,
+        ),
+        fetch(
+          `${import.meta.env.VITE_API_URL}/api/${userId}/exemplaires_available`,
+        ),
       ]);
 
       // Attendre les réponses

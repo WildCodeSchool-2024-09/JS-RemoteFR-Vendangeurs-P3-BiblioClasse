@@ -1,5 +1,5 @@
-import databaseClient from "../../../database/client";
-import type { Rows } from "../../../database/client";
+import databaseClient from "../../database/client";
+import type { Rows } from "../../database/client";
 
 type Livre = {
   ISBN13: string;

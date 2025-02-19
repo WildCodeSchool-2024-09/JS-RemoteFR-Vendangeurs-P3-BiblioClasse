@@ -1,6 +1,7 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
+import "../public/service-worker";
 
 import App from "./App";
 import PrivateRoute from "./components/PrivateRoute";
@@ -46,3 +47,17 @@ createRoot(rootElement).render(
     </AuthProvider>
   </StrictMode>,
 );
+
+// Enregistrement explicite du Service Worker
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker
+      .register("/service-worker.js") // Le chemin vers ton fichier service-worker.js
+      .then((registration) => {
+        console.info("Service Worker enregistré avec succès :", registration);
+      })
+      .catch((error) => {
+        console.info("L'enregistrement du Service Worker a échoué :", error);
+      });
+  });
+}

@@ -48,7 +48,7 @@ function Mon_livre() {
     const fetchExemplairesByISBN13 = async () => {
       try {
         const response = await fetch(
-          `http://localhost:3310/api/${userId}/exemplaires?ISBN13=${ISBN13}`,
+          `${import.meta.env.VITE_API_URL}/api/${userId}/exemplaires?ISBN13=${ISBN13}`,
         );
         const data = await response.json();
         setExemplairesByISBN13(data);
@@ -65,7 +65,7 @@ function Mon_livre() {
     const fetchBorrowedExemplairesByISBN13 = async () => {
       try {
         const response = await fetch(
-          `http://localhost:3310/api/${userId}/exemplaires_borrowed/${ISBN13}`,
+          `${import.meta.env.VITE_API_URL}/api/${userId}/exemplaires_borrowed/${ISBN13}`,
         );
         const data = await response.json();
         setBorrowedExemplairesByISBN13(data);

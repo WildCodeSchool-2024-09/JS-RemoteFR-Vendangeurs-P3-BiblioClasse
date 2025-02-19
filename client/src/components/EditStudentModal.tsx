@@ -44,7 +44,7 @@ function EditStudentModal({
     };
     try {
       const response = await fetch(
-        `http://localhost:3310/api/${userId}/eleves/${student.id_eleve}`,
+        `${import.meta.env.VITE_API_URL}/api/${userId}/eleves/${student.id_eleve}`,
         {
           method: "PUT",
           headers: {

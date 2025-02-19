@@ -1,7 +1,7 @@
 import type { RequestHandler } from "express";
 import type { NextFunction, Response } from "express";
-import type { CustomRequest } from "../../types/express/CustomRequest";
-import parametreRepository from "./parametreRepository";
+import type { CustomRequest } from "../types/express/CustomRequest";
+import parametreRepository from "./../repositories/parametreRepository";
 
 const readLoanDuration: RequestHandler = async (
   req: CustomRequest,

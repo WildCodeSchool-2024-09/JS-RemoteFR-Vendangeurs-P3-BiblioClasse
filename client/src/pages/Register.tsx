@@ -20,13 +20,16 @@ function Register() {
   const handleRegisterSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const response = await fetch("http://localhost:3310/api/auth/register", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/auth/register`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ nom, prenom, email, password }),
         },
-        body: JSON.stringify({ nom, prenom, email, password }),
-      });
+      );
       if (response.ok) {
         setSuccess("Registration successful!");
         navigate("/");

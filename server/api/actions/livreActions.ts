@@ -1,8 +1,8 @@
 import type { RequestHandler } from "express";
-import type { CustomRequest } from "../../types/express/CustomRequest";
+import type { CustomRequest } from "../types/express/CustomRequest";
 
-import exemplaireRepository from "../exemplaire/exemplaireRepository";
-import livreRepository from "./livreRepository";
+import exemplaireRepository from "../repositories/exemplaireRepository";
+import livreRepository from "./../repositories/livreRepository";
 
 const browse: RequestHandler = async (req: CustomRequest, res, next) => {
   const userId = Number(req.params.user_id);

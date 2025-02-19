@@ -48,7 +48,7 @@ function Ma_classe() {
     const fetchStudents = async () => {
       try {
         const response = await fetch(
-          `http://localhost:3310/api/${userId}/eleves_with_borrows_information`,
+          `${import.meta.env.VITE_API_URL}/api/${userId}/eleves_with_borrows_information`,
         );
         const data = await response.json();
         setStudents(data);
@@ -136,7 +136,7 @@ function Ma_classe() {
 
     try {
       const response = await fetch(
-        `http://localhost:3310/api/${userId}/eleves/${studentToDelete.id_eleve}`,
+        `${import.meta.env.VITE_API_URL}/api/${userId}/eleves/${studentToDelete.id_eleve}`,
         {
           method: "DELETE",
         },

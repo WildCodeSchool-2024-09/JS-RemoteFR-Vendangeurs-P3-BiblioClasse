@@ -1,5 +1,5 @@
 import type { NextFunction, Request, Response } from "express";
-import type { CustomRequest } from "../../types/express/CustomRequest";
+import type { CustomRequest } from "../types/express/CustomRequest";
 
 import jwt from "jsonwebtoken";
 

@@ -44,7 +44,7 @@ function EditBookModal({
     const updatedBook = { ISBN13, titre, auteur, livre_resume, couverture_img };
     try {
       const response = await fetch(
-        `http://localhost:3310/api/${userId}/livres/${ISBN13}`,
+        `${import.meta.env.VITE_API_URL}/api/${userId}/livres/${ISBN13}`,
         {
           method: "PUT",
           headers: {

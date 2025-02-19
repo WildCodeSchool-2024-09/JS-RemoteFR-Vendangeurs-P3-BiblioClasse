@@ -34,7 +34,7 @@ function AddExemplaire({
     }
     for (let i = 0; i < quantity; i++) {
       const response = await fetch(
-        `http://localhost:3310/api/${userId}/exemplaires`,
+        `${import.meta.env.VITE_API_URL}/api/${userId}/exemplaires`,
         {
           method: "POST",
           headers: {

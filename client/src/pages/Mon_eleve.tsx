@@ -41,7 +41,7 @@ function Mon_eleve() {
     const fetchBorrowedBooksByStudentID = async () => {
       try {
         const response = await fetch(
-          `http://localhost:3310/api/${userId}/emprunts_by_student/${id_eleve}`,
+          `${import.meta.env.VITE_API_URL}/api/${userId}/emprunts_by_student/${id_eleve}`,
         );
         const data = await response.json();
         setBorrowedBooksByStudentID(data);

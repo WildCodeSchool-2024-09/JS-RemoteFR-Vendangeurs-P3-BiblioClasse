@@ -46,6 +46,9 @@ function AddBookScan({
     /* Lance la caméra*/
     const startCamera = async () => {
       try {
+        if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+          throw new Error("getUserMedia non supporté par ce navigateur");
+        }
         // vérifie l'accès à la caméra
         const stream = await navigator.mediaDevices.getUserMedia({
           video: true,
@@ -204,11 +207,14 @@ function AddBookScan({
       nombre_exemplaires_disponibles: 1,
     };
 
-    const response = await fetch(`http://localhost:3310/api/${userId}/livres`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(newBook),
-    });
+    const response = await fetch(
+      `${import.meta.env.VITE_API_URL}/api/${userId}/livres`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(newBook),
+      },
+    );
 
     const responseData = await response.json();
     console.info("Réponse serveur:", responseData);

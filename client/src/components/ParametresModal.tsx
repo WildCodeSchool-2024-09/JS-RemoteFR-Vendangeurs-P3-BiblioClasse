@@ -44,7 +44,7 @@ function ParametresModal({
     }
     try {
       await fetch(
-        `http://localhost:3310/api/${userId}/parametres/loanDuration`,
+        `${import.meta.env.VITE_API_URL}/api/${userId}/parametres/loanDuration`,
         {
           method: "PUT",
           headers: {
@@ -54,7 +54,7 @@ function ParametresModal({
         },
       );
       await fetch(
-        `http://localhost:3310/api/${userId}/parametres/borrowLimit`,
+        `${import.meta.env.VITE_API_URL}/api/${userId}/parametres/borrowLimit`,
         {
           method: "PUT",
           headers: {

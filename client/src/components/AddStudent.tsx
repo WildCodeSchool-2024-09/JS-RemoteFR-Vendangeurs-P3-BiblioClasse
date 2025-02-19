@@ -27,13 +27,16 @@ function AddStudent({
     if (!userId) {
       return setUserId(Number(Cookies.get("user_id")));
     }
-    const response = await fetch(`http://localhost:3310/api/${userId}/eleves`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
+    const response = await fetch(
+      `${import.meta.env.VITE_API_URL}/api/${userId}/eleves`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ nom, prenom }),
       },
-      body: JSON.stringify({ nom, prenom }),
-    });
+    );
     if (response.ok) {
       const newStudent: StudentProps = {
         nom,

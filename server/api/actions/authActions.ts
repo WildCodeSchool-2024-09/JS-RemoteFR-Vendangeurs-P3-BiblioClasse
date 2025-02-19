@@ -1,9 +1,9 @@
 import bcrypt from "bcryptjs";
 import type { RequestHandler } from "express";
 import jwt from "jsonwebtoken";
-import databaseClient from "../../../database/client";
-import parametreRepository from "../parametre/parametreRepository";
-import authRepository from "./authRepository";
+import databaseClient from "../../database/client";
+import authRepository from "../repositories/authRepository";
+import parametreRepository from "../repositories/parametreRepository";
 
 const JWT_SECRET = process.env.JWT_SECRET;
 

@@ -1,6 +1,6 @@
 import type { RequestHandler } from "express";
-import type { CustomRequest } from "../../types/express/CustomRequest";
-import eleveRepository from "./eleveRepository";
+import eleveRepository from "../repositories/eleveRepository";
+import type { CustomRequest } from "../types/express/CustomRequest";
 
 // The B of BREAD - Browse (Read All) operation
 const browse: RequestHandler = async (req: CustomRequest, res, next) => {

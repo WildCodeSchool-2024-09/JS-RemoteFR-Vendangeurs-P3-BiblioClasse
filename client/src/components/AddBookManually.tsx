@@ -119,20 +119,23 @@ function AddBookManually({
     if (!userId) {
       return setUserId(Number(Cookies.get("user_id")));
     }
-    const response = await fetch(`http://localhost:3310/api/${userId}/livres`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
+    const response = await fetch(
+      `${import.meta.env.VITE_API_URL}/api/${userId}/livres`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          ISBN13,
+          ISBN10,
+          titre,
+          auteur,
+          couverture_img,
+          livre_resume,
+        }),
       },
-      body: JSON.stringify({
-        ISBN13,
-        ISBN10,
-        titre,
-        auteur,
-        couverture_img,
-        livre_resume,
-      }),
-    });
+    );
     const responseData = await response.json();
     console.info("API response:", responseData);
     if (response.ok) {

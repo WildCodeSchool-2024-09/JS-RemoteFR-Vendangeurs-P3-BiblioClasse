@@ -17,13 +17,16 @@ function Login() {
   const handleLoginSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const response = await fetch("http://localhost:3310/api/auth/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/auth/login`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ email, password }),
         },
-        body: JSON.stringify({ email, password }),
-      });
+      );
       if (response.ok) {
         const data = await response.json();
         setSuccess("Login successful!");

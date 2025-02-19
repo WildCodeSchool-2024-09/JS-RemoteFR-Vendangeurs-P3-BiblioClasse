@@ -19,10 +19,41 @@ const app = express();
 // For this pedagogical template, the CORS code allows CLIENT_URL in development mode (when process.env.CLIENT_URL is defined).
 
 import cors from "cors";
+app.use(
+  cors({
+    origin: [
+      process.env.CLIENT_URL || "http://localhost:4173", // Utilise localhost par défaut si undefined
+      "http://192.168.1.154:4173",
+    ],
+    methods: "GET,POST,PUT,DELETE",
+    allowedHeaders: "Content-Type,Authorization",
+  }),
+);
 
-if (process.env.CLIENT_URL != null) {
-  app.use(cors({ origin: [process.env.CLIENT_URL] }));
-}
+// const allowedOrigins = ["http://localhost:4173", "http://192.168.1.154:4173"];
+// app.use(
+//   cors({
+//     origin: (origin, callback) => {
+//       if (!origin || allowedOrigins.includes(origin)) {
+//         callback(null, true);
+//       } else {
+//         callback(new Error("Not allowed by CORS"));
+//       }
+//     },
+//     methods: "GET,POST,PUT,DELETE",
+//     allowedHeaders: "Content-Type,Authorization",
+//   }),
+// );
+
+// const clientUrl = process.env.CLIENT_URL || "http://localhost:3000";
+
+// app.use(
+//   cors({
+//     origin: clientUrl, // Utilise la variable d'environnement pour autoriser le client
+//     methods: "GET,POST,PUT,DELETE",
+//     allowedHeaders: "Content-Type,Authorization",
+//   }),
+// );
 
 // If you need to allow extra origins, you can add something like this:
 
@@ -64,8 +95,7 @@ app.use(cookieParser());
 import router from "./router";
 
 // Mount the API router under the "/api" endpoint
-app.use(router);
-
+app.use("/api", router);
 /* ************************************************************************* */
 
 // Production-ready setup: What is it for?
@@ -91,16 +121,15 @@ if (fs.existsSync(publicFolderPath)) {
 
 const clientBuildPath = path.join(__dirname, "../../client/dist");
 
-if (fs.existsSync(clientBuildPath)) {
-  app.use(express.static(clientBuildPath));
+// 📌 Ne rediriger vers le frontend que si ce n’est PAS une requête API
+app.use(express.static(clientBuildPath));
 
-  // Redirect unhandled requests to the client index file
-
-  app.get("*", (_, res) => {
-    res.sendFile("index.html", { root: clientBuildPath });
-  });
-}
-
+app.get("*", (req, res, next) => {
+  if (req.path.startsWith("/api")) {
+    return next(); // Ne pas intercepter les requêtes API
+  }
+  res.sendFile("index.html", { root: clientBuildPath });
+});
 /* ************************************************************************* */
 
 // Middleware for Error Logging
