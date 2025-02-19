@@ -7,9 +7,9 @@ import "../styles/BurgerMenu.css";
 import "../styles/Buttons.css";
 
 import Cookies from "js-cookie";
-import AddBook from "../components/AddBook";
 import AddBookManually from "../components/AddBookManually";
 import AddBookScan from "../components/AddBookScan";
+import Addbook from "../components/Addbook";
 import Book from "../components/Book";
 import DeleteConfirmationModale from "../components/DeleteConfirmationModale";
 import Header from "../components/Header";
@@ -305,7 +305,7 @@ function Ma_bibliotheque() {
             +
           </button>
           {/* Modale pour ajouter un livre */}
-          <AddBook
+          <Addbook
             showModal={showModal}
             handleModalClose={handleModalClose}
             handleAddBookManuallyClick={handleAddBookManuallyClick}

@@ -7,7 +7,7 @@ interface AddBookProps {
   handleAddBookScanClick: () => void;
 }
 
-function AddBook({
+function Addbook({
   showModal,
   handleModalClose,
   handleAddBookManuallyClick,
@@ -56,4 +56,4 @@ function AddBook({
   );
 }
 
-export default AddBook;
+export default Addbook;
